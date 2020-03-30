@@ -22,22 +22,39 @@
  * SOFTWARE.
  */
 
-#include <QtGui/qpa/qplatforminputcontextplugin_p.h>
-#include <QtCVkb/vkbinputcontext.h>
+#ifndef VKBINPUTCONTEXT_H
+#define VKBINPUTCONTEXT_H
 
-class VkbInputContextPlugin : public QPlatformInputContextPlugin
+#include <QtCVkb/vkbglobal.h>
+#include <QtGui/qpa/qplatforminputcontext.h>
+
+class Q_CVKB_EXPORT VkbInputContext : public QPlatformInputContext
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID QPlatformInputContextFactoryInterface_iid FILE "cvkb.json")
 
 public:
-    QPlatformInputContext *create(const QString &key, const QStringList &params) override
-    {
-        if (key != "cvkb")
-            return nullptr;
+    explicit VkbInputContext(const QStringList &params = QStringList());
 
-        return new VkbInputContext(params);
-    }
+    bool isValid() const override;
+    bool hasCapability(Capability capability) const override;
+
+    void reset() override;
+    void commit() override;
+    void update(Qt::InputMethodQueries queries) override;
+    void invokeAction(QInputMethod::Action action, int cursorPosition) override;
+    bool filterEvent(const QEvent *event) override;
+    QRectF keyboardRect() const override;
+
+    bool isAnimating() const override;
+
+    void showInputPanel() override;
+    void hideInputPanel() override;
+    bool isInputPanelVisible() const override;
+
+    QLocale locale() const override;
+    Qt::LayoutDirection inputDirection() const override;
+
+    void setFocusObject(QObject *focusObject) override;
 };
 
-#include "vkbinputcontextplugin.moc"
+#endif // VKBINPUTCONTEXT_H
