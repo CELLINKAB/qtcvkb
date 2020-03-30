@@ -1,0 +1,3 @@
+module QtCellink.Vkb
+plugin vkbqmlplugin
+classname VkbQmlPlugin
