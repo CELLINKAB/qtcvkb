@@ -35,6 +35,8 @@ VkbInputContext::VkbInputContext(const QStringList &)
 {
     Q_D(VkbInputContext);
     d->q_ptr = this;
+
+    connect(&d->inputEngine, &VkbInputEngine::inputModeChanged, [=]() { d->loadInputLayout(); });
 }
 
 VkbInputContext::~VkbInputContext()

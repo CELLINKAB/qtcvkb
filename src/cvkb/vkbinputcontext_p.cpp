@@ -24,11 +24,14 @@
 
 #include "vkbinputcontext_p.h"
 #include "vkbinputpanelinterface.h"
+#include "vkbinputlayout.h"
 
 bool VkbInputContextPrivate::createInputPanel(QObject *parent)
 {
-    if (inputPanel.isNull() && inputPanelFactory)
+    if (inputPanel.isNull() && inputPanelFactory) {
         inputPanel = inputPanelFactory(parent);
+        return loadInputLayout();
+    }
     return !inputPanel.isNull();
 }
 
@@ -60,6 +63,30 @@ void VkbInputContextPrivate::hideInputPanel()
         return;
 
     ip->setVisible(false);
+}
+
+static QString resolveInputLayout(VkbInputEngine::InputMode inputMode)
+{
+    static const QString LayoutPath = qEnvironmentVariable("CVKB_LAYOUT_PATH", QStringLiteral(":/cvkb/layouts"));
+
+    const QMetaEnum metaEnum = QMetaEnum::fromType<VkbInputEngine::InputMode>();
+    const QString layoutName = QString::fromLatin1(metaEnum.key(inputMode)).toLower();
+
+    return QDir(LayoutPath).filePath(layoutName + QStringLiteral(".json"));
+}
+
+bool VkbInputContextPrivate::loadInputLayout()
+{
+    VkbInputPanelInterface *ip = qobject_cast<VkbInputPanelInterface *>(inputPanel);
+    if (!ip)
+        return false;
+
+    VkbInputLayout layout;
+    if (!layout.load(resolveInputLayout(inputEngine.inputMode())))
+        return false;
+
+    ip->setLayout(layout);
+    return true;
 }
 
 bool VkbInputContextPrivate::isInputPanelAnimating() const

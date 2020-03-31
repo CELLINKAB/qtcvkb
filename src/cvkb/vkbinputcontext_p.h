@@ -39,6 +39,8 @@ public:
     void showInputPanel();
     void hideInputPanel();
 
+    bool loadInputLayout();
+
     bool isInputPanelAnimating() const;
     QRectF inputPanelRect() const;
     QLocale inputPanelLocale() const;
