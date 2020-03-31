@@ -35,8 +35,8 @@ class VkbInputContextPrivate
 public:
     bool createInputPanel(QObject *parent);
     bool isInputPanelVisible() const;
-    bool showInputPanel();
-    bool hideInputPanel();
+    void showInputPanel();
+    void hideInputPanel();
 
     bool isInputPanelAnimating() const;
     QRectF inputPanelRect() const;

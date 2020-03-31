@@ -108,19 +108,13 @@ bool VkbInputContext::isAnimating() const
 void VkbInputContext::showInputPanel()
 {
     Q_D(VkbInputContext);
-    if (!d->showInputPanel())
-        return;
-
-    emitInputPanelVisibleChanged();
+    d->showInputPanel();
 }
 
 void VkbInputContext::hideInputPanel()
 {
     Q_D(VkbInputContext);
-    if (!d->hideInputPanel())
-        return;
-
-    emitInputPanelVisibleChanged();
+    d->hideInputPanel();
 }
 
 bool VkbInputContext::isInputPanelVisible() const

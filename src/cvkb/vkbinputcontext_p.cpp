@@ -41,27 +41,25 @@ bool VkbInputContextPrivate::isInputPanelVisible() const
     return ip->isVisible();
 }
 
-bool VkbInputContextPrivate::showInputPanel()
+void VkbInputContextPrivate::showInputPanel()
 {
     if (!createInputPanel(QGuiApplication::focusWindow()))
-        return false;
+        return;
 
     VkbInputPanelInterface *ip = qobject_cast<VkbInputPanelInterface *>(inputPanel);
     if (!ip || ip->isVisible())
-        return false;
+        return;
 
     ip->setVisible(true);
-    return true;
 }
 
-bool VkbInputContextPrivate::hideInputPanel()
+void VkbInputContextPrivate::hideInputPanel()
 {
     VkbInputPanelInterface *ip = qobject_cast<VkbInputPanelInterface *>(inputPanel);
     if (!ip || !ip->isVisible())
-        return false;
+        return;
 
     ip->setVisible(false);
-    return true;
 }
 
 bool VkbInputContextPrivate::isInputPanelAnimating() const
