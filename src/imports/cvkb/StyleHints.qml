@@ -27,6 +27,8 @@ import QtQuick.Controls 2.14
 import QtCellink.Vkb 0.1
 import QtCellink.Vkb.Templates 0.1 as T
 
+pragma Singleton
+
 T.StyleHints {
     pressAndHoldInterval: 1000
 }
