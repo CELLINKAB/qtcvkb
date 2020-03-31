@@ -33,6 +33,8 @@
 VkbInputContext::VkbInputContext(const QStringList &)
     : d_ptr(new VkbInputContextPrivate)
 {
+    Q_D(VkbInputContext);
+    d->q_ptr = this;
 }
 
 VkbInputContext::~VkbInputContext()

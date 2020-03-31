@@ -99,3 +99,33 @@ Qt::LayoutDirection VkbInputContextPrivate::inputPanelDirection() const
 
     return ip->inputDirection();
 }
+
+void VkbInputContextPrivate::_q_emitInputPanelVisibleChanged()
+{
+    Q_Q(VkbInputContext);
+    q->emitInputPanelVisibleChanged();
+}
+
+void VkbInputContextPrivate::_q_emitAnimatingChanged()
+{
+    Q_Q(VkbInputContext);
+    q->emitInputPanelVisibleChanged();
+}
+
+void VkbInputContextPrivate::_q_emitKeyboardRectChanged()
+{
+    Q_Q(VkbInputContext);
+    q->emitInputPanelVisibleChanged();
+}
+
+void VkbInputContextPrivate::_q_emitLocaleChanged()
+{
+    Q_Q(VkbInputContext);
+    q->emitInputPanelVisibleChanged();
+}
+
+void VkbInputContextPrivate::_q_emitInputDirectionChanged()
+{
+    Q_Q(VkbInputContext);
+    q->emitInputDirectionChanged(inputPanelDirection());
+}

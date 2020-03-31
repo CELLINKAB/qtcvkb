@@ -30,6 +30,8 @@
 
 class VkbInputContextPrivate
 {
+    Q_DECLARE_PUBLIC(VkbInputContext)
+
 public:
     bool createInputPanel(QObject *parent);
     bool isInputPanelVisible() const;
@@ -41,6 +43,14 @@ public:
     QLocale inputPanelLocale() const;
     Qt::LayoutDirection inputPanelDirection() const;
 
+    // ### TODO: mark QPlatformInputContext::emitXxx() as slots
+    void _q_emitInputPanelVisibleChanged();
+    void _q_emitAnimatingChanged();
+    void _q_emitKeyboardRectChanged();
+    void _q_emitLocaleChanged();
+    void _q_emitInputDirectionChanged();
+
+    VkbInputContext *q_ptr = nullptr;
     QPointer<QObject> inputPanel;
     VkbInputPanelFactory inputPanelFactory;
 };

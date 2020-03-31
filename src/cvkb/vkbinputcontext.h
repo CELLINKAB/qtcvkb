@@ -71,6 +71,13 @@ public:
 private:
     Q_DECLARE_PRIVATE(VkbInputContext)
     QScopedPointer<VkbInputContextPrivate> d_ptr;
+
+    // ### TODO: mark QPlatformInputContext::emitXxx() as slots
+    Q_PRIVATE_SLOT(d_func(), void _q_emitInputPanelVisibleChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_emitAnimatingChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_emitKeyboardRectChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_emitLocaleChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_emitInputDirectionChanged())
 };
 
 #endif // VKBINPUTCONTEXT_H
