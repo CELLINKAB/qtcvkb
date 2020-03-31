@@ -28,9 +28,14 @@ VkbInputLayoutAttached::VkbInputLayoutAttached(QObject *parent) : QObject(parent
 {
 }
 
-QString VkbInputLayoutAttached::key() const
+Qt::Key VkbInputLayoutAttached::key() const
 {
     return m_key.key;
+}
+
+QString VkbInputLayoutAttached::text() const
+{
+    return m_key.text;
 }
 
 QStringList VkbInputLayoutAttached::alt() const

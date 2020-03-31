@@ -71,7 +71,7 @@ protected:
     void updatePolish() override;
 
 private:
-    VkbInputLayoutDelegate *findDelegate(const QString &key) const;
+    VkbInputLayoutDelegate *findDelegate(Qt::Key key) const;
     QQuickAbstractButton *createButton(const VkbInputKey &key, QQuickItem *parent) const;
     VkbInputPopup *createPopup(const VkbInputKey &key, QQuickAbstractButton *button) const;
 

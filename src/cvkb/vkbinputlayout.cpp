@@ -29,10 +29,12 @@
 #include <QtCore/qjsonarray.h>
 #include <QtCore/qjsondocument.h>
 #include <QtCore/qjsonobject.h>
+#include <QtCore/qmetaobject.h>
 
 #include <cmath>
 
 static const QString Key = QStringLiteral("key");
+static const QString Text = QStringLiteral("text");
 static const QString Alt = QStringLiteral("alt");
 static const QString Span = QStringLiteral("span");
 static const QString AutoRepeat = QStringLiteral("autoRepeat");
@@ -104,10 +106,36 @@ static QStringList toStringList(const QJsonArray &array)
     return strings;
 }
 
+static QString capitalize(const QString &text)
+{
+    Q_ASSERT(!text.isEmpty());
+    return text.front().toUpper() + text.mid(1);
+}
+
+static QString formatKey(const QString &key)
+{
+    return QStringLiteral("Key_") + capitalize(key);
+}
+
+static Qt::Key parseKeyCode(const QString &key)
+{
+    if (key.isEmpty())
+        return Qt::Key_unknown;
+
+    const QMetaEnum metaEnum = QMetaEnum::fromType<Qt::Key>();
+    bool ok = false;
+    int value = metaEnum.keyToValue(formatKey(key).toLatin1(), &ok);
+    if (!ok)
+        return Qt::Key_unknown;
+
+    return static_cast<Qt::Key>(value);
+}
+
 static VkbInputKey parseKey(const QJsonObject &json)
 {
     VkbInputKey key;
-    key.key = json.value(Key).toString();
+    key.key = parseKeyCode(json.value(Key).toString());
+    key.text = json.value(Text).toString();
     key.alt = toStringList(json.value(Alt).toArray());
     key.span = json.value(Span).toDouble(1);
     key.autoRepeat = json.value(AutoRepeat).toBool();

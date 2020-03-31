@@ -33,7 +33,8 @@
 class Q_CVKB_EXPORT VkbInputKey
 {
     Q_GADGET
-    Q_PROPERTY(QString key MEMBER key)
+    Q_PROPERTY(Qt::Key key MEMBER key)
+    Q_PROPERTY(QString text MEMBER text)
     Q_PROPERTY(QStringList alt MEMBER alt)
     Q_PROPERTY(qreal span MEMBER span)
     Q_PROPERTY(bool autoRepeat MEMBER autoRepeat)
@@ -44,7 +45,8 @@ public:
     inline bool operator==(const VkbInputKey &other) const;
     inline bool operator!=(const VkbInputKey &other) const;
 
-    QString key;
+    Qt::Key key = Qt::Key_unknown;
+    QString text;
     QStringList alt;
     qreal span = 1.0;
     bool autoRepeat = false;
@@ -65,7 +67,7 @@ bool VkbInputKey::operator!=(const VkbInputKey &other) const
 
 inline uint qHash(const VkbInputKey &key, uint seed)
 {
-    return qHash(key.key, seed);
+    return qHash(key.key, seed) ^ qHash(key.text, seed);
 }
 
 #endif // VKBINPUTKEY_H

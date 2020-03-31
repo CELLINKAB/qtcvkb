@@ -62,8 +62,7 @@ signals:
 
 private slots:
     void resolveInputMode();
-    void sendKey(Qt::Key key);
-    void sendKey(const QString &key, int replaceFrom = 0, int replaceLength = 0);
+    void sendKey(const VkbInputKey &key);
     void toggleKeyboardModifier(Qt::KeyboardModifier modifier);
 
 private:

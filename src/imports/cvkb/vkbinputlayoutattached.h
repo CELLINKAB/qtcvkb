@@ -32,7 +32,8 @@
 class VkbInputLayoutAttached : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString key READ key CONSTANT FINAL)
+    Q_PROPERTY(Qt::Key key READ key CONSTANT FINAL)
+    Q_PROPERTY(QString text READ text CONSTANT FINAL)
     Q_PROPERTY(QStringList alt READ alt CONSTANT FINAL)
     Q_PROPERTY(bool autoRepeat READ autoRepeat CONSTANT FINAL)
     Q_PROPERTY(bool checkable READ isCheckable CONSTANT FINAL)
@@ -41,7 +42,8 @@ class VkbInputLayoutAttached : public QObject
 public:
     explicit VkbInputLayoutAttached(QObject *parent = nullptr);
 
-    QString key() const;
+    Qt::Key key() const;
+    QString text() const;
     QStringList alt() const;
     bool autoRepeat() const;
     bool isCheckable() const;

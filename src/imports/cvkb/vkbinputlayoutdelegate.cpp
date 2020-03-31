@@ -28,12 +28,12 @@ VkbInputLayoutDelegate::VkbInputLayoutDelegate(QObject *parent) : QObject(parent
 {
 }
 
-QString VkbInputLayoutDelegate::key() const
+Qt::Key VkbInputLayoutDelegate::key() const
 {
     return m_key;
 }
 
-void VkbInputLayoutDelegate::setKey(const QString &key)
+void VkbInputLayoutDelegate::setKey(Qt::Key key)
 {
     if (m_key == key)
         return;

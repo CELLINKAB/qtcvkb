@@ -48,11 +48,11 @@ T.InputPanel {
         spacing: control.spacing
         delegates: [
             T.InputLayoutDelegate { button: InputKey { } popup: InputPopup { } },
-            T.InputLayoutDelegate { key: "meta"; button: InputKey { text: "123#" } popup: InputPopup { } },
-            T.InputLayoutDelegate { key: "enter"; button: InputKey { text: "\u23ce" } popup: InputPopup { } }, // return symbol
-            T.InputLayoutDelegate { key: "shift"; button: InputKey { text: "\u21e7" } popup: InputPopup { } }, // upwards white arrow
-            T.InputLayoutDelegate { key: "escape"; button: InputKey { text: "\u21e9" } popup: InputPopup { } }, // black down-pointing triangle
-            T.InputLayoutDelegate { key: "backspace"; button: InputKey { text: "\u21e6" } popup: InputPopup { } } // erase to the left
+            T.InputLayoutDelegate { key: Qt.Key_Meta; button: InputKey { text: "123#" } popup: InputPopup { } },
+            T.InputLayoutDelegate { key: Qt.Key_Enter; button: InputKey { text: "\u23ce" } popup: InputPopup { } },
+            T.InputLayoutDelegate { key: Qt.Key_Shift; button: InputKey { text: "\u21e7" } popup: InputPopup { } },
+            T.InputLayoutDelegate { key: Qt.Key_Escape; button: InputKey { text: "\u21e9" } popup: InputPopup { } },
+            T.InputLayoutDelegate { key: Qt.Key_Backspace; button: InputKey { text: "\u21e6" } popup: InputPopup { } }
         ]
     }
 

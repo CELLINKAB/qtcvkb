@@ -158,13 +158,13 @@ void VkbInputLayoutItem::handleKeyPressAndHold()
     emit keyPressAndHold(attached->inputKey());
 }
 
-VkbInputLayoutDelegate *VkbInputLayoutItem::findDelegate(const QString &key) const
+VkbInputLayoutDelegate *VkbInputLayoutItem::findDelegate(Qt::Key key) const
 {
     auto it = std::find_if(m_delegates.cbegin(), m_delegates.cend(), [&key](VkbInputLayoutDelegate *delegate) { return delegate->key() == key; });
     if (it != m_delegates.cend())
         return *it;
-    if (!key.isEmpty())
-        return findDelegate(QString());
+    if (key != Qt::Key_unknown)
+        return findDelegate(Qt::Key_unknown);
     return nullptr;
 }
 

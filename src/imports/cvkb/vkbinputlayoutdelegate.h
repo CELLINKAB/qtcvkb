@@ -33,7 +33,7 @@ QT_FORWARD_DECLARE_CLASS(QQmlComponent)
 class VkbInputLayoutDelegate : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString key READ key WRITE setKey NOTIFY keyChanged)
+    Q_PROPERTY(Qt::Key key READ key WRITE setKey NOTIFY keyChanged)
     Q_PROPERTY(QQmlComponent *button READ button WRITE setButton NOTIFY buttonChanged)
     Q_PROPERTY(QQmlComponent *popup READ popup WRITE setPopup NOTIFY popupChanged)
     Q_CLASSINFO("DefaultProperty", "button")
@@ -41,8 +41,8 @@ class VkbInputLayoutDelegate : public QObject
 public:
     explicit VkbInputLayoutDelegate(QObject *parent = nullptr);
 
-    QString key() const;
-    void setKey(const QString &key);
+    Qt::Key key() const;
+    void setKey(Qt::Key key);
 
     QQmlComponent *button() const;
     void setButton(QQmlComponent *button);
@@ -56,7 +56,7 @@ signals:
     void popupChanged();
 
 private:
-    QString m_key;
+    Qt::Key m_key = Qt::Key_unknown;
     QQmlComponent *m_button = nullptr;
     QQmlComponent *m_popup = nullptr;
 };

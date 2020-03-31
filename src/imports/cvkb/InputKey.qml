@@ -29,7 +29,7 @@ import QtCellink.Vkb 0.1
 Button {
     id: control
 
-    text: InputLayout.key
+    text: InputLayout.text
 
     ToolTip.text: control.text
     ToolTip.visible: control.down
