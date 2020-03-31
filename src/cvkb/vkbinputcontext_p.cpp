@@ -28,9 +28,17 @@
 
 bool VkbInputContextPrivate::createInputPanel(QObject *parent)
 {
+    Q_Q(VkbInputContext);
     if (inputPanel.isNull() && inputPanelFactory) {
         inputPanel = inputPanelFactory(parent);
-        return loadInputLayout();
+        if (inputPanel) {
+            QObject::connect(inputPanel, SIGNAL(visibleChanged()), q, SLOT(_q_emitInputPanelVisibleChanged()));
+            QObject::connect(inputPanel, SIGNAL(animatingChanged()), q, SLOT(_q_emitAnimatingChanged()));
+            QObject::connect(inputPanel, SIGNAL(rectChanged()), q, SLOT(_q_emitKeyboardRectChanged()));
+            QObject::connect(inputPanel, SIGNAL(localeChanged()), q, SLOT(_q_emitLocaleChanged()));
+            QObject::connect(inputPanel, SIGNAL(inputDirectionChanged()), q, SLOT(_q_emitInputDirectionChanged()));
+            return loadInputLayout();
+        }
     }
     return !inputPanel.isNull();
 }
