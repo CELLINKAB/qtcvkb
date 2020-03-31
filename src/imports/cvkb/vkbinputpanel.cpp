@@ -23,6 +23,7 @@
  */
 
 #include "vkbinputpanel.h"
+#include "vkbinputlayoutitem.h"
 
 VkbInputPanel::VkbInputPanel(QObject *parent) : QQuickPopup(parent)
 {
@@ -64,6 +65,28 @@ Qt::LayoutDirection VkbInputPanel::inputDirection() const
     return Qt::LeftToRight;
 }
 
+VkbInputLayout VkbInputPanel::layout() const
+{
+    return m_layout;
+}
+
+void VkbInputPanel::setLayout(const VkbInputLayout &layout)
+{
+    if (m_layout == layout)
+        return;
+
+    m_layout = layout;
+    if (m_layoutItem)
+        m_layoutItem->setLayout(layout);
+    emit layoutChanged();
+}
+
+void VkbInputPanel::contentItemChange(QQuickItem *newItem, QQuickItem *oldItem)
+{
+    QQuickPopup::contentItemChange(newItem, oldItem);
+    updateLayoutItem(qobject_cast<VkbInputLayoutItem *>(newItem));
+}
+
 void VkbInputPanel::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
     QQuickPopup::geometryChanged(newGeometry, oldGeometry);
@@ -77,4 +100,20 @@ void VkbInputPanel::updateRect(const QRectF &rect)
 
     m_rect = rect;
     emit rectChanged();
+}
+
+void VkbInputPanel::updateLayoutItem(VkbInputLayoutItem *layoutItem)
+{
+    if (m_layoutItem == layoutItem)
+        return;
+
+    if (m_layoutItem)
+        disconnect(m_layoutItem, &VkbInputLayoutItem::keyClicked, this, &VkbInputPanel::keyClicked);
+
+    if (layoutItem) {
+        connect(layoutItem, &VkbInputLayoutItem::keyClicked, this, &VkbInputPanel::keyClicked);
+        layoutItem->setLayout(m_layout);
+    }
+
+    m_layoutItem = layoutItem;
 }

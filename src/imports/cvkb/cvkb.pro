@@ -17,11 +17,13 @@ OTHER_FILES += \
 HEADERS += \
     $$PWD/vkbinputlayoutattached.h \
     $$PWD/vkbinputlayoutdelegate.h \
+    $$PWD/vkbinputlayoutitem.h \
     $$PWD/vkbinputpanel.h
 
 SOURCES += \
     $$PWD/vkbinputlayoutattached.cpp \
     $$PWD/vkbinputlayoutdelegate.cpp \
+    $$PWD/vkbinputlayoutitem.cpp \
     $$PWD/vkbinputpanel.cpp \
     $$PWD/vkbqmlplugin.cpp
 

@@ -28,6 +28,8 @@
 #include <QtCVkb/vkbglobal.h>
 #include <QtCore/qobject.h>
 
+class VkbInputLayout;
+
 QT_FORWARD_DECLARE_CLASS(QRectF)
 QT_FORWARD_DECLARE_CLASS(QLocaleF)
 
@@ -44,12 +46,16 @@ public:
     virtual QLocale locale() const = 0;
     virtual Qt::LayoutDirection inputDirection() const = 0;
 
+    virtual VkbInputLayout layout() const = 0;
+    virtual void setLayout(const VkbInputLayout &layout);
+
 signals:
     virtual void visibleChanged() = 0;
     virtual void animatingChanged() = 0;
     virtual void rectChanged() = 0;
     virtual void localeChanged() = 0;
     virtual void inputDirectionChanged() = 0;
+    virtual void layoutChanged() = 0;
     virtual void keyClicked(const QString &key) = 0;
 };
 

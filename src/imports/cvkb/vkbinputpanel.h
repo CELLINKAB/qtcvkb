@@ -27,6 +27,9 @@
 
 #include <QtQuickTemplates2/private/qquickpopup_p.h>
 #include <QtCVkb/vkbinputpanelinterface.h>
+#include <QtCVkb/vkbinputlayout.h>
+
+class VkbInputLayoutItem;
 
 class VkbInputPanel : public QQuickPopup, public VkbInputPanelInterface
 {
@@ -44,21 +47,29 @@ public:
     QLocale locale() const override;
     Qt::LayoutDirection inputDirection() const override;
 
+    VkbInputLayout layout() const override;
+    void setLayout(const VkbInputLayout &layout) override;
+
 signals:
     void visibleChanged() override;
     void animatingChanged() override;
     void rectChanged() override;
     void localeChanged() override;
     void inputDirectionChanged() override;
+    void layoutChanged() override;
     void keyClicked(const QString &key) override;
 
 protected:
+    void contentItemChange(QQuickItem *newItem, QQuickItem *oldItem) override;
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
 
 private:
     void updateRect(const QRectF &rect);
+    void updateLayoutItem(VkbInputLayoutItem *layoutItem);
 
     QRectF m_rect;
+    VkbInputLayout m_layout;
+    VkbInputLayoutItem *m_layoutItem = nullptr;
 };
 
 #endif // VKBINPUTPANEL_H
