@@ -26,6 +26,7 @@
 #define VKBINPUTCONTEXT_P_H
 
 #include <QtCVkb/vkbinputcontext.h>
+#include <QtCVkb/vkbinputengine.h>
 #include <QtCore/qpointer.h>
 
 class VkbInputContextPrivate
@@ -53,6 +54,7 @@ public:
     VkbInputContext *q_ptr = nullptr;
     QPointer<QObject> inputPanel;
     VkbInputPanelFactory inputPanelFactory;
+    VkbInputEngine inputEngine;
 };
 
 #endif // VKBINPUTCONTEXT_P_H
