@@ -24,6 +24,8 @@
 
 #include "vkbinputengine.h"
 
+#include <QtGui/qpa/qwindowsysteminterface.h>
+
 VkbInputEngine::VkbInputEngine(QObject *parent) : QObject(parent)
 {
 }
@@ -74,8 +76,22 @@ void VkbInputEngine::setKeyboardModifiers(Qt::KeyboardModifiers keyboardModifier
 
 void VkbInputEngine::handleKeyClick(const QString &key)
 {
-    // ### TODO: handle backspace, enter, shift, meta, escape...
-    sendKey(key);
+    // ### TODO: press & release, key codes
+    typedef std::function<void(VkbInputEngine *engine, const QString &key)> KeyHandler;
+    static const QHash<QString, KeyHandler> handlers = {
+        { QStringLiteral("enter"), [](VkbInputEngine *engine, const QString &) { engine->sendKey(Qt::Key_Enter); } },
+        { QStringLiteral("space"), [](VkbInputEngine *engine, const QString &) { engine->sendKey(Qt::Key_Space); } },
+        { QStringLiteral("backspace"), [](VkbInputEngine *engine, const QString &) { engine->sendKey(Qt::Key_Backspace); } },
+        { QStringLiteral("meta"), [](VkbInputEngine *engine, const QString &) { engine->toggleKeyboardModifier(Qt::MetaModifier); } },
+        { QStringLiteral("shift"), [](VkbInputEngine *engine, const QString &) { engine->toggleKeyboardModifier(Qt::ShiftModifier); } },
+        { QStringLiteral("control"), [](VkbInputEngine *engine, const QString &) { engine->toggleKeyboardModifier(Qt::ControlModifier); } },
+        { QStringLiteral("alt"), [](VkbInputEngine *engine, const QString &) { engine->toggleKeyboardModifier(Qt::AltModifier); } },
+        { QStringLiteral("escape"), [](VkbInputEngine *engine, const QString &) { engine->sendKey(Qt::Key_Escape); } },
+    };
+
+    KeyHandler handler = handlers.value(key, [=](VkbInputEngine *engine, const QString &key) { engine->sendKey(key); });
+    if (handler)
+        handler(this, key);
 }
 
 void VkbInputEngine::resolveInputMode()
@@ -90,9 +106,21 @@ void VkbInputEngine::resolveInputMode()
         setInputMode(Letters);
 }
 
+void VkbInputEngine::sendKey(Qt::Key key)
+{
+    QWindow *window = QGuiApplication::focusWindow();
+    QWindowSystemInterface::handleKeyEvent(window, QEvent::KeyPress, key, m_keyboardModifiers);
+    QWindowSystemInterface::handleKeyEvent(window, QEvent::KeyRelease, key, m_keyboardModifiers);
+}
+
 void VkbInputEngine::sendKey(const QString &key, int replaceFrom, int replaceLength)
 {
     QInputMethodEvent event;
     event.setCommitString(key, replaceFrom, replaceLength);
     QCoreApplication::sendEvent(QGuiApplication::focusObject(), &event);
+}
+
+void VkbInputEngine::toggleKeyboardModifier(Qt::KeyboardModifier modifier)
+{
+    setKeyboardModifiers(m_keyboardModifiers ^ modifier);
 }

@@ -60,7 +60,9 @@ signals:
 
 private slots:
     void resolveInputMode();
+    void sendKey(Qt::Key key);
     void sendKey(const QString &key, int replaceFrom = 0, int replaceLength = 0);
+    void toggleKeyboardModifier(Qt::KeyboardModifier modifier);
 
 private:
     InputMode m_inputMode = Letters;
