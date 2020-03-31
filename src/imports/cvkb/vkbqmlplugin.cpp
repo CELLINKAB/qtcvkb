@@ -31,7 +31,11 @@
 #include <QtCVkb/vkbstylehints.h>
 #include <QtCVkb/vkbinputcontext.h>
 
+#include "vkbinputlayoutattached.h"
+#include "vkbinputlayoutdelegate.h"
+#include "vkbinputlayoutitem.h"
 #include "vkbinputpanel.h"
+#include "vkbinputpopup.h"
 
 static const int MajorVersion = 0;
 static const int MinorVersion = 1;
@@ -104,7 +108,11 @@ void VkbQmlPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 
 void VkbQmlPlugin::registerTemplates(const char *uri, int majorVersion, int minorVersion)
 {
+    qmlRegisterUncreatableType<VkbInputLayoutAttached>(uri, majorVersion, minorVersion, "InputLayout", QStringLiteral("InputLayout is an attached property"));
+    qmlRegisterType<VkbInputLayoutItem>(uri, majorVersion, minorVersion, "InputLayoutItem");
+    qmlRegisterType<VkbInputLayoutDelegate>(uri, majorVersion, minorVersion, "InputLayoutDelegate");
     qmlRegisterType<VkbInputPanel>(uri, majorVersion, minorVersion, "InputPanel");
+    qmlRegisterType<VkbInputPopup>(uri, majorVersion, minorVersion, "InputPopup");
     qmlRegisterType<VkbStyleHints>(uri, majorVersion, minorVersion, "StyleHints");
 }
 
@@ -126,6 +134,7 @@ void VkbQmlPlugin::registerStyles(const char *uri, int majorVersion, int minorVe
         selector.addSelector(style);
     selector.setPaths(QQuickStyle::stylePathList() << importPath(uri));
 
+    qmlRegisterUncreatableType<VkbInputLayoutAttached>(uri, majorVersion, minorVersion, "InputLayout", QStringLiteral("InputLayout is an attached property"));
     qmlRegisterType(selector.select(QStringLiteral("InputPanel.qml")), uri, majorVersion, minorVersion, "InputPanel");
     qmlRegisterSingletonType(selector.select(QStringLiteral("StyleHints.qml")), uri, majorVersion, minorVersion, "StyleHints");
 }
