@@ -29,10 +29,12 @@ int main(int argc, char *argv[])
 {
     qputenv("QT_IM_MODULE", "cvkb");
 
+    QCoreApplication::addLibraryPath(PLUGIN_PATH);
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
+    engine.addImportPath(IMPORT_PATH);
     engine.load(QUrl("qrc:/testapp.qml"));
     if (engine.rootObjects().isEmpty())
         return -1;
