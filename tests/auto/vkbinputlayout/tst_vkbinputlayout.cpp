@@ -34,6 +34,8 @@ private slots:
     void load();
     void fail_data();
     void fail();
+    void rows_data();
+    void rows();
     void items_data();
     void items();
 };
@@ -79,6 +81,35 @@ void tst_vkbinputlayout::fail()
     QVERIFY(!layout.load(filePath));
     QCOMPARE(layout.rowCount(), 0);
     QCOMPARE(layout.columnCount(), 0);
+}
+
+void tst_vkbinputlayout::rows_data()
+{
+    QTest::addColumn<QString>("fileName");
+    QTest::addColumn<int>("row");
+    QTest::addColumn<int>("expectedCount");
+
+    QTest::newRow("l0") << "letters.json" << 0 << 11;
+    QTest::newRow("l1") << "letters.json" << 1 << 10;
+    QTest::newRow("l2") << "letters.json" << 2 << 10;
+    QTest::newRow("l3") << "letters.json" << 3 << 5;
+
+    QTest::newRow("d0") << "digits.json" << 0 << 4;
+    QTest::newRow("d1") << "digits.json" << 1 << 4;
+    QTest::newRow("d2") << "digits.json" << 2 << 4;
+    QTest::newRow("d3") << "digits.json" << 3 << 4;
+}
+
+void tst_vkbinputlayout::rows()
+{
+    QFETCH(QString, fileName);
+    QFETCH(int, row);
+    QFETCH(int, expectedCount);
+
+    VkbInputLayout layout;
+    QVERIFY(layout.load(QFINDTESTDATA("data/" + fileName)));
+
+    QCOMPARE(layout.rowAt(row).count(), expectedCount);
 }
 
 void tst_vkbinputlayout::items_data()

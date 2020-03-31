@@ -84,6 +84,11 @@ int VkbInputLayout::columnCount() const
     return d_ptr->maxColumns;
 }
 
+QVector<VkbInputLayoutItem> VkbInputLayout::rowAt(int row) const
+{
+    return d_ptr->layout.value(row);
+}
+
 VkbInputLayoutItem VkbInputLayout::itemAt(int row, int column) const
 {
     return d_ptr->layout.value(row).value(column);

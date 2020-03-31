@@ -55,6 +55,7 @@ public:
 
     int rowCount() const;
     int columnCount() const;
+    QVector<VkbInputLayoutItem> rowAt(int row) const;
     VkbInputLayoutItem itemAt(int row, int column) const;
 
     bool load(const QString &filePath);
