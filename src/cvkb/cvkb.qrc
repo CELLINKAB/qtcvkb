@@ -1,0 +1,8 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource prefix="/cvkb">
+        <file>layouts/capitals.json</file>
+        <file>layouts/digits.json</file>
+        <file>layouts/letters.json</file>
+        <file>layouts/symbols.json</file>
+    </qresource>
+</RCC>

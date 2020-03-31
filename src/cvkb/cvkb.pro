@@ -9,5 +9,8 @@ DEFINES += QT_NO_CAST_TO_ASCII QT_NO_CAST_FROM_ASCII
 HEADERS += \
     $$PWD/vkbglobal.h
 
+RESOURCES += \
+    $$PWD/cvkb.qrc
+
 include(cvkb.pri)
 load(qt_module)
