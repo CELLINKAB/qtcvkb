@@ -15,9 +15,11 @@ OTHER_FILES += \
     $$PWD/qmldir
 
 HEADERS += \
+    $$PWD/vkbinputkey.h \
     $$PWD/vkbinputpanel.h
 
 SOURCES += \
+    $$PWD/vkbinputkey.cpp \
     $$PWD/vkbinputpanel.cpp \
     $$PWD/vkbqmlplugin.cpp
 
