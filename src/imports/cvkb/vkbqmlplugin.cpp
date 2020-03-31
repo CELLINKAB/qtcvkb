@@ -29,9 +29,9 @@
 #include <QtQuickControls2/qquickstyle.h>
 #include <QtQuickControls2/private/qquickstyleselector_p.h>
 #include <QtCVkb/vkbstylehints.h>
+#include <QtCVkb/vkbinputcontext.h>
 
 #include "vkbinputpanel.h"
-#include "vkbfactory.h"
 
 static const int MajorVersion = 0;
 static const int MinorVersion = 1;
@@ -73,7 +73,11 @@ void VkbQmlPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     const QByteArray qml = formatImport(uri, MajorVersion, MinorVersion) + ";" + formatType("InputPanel");
 
-    VkbFactory::setInputPanel([=](QObject *parent) {
+    VkbInputContext *inputContext = VkbInputContext::instance();
+    if (!inputContext)
+        return;
+
+    inputContext->setInputPanelFactory([=](QObject *parent) {
         VkbInputPanel *inputPanel = nullptr;
 
         QQmlComponent component(engine);

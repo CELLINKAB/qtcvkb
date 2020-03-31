@@ -25,12 +25,13 @@
 #ifndef VKBINPUTCONTEXT_P_H
 #define VKBINPUTCONTEXT_P_H
 
-#include <QtCore/qobject.h>
+#include <QtCVkb/vkbinputcontext.h>
 #include <QtCore/qpointer.h>
 
 class VkbInputContextPrivate
 {
 public:
+    bool createInputPanel(QObject *parent);
     bool isInputPanelVisible() const;
     bool showInputPanel();
     bool hideInputPanel();
@@ -41,6 +42,7 @@ public:
     Qt::LayoutDirection inputPanelDirection() const;
 
     QPointer<QObject> inputPanel;
+    VkbInputPanelFactory inputPanelFactory;
 };
 
 #endif // VKBINPUTCONTEXT_P_H

@@ -24,15 +24,12 @@
 
 #include "vkbinputcontext_p.h"
 #include "vkbinputpanelinterface.h"
-#include "vkbfactory.h"
 
-static QObject *createInputPanel(QObject *parent)
+bool VkbInputContextPrivate::createInputPanel(QObject *parent)
 {
-    VkbFactoryFunc factory = VkbFactory::inputPanel();
-    if (!factory)
-        return nullptr;
-
-    return factory(parent);
+    if (inputPanel.isNull() && inputPanelFactory)
+        inputPanel = inputPanelFactory(parent);
+    return !inputPanel.isNull();
 }
 
 bool VkbInputContextPrivate::isInputPanelVisible() const
@@ -46,8 +43,8 @@ bool VkbInputContextPrivate::isInputPanelVisible() const
 
 bool VkbInputContextPrivate::showInputPanel()
 {
-    if (!inputPanel)
-        inputPanel = createInputPanel(QGuiApplication::focusWindow());
+    if (!createInputPanel(QGuiApplication::focusWindow()))
+        return false;
 
     VkbInputPanelInterface *ip = qobject_cast<VkbInputPanelInterface *>(inputPanel);
     if (!ip || ip->isVisible())

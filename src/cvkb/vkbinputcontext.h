@@ -28,8 +28,11 @@
 #include <QtCVkb/vkbglobal.h>
 #include <QtGui/qpa/qplatforminputcontext.h>
 #include <QtCore/qscopedpointer.h>
+#include <functional>
 
 class VkbInputContextPrivate;
+
+typedef std::function<QObject *(QObject *)> VkbInputPanelFactory;
 
 class Q_CVKB_EXPORT VkbInputContext : public QPlatformInputContext
 {
@@ -40,6 +43,9 @@ public:
     ~VkbInputContext();
 
     static VkbInputContext *instance();
+
+    VkbInputPanelFactory inputPanelFactory() const;
+    void setInputPanelFactory(VkbInputPanelFactory inputPanelFactory);
 
     bool isValid() const override;
     bool hasCapability(Capability capability) const override;

@@ -30,10 +30,9 @@
 #include <QtGui/private/qguiapplication_p.h>
 #include <QtGui/qpa/qplatformintegration.h>
 
-VkbInputContext::VkbInputContext(const QStringList &params)
+VkbInputContext::VkbInputContext(const QStringList &)
     : d_ptr(new VkbInputContextPrivate)
 {
-    Q_UNUSED(params);
 }
 
 VkbInputContext::~VkbInputContext()
@@ -43,6 +42,18 @@ VkbInputContext::~VkbInputContext()
 VkbInputContext *VkbInputContext::instance()
 {
     return qobject_cast<VkbInputContext *>(QGuiApplicationPrivate::platformIntegration()->inputContext());
+}
+
+VkbInputPanelFactory VkbInputContext::inputPanelFactory() const
+{
+    Q_D(const VkbInputContext);
+    return d->inputPanelFactory;
+}
+
+void VkbInputContext::setInputPanelFactory(VkbInputPanelFactory inputPanelFactory)
+{
+    Q_D(VkbInputContext);
+    d->inputPanelFactory = inputPanelFactory;
 }
 
 bool VkbInputContext::isValid() const
@@ -139,3 +150,5 @@ void VkbInputContext::setFocusObject(QObject *focusObject)
         hideInputPanel();
     }
 }
+
+#include "moc_vkbinputcontext.cpp"
