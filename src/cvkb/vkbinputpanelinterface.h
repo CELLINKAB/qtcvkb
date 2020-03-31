@@ -45,11 +45,11 @@ public:
     virtual Qt::LayoutDirection inputDirection() const = 0;
 
 signals:
-    virtual void visibleChanged(bool visible) = 0;
-    virtual void animatingChanged(bool animating) = 0;
-    virtual void rectChanged(const QRectF &rect) = 0;
-    virtual void localChanged(const QLocale &locale) = 0;
-    virtual void inputDirectionChanged(Qt::LayoutDirection inputDirection) = 0;
+    virtual void visibleChanged() = 0;
+    virtual void animatingChanged() = 0;
+    virtual void rectChanged() = 0;
+    virtual void localeChanged() = 0;
+    virtual void inputDirectionChanged() = 0;
     virtual void keyClicked(const QString &key) = 0;
 };
 
