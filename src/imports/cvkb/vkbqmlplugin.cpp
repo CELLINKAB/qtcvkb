@@ -23,10 +23,14 @@
  */
 
 #include <QtQml/qqmlextensionplugin.h>
+#include <QtQml/qqmlcomponent.h>
+#include <QtQml/qqmlcontext.h>
 #include <QtQml/qqmlengine.h>
 #include <QtQuickControls2/qquickstyle.h>
 #include <QtQuickControls2/private/qquickstyleselector_p.h>
 #include <QtCVkb/vkbstylehints.h>
+
+#include "vkbinputpanel.h"
 
 static const int MajorVersion = 0;
 static const int MinorVersion = 1;
@@ -41,6 +45,7 @@ public:
 
 private:
     void registerTemplates(const char *uri, int major, int minor);
+    void registerRevisions(const char *uri, int major, int minor);
     void registerStyles(const char *uri, int major, int minor);
 };
 
@@ -48,12 +53,19 @@ void VkbQmlPlugin::registerTypes(const char *uri)
 {
     const QByteArray tmpl = QByteArray(uri) + ".Templates";
     registerTemplates(tmpl, MajorVersion, MinorVersion);
+    registerRevisions(tmpl, MajorVersion, MinorVersion);
     registerStyles(uri, MajorVersion, MinorVersion);
 }
 
 void VkbQmlPlugin::registerTemplates(const char *uri, int majorVersion, int minorVersion)
 {
+    qmlRegisterType<VkbInputPanel>(uri, majorVersion, minorVersion, "InputPanel");
     qmlRegisterType<VkbStyleHints>(uri, majorVersion, minorVersion, "StyleHints");
+}
+
+void VkbQmlPlugin::registerRevisions(const char *uri, int majorVersion, int minorVersion)
+{
+    qmlRegisterRevision<QQuickPopup, QT_VERSION_MINOR>(uri, majorVersion, minorVersion);
 }
 
 static const QString importPath(const char *uri)
@@ -69,6 +81,7 @@ void VkbQmlPlugin::registerStyles(const char *uri, int majorVersion, int minorVe
         selector.addSelector(style);
     selector.setPaths(QQuickStyle::stylePathList() << importPath(uri));
 
+    qmlRegisterType(selector.select(QStringLiteral("InputPanel.qml")), uri, majorVersion, minorVersion, "InputPanel");
     qmlRegisterSingletonType(selector.select(QStringLiteral("StyleHints.qml")), uri, majorVersion, minorVersion, "StyleHints");
 }
 
