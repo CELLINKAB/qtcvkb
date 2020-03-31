@@ -24,7 +24,12 @@
 
 #include <QtQml/qqmlextensionplugin.h>
 #include <QtQml/qqmlengine.h>
+#include <QtQuickControls2/qquickstyle.h>
+#include <QtQuickControls2/private/qquickstyleselector_p.h>
 #include <QtCVkb/vkbstylehints.h>
+
+static const int MajorVersion = 0;
+static const int MinorVersion = 1;
 
 class VkbQmlPlugin : public QQmlExtensionPlugin
 {
@@ -33,13 +38,38 @@ class VkbQmlPlugin : public QQmlExtensionPlugin
 
 public:
     void registerTypes(const char *uri) override;
+
+private:
+    void registerTemplates(const char *uri, int major, int minor);
+    void registerStyles(const char *uri, int major, int minor);
 };
 
 void VkbQmlPlugin::registerTypes(const char *uri)
 {
-    qmlRegisterSingletonType<VkbStyleHints>(uri, 0, 1, "StyleHints", [](QQmlEngine *engine, QJSEngine *) -> QObject * {
-        return new VkbStyleHints(engine);
-    });
+    const QByteArray tmpl = QByteArray(uri) + ".Templates";
+    registerTemplates(tmpl, MajorVersion, MinorVersion);
+    registerStyles(uri, MajorVersion, MinorVersion);
+}
+
+void VkbQmlPlugin::registerTemplates(const char *uri, int majorVersion, int minorVersion)
+{
+    qmlRegisterType<VkbStyleHints>(uri, majorVersion, minorVersion, "StyleHints");
+}
+
+static const QString importPath(const char *uri)
+{
+    return QStringLiteral(":/qt-project.org/imports/%1").arg(QString::fromLatin1(uri).replace(QLatin1Char('.'), QLatin1Char('/')));
+}
+
+void VkbQmlPlugin::registerStyles(const char *uri, int majorVersion, int minorVersion)
+{
+    QQuickStyleSelector selector;
+    const QString style = QQuickStyle::name();
+    if (!style.isEmpty())
+        selector.addSelector(style);
+    selector.setPaths(QQuickStyle::stylePathList() << importPath(uri));
+
+    qmlRegisterSingletonType(selector.select(QStringLiteral("StyleHints.qml")), uri, majorVersion, minorVersion, "StyleHints");
 }
 
 #include "vkbqmlplugin.moc"
