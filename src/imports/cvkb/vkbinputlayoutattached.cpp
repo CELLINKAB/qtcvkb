@@ -30,37 +30,32 @@ VkbInputLayoutAttached::VkbInputLayoutAttached(QObject *parent) : QObject(parent
 
 QString VkbInputLayoutAttached::key() const
 {
-    return m_layoutItem.key;
+    return m_key.key;
 }
 
 QStringList VkbInputLayoutAttached::alt() const
 {
-    return m_layoutItem.alt;
+    return m_key.alt;
 }
 
 bool VkbInputLayoutAttached::autoRepeat() const
 {
-    return m_layoutItem.autoRepeat;
+    return m_key.autoRepeat;
 }
 
 bool VkbInputLayoutAttached::isCheckable() const
 {
-    return m_layoutItem.checkable;
+    return m_key.checkable;
 }
 
 bool VkbInputLayoutAttached::isChecked() const
 {
-    return m_layoutItem.checked;
+    return m_key.checked;
 }
 
-VkbInputLayoutItem VkbInputLayoutAttached::layoutItem() const
+void VkbInputLayoutAttached::setKey(const VkbInputKey &key)
 {
-    return m_layoutItem;
-}
-
-void VkbInputLayoutAttached::setLayoutItem(const VkbInputLayoutItem &layoutItem)
-{
-    m_layoutItem = layoutItem;
+    m_key = key;
 }
 
 VkbInputLayoutAttached *VkbInputLayoutAttached::qmlAttachedProperties(QObject *object)

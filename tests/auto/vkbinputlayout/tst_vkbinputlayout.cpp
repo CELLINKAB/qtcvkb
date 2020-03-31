@@ -36,8 +36,8 @@ private slots:
     void fail();
     void rows_data();
     void rows();
-    void items_data();
-    void items();
+    void keys_data();
+    void keys();
 };
 
 void tst_vkbinputlayout::load_data()
@@ -112,7 +112,7 @@ void tst_vkbinputlayout::rows()
     QCOMPARE(layout.rowAt(row).count(), expectedCount);
 }
 
-void tst_vkbinputlayout::items_data()
+void tst_vkbinputlayout::keys_data()
 {
     QTest::addColumn<QString>("fileName");
     QTest::addColumn<int>("row");
@@ -152,7 +152,7 @@ void tst_vkbinputlayout::items_data()
     QTest::newRow(".") << "digits.json" << 3 << 2 << "." << QStringList() << 1.0 << false << false << false;
 }
 
-void tst_vkbinputlayout::items()
+void tst_vkbinputlayout::keys()
 {
     QFETCH(QString, fileName);
     QFETCH(int, row);
@@ -167,13 +167,13 @@ void tst_vkbinputlayout::items()
     VkbInputLayout layout;
     QVERIFY(layout.load(QFINDTESTDATA("data/" + fileName)));
 
-    VkbInputLayoutItem item = layout.itemAt(row, column);
-    QCOMPARE(item.key, expectedKey);
-    QCOMPARE(item.alt, expectedAlt);
-    QCOMPARE(item.span, expectedSpan);
-    QCOMPARE(item.autoRepeat, expectedAutoRepeat);
-    QCOMPARE(item.checkable, expectedCheckable);
-    QCOMPARE(item.checked, expectedChecked);
+    VkbInputKey key = layout.keyAt(row, column);
+    QCOMPARE(key.key, expectedKey);
+    QCOMPARE(key.alt, expectedAlt);
+    QCOMPARE(key.span, expectedSpan);
+    QCOMPARE(key.autoRepeat, expectedAutoRepeat);
+    QCOMPARE(key.checkable, expectedCheckable);
+    QCOMPARE(key.checked, expectedChecked);
 }
 
 QTEST_MAIN(tst_vkbinputlayout)

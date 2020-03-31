@@ -31,7 +31,7 @@
 
 class VkbInputLayoutPrivate;
 
-class Q_CVKB_EXPORT VkbInputLayoutItem
+class Q_CVKB_EXPORT VkbInputKey
 {
 public:
     QString key;
@@ -55,8 +55,8 @@ public:
 
     int rowCount() const;
     int columnCount() const;
-    QVector<VkbInputLayoutItem> rowAt(int row) const;
-    VkbInputLayoutItem itemAt(int row, int column) const;
+    QVector<VkbInputKey> rowAt(int row) const;
+    VkbInputKey keyAt(int row, int column) const;
 
     bool load(const QString &filePath);
 

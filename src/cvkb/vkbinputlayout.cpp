@@ -43,7 +43,7 @@ class VkbInputLayoutPrivate : public QSharedData
 {
 public:
     int maxColumns = 0;
-    QVector<QVector<VkbInputLayoutItem>> layout;
+    QVector<QVector<VkbInputKey>> layout;
 };
 
 VkbInputLayout::VkbInputLayout() : d_ptr(new VkbInputLayoutPrivate)
@@ -84,12 +84,12 @@ int VkbInputLayout::columnCount() const
     return d_ptr->maxColumns;
 }
 
-QVector<VkbInputLayoutItem> VkbInputLayout::rowAt(int row) const
+QVector<VkbInputKey> VkbInputLayout::rowAt(int row) const
 {
     return d_ptr->layout.value(row);
 }
 
-VkbInputLayoutItem VkbInputLayout::itemAt(int row, int column) const
+VkbInputKey VkbInputLayout::keyAt(int row, int column) const
 {
     return d_ptr->layout.value(row).value(column);
 }
@@ -104,32 +104,32 @@ static QStringList toStringList(const QJsonArray &array)
     return strings;
 }
 
-static VkbInputLayoutItem parseLayoutItem(const QJsonObject &json)
+static VkbInputKey parseKey(const QJsonObject &json)
 {
-    VkbInputLayoutItem item;
-    item.key = json.value(Key).toString();
-    item.alt = toStringList(json.value(Alt).toArray());
-    item.span = json.value(Span).toDouble(1);
-    item.autoRepeat = json.value(AutoRepeat).toBool();
-    item.checkable = json.value(Checkable).toBool();
-    item.checked = json.value(Checked).toBool();
-    return item;
+    VkbInputKey key;
+    key.key = json.value(Key).toString();
+    key.alt = toStringList(json.value(Alt).toArray());
+    key.span = json.value(Span).toDouble(1);
+    key.autoRepeat = json.value(AutoRepeat).toBool();
+    key.checkable = json.value(Checkable).toBool();
+    key.checked = json.value(Checked).toBool();
+    return key;
 }
 
-static QVector<VkbInputLayoutItem> parseLayoutRow(const QJsonArray &json, int &maxColumns)
+static QVector<VkbInputKey> parseRow(const QJsonArray &json, int &maxColumns)
 {
-    QVector<VkbInputLayoutItem> row;
+    QVector<VkbInputKey> keys;
     for (const QJsonValue &value : json)
-        row += parseLayoutItem(value.toObject());
-    maxColumns = std::max(row.count(), maxColumns);
-    return row;
+        keys += parseKey(value.toObject());
+    maxColumns = std::max(keys.count(), maxColumns);
+    return keys;
 }
 
-static QVector<QVector<VkbInputLayoutItem>> parseLayout(const QJsonArray &json, int &maxColumns)
+static QVector<QVector<VkbInputKey>> parseLayout(const QJsonArray &json, int &maxColumns)
 {
-    QVector<QVector<VkbInputLayoutItem>> layout;
+    QVector<QVector<VkbInputKey>> layout;
     for (const QJsonValue &value : json)
-        layout += parseLayoutRow(value.toArray(), maxColumns);
+        layout += parseRow(value.toArray(), maxColumns);
     return layout;
 }
 

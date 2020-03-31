@@ -47,13 +47,12 @@ public:
     bool isCheckable() const;
     bool isChecked() const;
 
-    VkbInputLayoutItem layoutItem() const;
-    void setLayoutItem(const VkbInputLayoutItem &layoutItem);
+    void setKey(const VkbInputKey &key);
 
     static VkbInputLayoutAttached *qmlAttachedProperties(QObject *object);
 
 private:
-    VkbInputLayoutItem m_layoutItem;
+    VkbInputKey m_key;
 };
 
 QML_DECLARE_TYPEINFO(VkbInputLayoutAttached, QML_HAS_ATTACHED_PROPERTIES)
