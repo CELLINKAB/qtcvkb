@@ -22,37 +22,22 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTLAYOUT_H
-#define VKBINPUTLAYOUT_H
+#ifndef VKBINPUTKEY_H
+#define VKBINPUTKEY_H
 
 #include <QtCVkb/vkbglobal.h>
-#include <QtCVkb/vkbinputkey.h>
-#include <QtCore/qshareddata.h>
+#include <QtCore/qstring.h>
 #include <QtCore/qstringlist.h>
 
-class VkbInputLayoutPrivate;
-
-class Q_CVKB_EXPORT VkbInputLayout
+class Q_CVKB_EXPORT VkbInputKey
 {
 public:
-    VkbInputLayout();
-    VkbInputLayout(const VkbInputLayout &other);
-    ~VkbInputLayout();
-
-    VkbInputLayout& operator=(const VkbInputLayout &other);
-    bool operator==(const VkbInputLayout &other) const;
-    bool operator!=(const VkbInputLayout &other) const;
-
-    int rowCount() const;
-    int columnCount() const;
-    QVector<VkbInputKey> rowAt(int row) const;
-    VkbInputKey keyAt(int row, int column) const;
-
-    bool load(const QString &filePath);
-
-private:
-    Q_DECLARE_PRIVATE(VkbInputLayout)
-    QExplicitlySharedDataPointer<VkbInputLayoutPrivate> d_ptr;
+    QString key;
+    QStringList alt;
+    qreal span = 1.0;
+    bool autoRepeat = false;
+    bool checkable = false;
+    bool checked = false;
 };
 
-#endif // VKBINPUTLAYOUT_H
+#endif // VKBINPUTKEY_H

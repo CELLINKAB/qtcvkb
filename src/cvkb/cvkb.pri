@@ -2,6 +2,7 @@ HEADERS += \
     $$PWD/vkbinputcontext.h \
     $$PWD/vkbinputcontext_p.h \
     $$PWD/vkbinputengine.h \
+    $$PWD/vkbinputkey.h \
     $$PWD/vkbinputlayout.h \
     $$PWD/vkbinputpanelinterface.h \
     $$PWD/vkbstylehints.h \
