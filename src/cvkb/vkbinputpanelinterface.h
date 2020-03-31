@@ -47,7 +47,7 @@ public:
     virtual Qt::LayoutDirection inputDirection() const = 0;
 
     virtual VkbInputLayout layout() const = 0;
-    virtual void setLayout(const VkbInputLayout &layout);
+    virtual void setLayout(const VkbInputLayout &layout) = 0;
 
 signals:
     virtual void visibleChanged() = 0;
