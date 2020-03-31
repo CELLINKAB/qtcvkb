@@ -50,6 +50,9 @@ public:
     Qt::KeyboardModifiers keyboardModifiers() const;
     void setKeyboardModifiers(Qt::KeyboardModifiers keyboardModifiers);
 
+public slots:
+    void handleKeyClick(const QString &key);
+
 signals:
     void inputModeChanged();
     void inputMethodHintsChanged();
@@ -57,6 +60,7 @@ signals:
 
 private slots:
     void resolveInputMode();
+    void sendKey(const QString &key, int replaceFrom = 0, int replaceLength = 0);
 
 private:
     InputMode m_inputMode = Letters;

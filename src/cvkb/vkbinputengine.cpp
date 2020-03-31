@@ -72,6 +72,12 @@ void VkbInputEngine::setKeyboardModifiers(Qt::KeyboardModifiers keyboardModifier
     emit keyboardModifiersChanged();
 }
 
+void VkbInputEngine::handleKeyClick(const QString &key)
+{
+    // ### TODO: handle backspace, enter, shift, meta, escape...
+    sendKey(key);
+}
+
 void VkbInputEngine::resolveInputMode()
 {
     if (m_inputMethodHints & Qt::ImhDigitsOnly)
@@ -82,4 +88,11 @@ void VkbInputEngine::resolveInputMode()
         setInputMode(Capitals);
     else
         setInputMode(Letters);
+}
+
+void VkbInputEngine::sendKey(const QString &key, int replaceFrom, int replaceLength)
+{
+    QInputMethodEvent event;
+    event.setCommitString(key, replaceFrom, replaceLength);
+    QCoreApplication::sendEvent(QGuiApplication::focusObject(), &event);
 }
