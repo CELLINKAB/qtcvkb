@@ -61,6 +61,7 @@ public:
     void setFocusObject(QObject *focusObject) override;
 
 private:
+    Q_DECLARE_PRIVATE(VkbInputContext)
     QScopedPointer<VkbInputContextPrivate> d_ptr;
 };
 

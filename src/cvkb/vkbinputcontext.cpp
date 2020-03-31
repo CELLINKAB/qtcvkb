@@ -23,14 +23,10 @@
  */
 
 #include "vkbinputcontext.h"
+#include "vkbinputcontext_p.h"
 
 #include <QtCore/qrect.h>
 #include <QtCore/qlocale.h>
-
-class VkbInputContextPrivate
-{
-public:
-};
 
 VkbInputContext::VkbInputContext(const QStringList &params)
     : d_ptr(new VkbInputContextPrivate)
@@ -89,15 +85,26 @@ bool VkbInputContext::isAnimating() const
 
 void VkbInputContext::showInputPanel()
 {
+    Q_D(VkbInputContext);
+    if (!d->showInputPanel())
+        return;
+
+    emitInputPanelVisibleChanged();
 }
 
 void VkbInputContext::hideInputPanel()
 {
+    Q_D(VkbInputContext);
+    if (!d->hideInputPanel())
+        return;
+
+    emitInputPanelVisibleChanged();
 }
 
 bool VkbInputContext::isInputPanelVisible() const
 {
-    return false;
+    Q_D(const VkbInputContext);
+    return d->isInputPanelVisible();
 }
 
 QLocale VkbInputContext::locale() const
@@ -112,5 +119,7 @@ Qt::LayoutDirection VkbInputContext::inputDirection() const
 
 void VkbInputContext::setFocusObject(QObject *focusObject)
 {
-    QPlatformInputContext::setFocusObject(focusObject);
+    Q_D(VkbInputContext);
+    if (!focusObject)
+        d->hideInputPanel();
 }
