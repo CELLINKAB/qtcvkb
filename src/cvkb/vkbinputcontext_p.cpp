@@ -66,3 +66,39 @@ bool VkbInputContextPrivate::hideInputPanel()
     ip->setVisible(false);
     return true;
 }
+
+bool VkbInputContextPrivate::isInputPanelAnimating() const
+{
+    VkbInputPanelInterface *ip = qobject_cast<VkbInputPanelInterface *>(inputPanel);
+    if (!ip)
+        return false;
+
+    return ip->isAnimating();
+}
+
+QRectF VkbInputContextPrivate::inputPanelRect() const
+{
+    VkbInputPanelInterface *ip = qobject_cast<VkbInputPanelInterface *>(inputPanel);
+    if (!ip)
+        return QRectF();
+
+    return ip->rect();
+}
+
+QLocale VkbInputContextPrivate::inputPanelLocale() const
+{
+    VkbInputPanelInterface *ip = qobject_cast<VkbInputPanelInterface *>(inputPanel);
+    if (!ip)
+        return QLocale::system();
+
+    return ip->locale();
+}
+
+Qt::LayoutDirection VkbInputContextPrivate::inputPanelDirection() const
+{
+    VkbInputPanelInterface *ip = qobject_cast<VkbInputPanelInterface *>(inputPanel);
+    if (!ip)
+        return Qt::LeftToRight;
+
+    return ip->inputDirection();
+}

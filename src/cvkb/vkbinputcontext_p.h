@@ -35,6 +35,11 @@ public:
     bool showInputPanel();
     bool hideInputPanel();
 
+    bool isInputPanelAnimating() const;
+    QRectF inputPanelRect() const;
+    QLocale inputPanelLocale() const;
+    Qt::LayoutDirection inputPanelDirection() const;
+
     QPointer<QObject> inputPanel;
 };
 
