@@ -27,9 +27,19 @@
 #include <QtCore/qrect.h>
 #include <QtCore/qlocale.h>
 
+class VkbInputContextPrivate
+{
+public:
+};
+
 VkbInputContext::VkbInputContext(const QStringList &params)
+    : d_ptr(new VkbInputContextPrivate)
 {
     Q_UNUSED(params);
+}
+
+VkbInputContext::~VkbInputContext()
+{
 }
 
 bool VkbInputContext::isValid() const

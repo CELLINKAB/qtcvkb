@@ -27,6 +27,9 @@
 
 #include <QtCVkb/vkbglobal.h>
 #include <QtGui/qpa/qplatforminputcontext.h>
+#include <QtCore/qscopedpointer.h>
+
+class VkbInputContextPrivate;
 
 class Q_CVKB_EXPORT VkbInputContext : public QPlatformInputContext
 {
@@ -34,6 +37,7 @@ class Q_CVKB_EXPORT VkbInputContext : public QPlatformInputContext
 
 public:
     explicit VkbInputContext(const QStringList &params = QStringList());
+    ~VkbInputContext();
 
     bool isValid() const override;
     bool hasCapability(Capability capability) const override;
@@ -55,6 +59,9 @@ public:
     Qt::LayoutDirection inputDirection() const override;
 
     void setFocusObject(QObject *focusObject) override;
+
+private:
+    QScopedPointer<VkbInputContextPrivate> d_ptr;
 };
 
 #endif // VKBINPUTCONTEXT_H
