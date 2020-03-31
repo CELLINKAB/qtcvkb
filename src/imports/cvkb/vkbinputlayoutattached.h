@@ -51,6 +51,7 @@ public:
     void setInputKey(const VkbInputKey &key);
 
     static VkbInputLayoutAttached *qmlAttachedProperties(QObject *object);
+    static VkbInputLayoutAttached *qmlAttachedPropertiesObject(QObject *object);
 
 private:
     VkbInputKey m_key;

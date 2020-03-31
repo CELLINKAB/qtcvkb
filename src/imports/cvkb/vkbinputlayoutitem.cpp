@@ -32,11 +32,6 @@
 #include <QtQml/qqmlengine.h>
 #include <QtQuickTemplates2/private/qquickabstractbutton_p.h>
 
-static VkbInputLayoutAttached *attachedLayoutObject(QObject *object)
-{
-    return qobject_cast<VkbInputLayoutAttached *>(qmlAttachedPropertiesObject<VkbInputLayoutAttached>(object));
-}
-
 VkbInputLayoutItem::VkbInputLayoutItem(QQuickItem *parent) : QQuickItem(parent)
 {
 }
@@ -137,7 +132,7 @@ void VkbInputLayoutItem::updatePolish()
 
 void VkbInputLayoutItem::handleKeyClick()
 {
-    VkbInputLayoutAttached *attached = attachedLayoutObject(sender());
+    VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(sender());
     if (!attached)
         return;
 
@@ -147,7 +142,7 @@ void VkbInputLayoutItem::handleKeyClick()
 void VkbInputLayoutItem::handleKeyPressAndHold()
 {
     QQuickAbstractButton *button = qobject_cast<QQuickAbstractButton *>(sender());
-    VkbInputLayoutAttached *attached = attachedLayoutObject(button);
+    VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(button);
     if (!attached)
         return;
 
@@ -191,7 +186,7 @@ static T *beginCreate(const VkbInputKey &key, QQmlComponent *component, QObject 
         return nullptr;
     }
 
-    VkbInputLayoutAttached *attached = attachedLayoutObject(instance);
+    VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(instance);
     if (attached)
         attached->setInputKey(key);
 
