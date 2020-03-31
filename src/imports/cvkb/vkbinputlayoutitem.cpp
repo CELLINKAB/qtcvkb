@@ -71,6 +71,11 @@ void VkbInputLayoutItem::setLayout(const VkbInputLayout &layout)
     emit layoutChanged();
 }
 
+QQmlListProperty<VkbInputLayoutDelegate> VkbInputLayoutItem::delegates()
+{
+    return QQmlListProperty<VkbInputLayoutDelegate>(this, nullptr, delegates_append, delegates_count, delegates_at, delegates_clear);
+}
+
 void VkbInputLayoutItem::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
@@ -231,4 +236,30 @@ VkbInputPopup *VkbInputLayoutItem::createPopup(const VkbInputKey &key, QQuickAbs
     popup->setParentItem(button);
     component->completeCreate();
     return popup;
+}
+
+void VkbInputLayoutItem::delegates_append(QQmlListProperty<VkbInputLayoutDelegate> *property, VkbInputLayoutDelegate *delegate)
+{
+    VkbInputLayoutItem *that = static_cast<VkbInputLayoutItem *>(property->object);
+    that->m_delegates.append(delegate);
+    that->polish();
+}
+
+int VkbInputLayoutItem::delegates_count(QQmlListProperty<VkbInputLayoutDelegate> *property)
+{
+    VkbInputLayoutItem *that = static_cast<VkbInputLayoutItem *>(property->object);
+    return that->m_delegates.count();
+}
+
+VkbInputLayoutDelegate *VkbInputLayoutItem::delegates_at(QQmlListProperty<VkbInputLayoutDelegate> *property, int index)
+{
+    VkbInputLayoutItem *that = static_cast<VkbInputLayoutItem *>(property->object);
+    return that->m_delegates.value(index);
+}
+
+void VkbInputLayoutItem::delegates_clear(QQmlListProperty<VkbInputLayoutDelegate> *property)
+{
+    VkbInputLayoutItem *that = static_cast<VkbInputLayoutItem *>(property->object);
+    that->m_delegates.clear();
+    that->polish();
 }
