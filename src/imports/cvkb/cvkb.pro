@@ -15,13 +15,13 @@ OTHER_FILES += \
     $$PWD/qmldir
 
 HEADERS += \
-    $$PWD/vkbinputkey.h \
     $$PWD/vkbinputlayoutattached.h \
+    $$PWD/vkbinputlayoutdelegate.h \
     $$PWD/vkbinputpanel.h
 
 SOURCES += \
-    $$PWD/vkbinputkey.cpp \
     $$PWD/vkbinputlayoutattached.cpp \
+    $$PWD/vkbinputlayoutdelegate.cpp \
     $$PWD/vkbinputpanel.cpp \
     $$PWD/vkbqmlplugin.cpp
 

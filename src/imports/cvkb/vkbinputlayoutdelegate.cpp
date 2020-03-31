@@ -22,43 +22,50 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTKEY_H
-#define VKBINPUTKEY_H
+#include "vkbinputlayoutdelegate.h"
 
-#include <QtCore/qobject.h>
-#include <QtCore/qstring.h>
-
-QT_FORWARD_DECLARE_CLASS(QQmlComponent)
-
-class VkbInputKey : public QObject
+VkbInputLayoutDelegate::VkbInputLayoutDelegate(QObject *parent) : QObject(parent)
 {
-    Q_OBJECT
-    Q_PROPERTY(QString key READ key WRITE setKey NOTIFY keyChanged)
-    Q_PROPERTY(QQmlComponent *delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
-    Q_PROPERTY(QQmlComponent *popup READ popup WRITE setPopup NOTIFY popupChanged)
-    Q_CLASSINFO("DefaultProperty", "delegate")
+}
 
-public:
-    explicit VkbInputKey(QObject *parent = nullptr);
+QString VkbInputLayoutDelegate::key() const
+{
+    return m_key;
+}
 
-    QString key() const;
-    void setKey(const QString &key);
+void VkbInputLayoutDelegate::setKey(const QString &key)
+{
+    if (m_key == key)
+        return;
 
-    QQmlComponent *delegate() const;
-    void setDelegate(QQmlComponent *delegate);
+    m_key = key;
+    emit keyChanged();
+}
 
-    QQmlComponent *popup() const;
-    void setPopup(QQmlComponent *popup);
+QQmlComponent *VkbInputLayoutDelegate::button() const
+{
+    return m_button;
+}
 
-signals:
-    void keyChanged();
-    void delegateChanged();
-    void popupChanged();
+void VkbInputLayoutDelegate::setButton(QQmlComponent *button)
+{
+    if (m_button == button)
+        return;
 
-private:
-    QString m_key;
-    QQmlComponent *m_delegate = nullptr;
-    QQmlComponent *m_popup = nullptr;
-};
+    m_button = button;
+    emit buttonChanged();
+}
 
-#endif // VKBINPUTKEY_H
+QQmlComponent *VkbInputLayoutDelegate::popup() const
+{
+    return m_popup;
+}
+
+void VkbInputLayoutDelegate::setPopup(QQmlComponent *popup)
+{
+    if (m_popup == popup)
+        return;
+
+    m_popup = popup;
+    emit popupChanged();
+}
