@@ -212,6 +212,7 @@ QQuickAbstractButton *VkbInputLayoutItem::createButton(const VkbInputKey &key, Q
     }
 
     button->setParentItem(parent);
+    button->setFocusPolicy(Qt::NoFocus);
     button->setAutoRepeat(key.autoRepeat);
     button->setCheckable(key.checkable);
     if (key.checked)
