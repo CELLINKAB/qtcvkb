@@ -34,7 +34,7 @@ VkbInputContext::VkbInputContext(const QStringList &params)
 
 bool VkbInputContext::isValid() const
 {
-    return false;
+    return true;
 }
 
 bool VkbInputContext::hasCapability(Capability capability) const
