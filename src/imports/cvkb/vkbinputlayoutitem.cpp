@@ -82,7 +82,7 @@ void VkbInputLayoutItem::updatePolish()
 {
     QQuickItem::updatePolish();
 
-    QHash<QString, QQuickAbstractButton *> oldButtons = m_buttons;
+    QHash<VkbInputKey, QQuickAbstractButton *> oldButtons = m_buttons;
     m_buttons.clear();
 
     const qreal cw = width();
@@ -101,14 +101,14 @@ void VkbInputLayoutItem::updatePolish()
         const int cc = row.count();
         for (int c = 0; c < cc; ++c) {
             const VkbInputKey &key = row.at(c);
-            QQuickAbstractButton *button = oldButtons.take(key.key);
+            QQuickAbstractButton *button = oldButtons.take(key);
             if (!button) {
                 button = createButton(key, this);
                 connect(button, &QQuickAbstractButton::clicked, this, &VkbInputLayoutItem::handleKeyClick);
                 if (!key.alt.isEmpty())
                     connect(button, &QQuickAbstractButton::pressAndHold, this, &VkbInputLayoutItem::handleKeyPressAndHold);
             }
-            m_buttons[key.key] = button;
+            m_buttons[key] = button;
             if (!button)
                 continue;
             const qreal w = kw * key.span + sp * (key.span - 1.0);

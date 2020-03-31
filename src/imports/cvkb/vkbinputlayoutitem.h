@@ -83,7 +83,7 @@ private:
     qreal m_spacing = 0;
     VkbInputLayout m_layout;
     QList<VkbInputLayoutDelegate *> m_delegates;
-    QHash<QString, QQuickAbstractButton *> m_buttons;
+    QHash<VkbInputKey, QQuickAbstractButton *> m_buttons;
 };
 
 #endif // VKBINPUTLAYOUTITEM_H

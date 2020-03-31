@@ -41,6 +41,9 @@ class Q_CVKB_EXPORT VkbInputKey
     Q_PROPERTY(bool checked MEMBER checked)
 
 public:
+    inline bool operator==(const VkbInputKey &other) const;
+    inline bool operator!=(const VkbInputKey &other) const;
+
     QString key;
     QStringList alt;
     qreal span = 1.0;
@@ -48,5 +51,21 @@ public:
     bool checkable = false;
     bool checked = false;
 };
+
+bool VkbInputKey::operator==(const VkbInputKey &other) const
+{
+    return key == other.key && alt == other.alt && qFuzzyCompare(span, other.span)
+            && autoRepeat == other.autoRepeat && checkable == other.checkable && checked == other.checked;
+}
+
+bool VkbInputKey::operator!=(const VkbInputKey &other) const
+{
+    return !(*this == other);
+}
+
+inline uint qHash(const VkbInputKey &key, uint seed)
+{
+    return qHash(key.key, seed);
+}
 
 #endif // VKBINPUTKEY_H
