@@ -117,39 +117,40 @@ void tst_vkbinputlayout::keys_data()
     QTest::addColumn<QString>("fileName");
     QTest::addColumn<int>("row");
     QTest::addColumn<int>("column");
-    QTest::addColumn<QString>("expectedKey");
+    QTest::addColumn<Qt::Key>("expectedKey");
+    QTest::addColumn<QString>("expectedText");
     QTest::addColumn<QStringList>("expectedAlt");
     QTest::addColumn<qreal>("expectedSpan");
     QTest::addColumn<bool>("expectedAutoRepeat");
     QTest::addColumn<bool>("expectedCheckable");
     QTest::addColumn<bool>("expectedChecked");
 
-    QTest::newRow("q") << "letters.json" << 0 << 0 << "q" << QStringList() << 1.0 << false << false << false;
-    QTest::newRow("w") << "letters.json" << 0 << 1 << "w" << QStringList() << 1.0 << false << false << false;
-    QTest::newRow("e") << "letters.json" << 0 << 2 << "e" << QStringList({"è", "é", "ê", "ë", "ē"}) << 1.0 << false << false << false;
-    QTest::newRow("r") << "letters.json" << 0 << 3 << "r" << QStringList() << 1.0 << false << false << false;
-    QTest::newRow("t") << "letters.json" << 0 << 4 << "t" << QStringList() << 1.0 << false << false << false;
-    QTest::newRow("y") << "letters.json" << 0 << 5 << "y" << QStringList() << 1.0 << false << false << false;
+    QTest::newRow("q") << "letters.json" << 0 << 0 << Qt::Key_unknown << "q" << QStringList() << 1.0 << false << false << false;
+    QTest::newRow("w") << "letters.json" << 0 << 1 << Qt::Key_unknown << "w" << QStringList() << 1.0 << false << false << false;
+    QTest::newRow("e") << "letters.json" << 0 << 2 << Qt::Key_unknown << "e" << QStringList({"è", "é", "ê", "ë", "ē"}) << 1.0 << false << false << false;
+    QTest::newRow("r") << "letters.json" << 0 << 3 << Qt::Key_unknown << "r" << QStringList() << 1.0 << false << false << false;
+    QTest::newRow("t") << "letters.json" << 0 << 4 << Qt::Key_unknown << "t" << QStringList() << 1.0 << false << false << false;
+    QTest::newRow("y") << "letters.json" << 0 << 5 << Qt::Key_unknown << "y" << QStringList() << 1.0 << false << false << false;
 
-    QTest::newRow("a") << "letters.json" << 1 << 0 << "a" << QStringList({"à", "á", "â", "ä", "æ", "ã", "å", "ā"}) << 1.0 << false << false << false;
-    QTest::newRow("s") << "letters.json" << 1 << 1 << "s" << QStringList({"ß"}) << 1.0 << false << false << false;
-    QTest::newRow("d") << "letters.json" << 1 << 2 << "d" << QStringList() << 1.0 << false << false << false;
-    QTest::newRow("f") << "letters.json" << 1 << 3 << "f" << QStringList() << 1.0 << false << false << false;
+    QTest::newRow("a") << "letters.json" << 1 << 0 << Qt::Key_unknown << "a" << QStringList({"à", "á", "â", "ä", "æ", "ã", "å", "ā"}) << 1.0 << false << false << false;
+    QTest::newRow("s") << "letters.json" << 1 << 1 << Qt::Key_unknown << "s" << QStringList({"ß"}) << 1.0 << false << false << false;
+    QTest::newRow("d") << "letters.json" << 1 << 2 << Qt::Key_unknown << "d" << QStringList() << 1.0 << false << false << false;
+    QTest::newRow("f") << "letters.json" << 1 << 3 << Qt::Key_unknown << "f" << QStringList() << 1.0 << false << false << false;
 
-    QTest::newRow("backspace") << "letters.json" << 0 << 10 << "backspace" << QStringList() << 1.0 << true << false << false;
-    QTest::newRow("enter") << "letters.json" << 1 << 9 << "enter" << QStringList() << 2.0 << false << false << false;
-    QTest::newRow("shift") << "letters.json" << 2 << 0 << "shift" << QStringList() << 2.0 << false << true << false;
-    QTest::newRow("meta") << "letters.json" << 3 << 0 << "meta" << QStringList() << 1.0 << false << true << false;
-    QTest::newRow("space") << "letters.json" << 3 << 2 << "space" << QStringList() << 7.0 << true << false << false;
-    QTest::newRow("escape") << "letters.json" << 3 << 4 << "escape" << QStringList() << 1.0 << false << false << false;
+    QTest::newRow("backspace") << "letters.json" << 0 << 10 << Qt::Key_Backspace << "" << QStringList() << 1.0 << true << false << false;
+    QTest::newRow("enter") << "letters.json" << 1 << 9 << Qt::Key_Enter << "" << QStringList() << 2.0 << false << false << false;
+    QTest::newRow("shift") << "letters.json" << 2 << 0 << Qt::Key_Shift << "" << QStringList() << 2.0 << false << true << false;
+    QTest::newRow("meta") << "letters.json" << 3 << 0 << Qt::Key_Meta << "" << QStringList() << 1.0 << false << true << false;
+    QTest::newRow("space") << "letters.json" << 3 << 2 << Qt::Key_Space << "" << QStringList() << 7.0 << true << false << false;
+    QTest::newRow("escape") << "letters.json" << 3 << 4 << Qt::Key_Escape << "" << QStringList() << 1.0 << false << false << false;
 
-    QTest::newRow("1") << "digits.json" << 0 << 0 << "1" << QStringList() << 1.0 << false << false << false;
-    QTest::newRow("2") << "digits.json" << 0 << 1 << "2" << QStringList() << 1.0 << false << false << false;
-    QTest::newRow("3") << "digits.json" << 0 << 2 << "3" << QStringList() << 1.0 << false << false << false;
+    QTest::newRow("1") << "digits.json" << 0 << 0 << Qt::Key_unknown << "1" << QStringList() << 1.0 << false << false << false;
+    QTest::newRow("2") << "digits.json" << 0 << 1 << Qt::Key_unknown << "2" << QStringList() << 1.0 << false << false << false;
+    QTest::newRow("3") << "digits.json" << 0 << 2 << Qt::Key_unknown << "3" << QStringList() << 1.0 << false << false << false;
 
-    QTest::newRow(",") << "digits.json" << 3 << 0 << "," << QStringList() << 1.0 << false << false << false;
-    QTest::newRow("0") << "digits.json" << 3 << 1 << "0" << QStringList() << 1.0 << false << false << false;
-    QTest::newRow(".") << "digits.json" << 3 << 2 << "." << QStringList() << 1.0 << false << false << false;
+    QTest::newRow(",") << "digits.json" << 3 << 0 << Qt::Key_unknown << "," << QStringList() << 1.0 << false << false << false;
+    QTest::newRow("0") << "digits.json" << 3 << 1 << Qt::Key_unknown << "0" << QStringList() << 1.0 << false << false << false;
+    QTest::newRow(".") << "digits.json" << 3 << 2 << Qt::Key_unknown << "." << QStringList() << 1.0 << false << false << false;
 }
 
 void tst_vkbinputlayout::keys()
@@ -157,7 +158,8 @@ void tst_vkbinputlayout::keys()
     QFETCH(QString, fileName);
     QFETCH(int, row);
     QFETCH(int, column);
-    QFETCH(QString, expectedKey);
+    QFETCH(Qt::Key, expectedKey);
+    QFETCH(QString, expectedText);
     QFETCH(QStringList, expectedAlt);
     QFETCH(qreal, expectedSpan);
     QFETCH(bool, expectedAutoRepeat);
@@ -169,6 +171,7 @@ void tst_vkbinputlayout::keys()
 
     VkbInputKey key = layout.keyAt(row, column);
     QCOMPARE(key.key, expectedKey);
+    QCOMPARE(key.text, expectedText);
     QCOMPARE(key.alt, expectedAlt);
     QCOMPARE(key.span, expectedSpan);
     QCOMPARE(key.autoRepeat, expectedAutoRepeat);
