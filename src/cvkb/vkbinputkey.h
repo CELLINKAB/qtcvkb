@@ -26,11 +26,20 @@
 #define VKBINPUTKEY_H
 
 #include <QtCVkb/vkbglobal.h>
+#include <QtCore/qobjectdefs.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qstringlist.h>
 
 class Q_CVKB_EXPORT VkbInputKey
 {
+    Q_GADGET
+    Q_PROPERTY(QString key MEMBER key)
+    Q_PROPERTY(QStringList alt MEMBER alt)
+    Q_PROPERTY(qreal span MEMBER span)
+    Q_PROPERTY(bool autoRepeat MEMBER autoRepeat)
+    Q_PROPERTY(bool checkable MEMBER checkable)
+    Q_PROPERTY(bool checked MEMBER checked)
+
 public:
     QString key;
     QStringList alt;
