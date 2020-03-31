@@ -27,7 +27,7 @@
 
 VkbInputPanel::VkbInputPanel(QObject *parent) : QQuickPopup(parent)
 {
-    setClosePolicy(NoAutoClose);
+    setClosePolicy(CloseOnEscape);
 
     connect(this, &QQuickPopup::visibleChanged, this, &VkbInputPanel::visibleChanged);
     connect(this, &QQuickPopup::openedChanged, this, &VkbInputPanel::animatingChanged);
