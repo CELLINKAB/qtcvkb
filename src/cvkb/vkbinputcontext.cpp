@@ -119,7 +119,12 @@ Qt::LayoutDirection VkbInputContext::inputDirection() const
 
 void VkbInputContext::setFocusObject(QObject *focusObject)
 {
-    Q_D(VkbInputContext);
-    if (!focusObject)
-        d->hideInputPanel();
+    if (focusObject) {
+        QInputMethodQueryEvent event(Qt::ImEnabled);
+        QCoreApplication::sendEvent(focusObject, &event);
+        if (!event.value(Qt::ImEnabled).toBool())
+            hideInputPanel();
+    } else {
+        hideInputPanel();
+    }
 }
