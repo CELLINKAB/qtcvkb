@@ -27,41 +27,44 @@ import QtQuick.Controls 2.14
 import QtCellink.Vkb 0.1
 import QtCellink.Vkb.Templates 0.1 as T
 
-T.InputPanel {
+T.InputPopup {
     id: control
 
-    y: parent.height
-    width: parent.width
-    height: parent.height / 2
-    spacing: 10
+    implicitWidth: contentWidth + leftPadding + rightPadding
+    implicitHeight: contentHeight + topPadding + bottomPadding
+
+    x: (parent.width - width) / 2
+    y: -height
+
+    margins: 0
     padding: 10
 
+    scale: 0
+    transformOrigin: Popup.Bottom
+
     enter: Transition {
-        NumberAnimation { property: "y"; from: parent.height; to: parent.height - control.height; easing.type: Easing.InOutCubic }
+        NumberAnimation { property: "scale"; to: 1 }
     }
 
     exit: Transition {
-        NumberAnimation { property: "y"; from: parent.height - control.height; to: parent.height; easing.type: Easing.InOutCubic }
+        NumberAnimation { property: "scale"; to: 0 }
     }
 
-    contentItem: T.InputLayoutItem {
+    contentItem: Row {
         spacing: control.spacing
-        delegates: [
-            T.InputLayoutDelegate { button: InputKey { } popup: InputPopup { } },
-            T.InputLayoutDelegate { key: "meta"; button: InputKey { text: "123#" } popup: InputPopup { } },
-            T.InputLayoutDelegate { key: "enter"; button: InputKey { text: "\u23ce" } popup: InputPopup { } }, // return symbol
-            T.InputLayoutDelegate { key: "shift"; button: InputKey { text: "\u21e7" } popup: InputPopup { } }, // upwards white arrow
-            T.InputLayoutDelegate { key: "escape"; button: InputKey { text: "\u21e9" } popup: InputPopup { } }, // black down-pointing triangle
-            T.InputLayoutDelegate { key: "backspace"; button: InputKey { text: "\u21e6" } popup: InputPopup { } } // erase to the left
-        ]
+        Repeater {
+            model: control.InputLayout.alt
+            InputKey {
+                text: modelData
+                width: control.parent.width
+                height: control.parent.height
+            }
+        }
     }
 
     background: Rectangle {
+        radius: 2
         color: control.palette.window
-        Rectangle {
-            width: parent.width
-            height: 1
-            color: control.palette.mid
-        }
+        border.color: control.palette.mid
     }
 }
