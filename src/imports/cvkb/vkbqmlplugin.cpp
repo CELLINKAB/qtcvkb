@@ -31,6 +31,7 @@
 #include <QtCVkb/vkbstylehints.h>
 
 #include "vkbinputpanel.h"
+#include "vkbfactory.h"
 
 static const int MajorVersion = 0;
 static const int MinorVersion = 1;
@@ -42,6 +43,7 @@ class VkbQmlPlugin : public QQmlExtensionPlugin
 
 public:
     void registerTypes(const char *uri) override;
+    void initializeEngine(QQmlEngine *engine, const char *uri) override;
 
 private:
     void registerTemplates(const char *uri, int major, int minor);
@@ -55,6 +57,45 @@ void VkbQmlPlugin::registerTypes(const char *uri)
     registerTemplates(tmpl, MajorVersion, MinorVersion);
     registerRevisions(tmpl, MajorVersion, MinorVersion);
     registerStyles(uri, MajorVersion, MinorVersion);
+}
+
+static inline QByteArray formatImport(const char *uri, int majorVersion, int minorVersion)
+{
+    return "import " + QByteArray(uri) + " " + QByteArray::number(majorVersion) + "." + QByteArray::number(minorVersion);
+}
+
+static inline QByteArray formatType(const char *typeName)
+{
+    return QByteArray(typeName) + " {}";
+}
+
+void VkbQmlPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
+{
+    const QByteArray qml = formatImport(uri, MajorVersion, MinorVersion) + ";" + formatType("InputPanel");
+
+    VkbFactory::setInputPanel([=](QObject *parent) {
+        VkbInputPanel *inputPanel = nullptr;
+
+        QQmlComponent component(engine);
+        component.setData(qml, QUrl());
+
+        QQmlContext *creationContext = qmlContext(parent);
+        QQmlContext *context = new QQmlContext(creationContext, parent);
+        context->setContextObject(parent);
+
+        QObject *object = component.beginCreate(context);
+        if (Q_UNLIKELY(!object))
+            qWarning() << component.errorString();
+
+        inputPanel = qobject_cast<VkbInputPanel *>(object);
+        if (Q_UNLIKELY(!inputPanel))
+            qWarning() << "QML InputPanel is not an instance of VkbInputPanel";
+        else
+            inputPanel->setParent(parent);
+
+        component.completeCreate();
+        return inputPanel;
+    });
 }
 
 void VkbQmlPlugin::registerTemplates(const char *uri, int majorVersion, int minorVersion)
