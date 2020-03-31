@@ -32,8 +32,13 @@ ApplicationWindow {
     height: 420
     visible: true
 
-    TextField {
-        anchors.centerIn: parent
-        anchors.verticalCenterOffset: -height
+    Pane {
+        anchors.fill: parent
+        focusPolicy: Qt.ClickFocus
+
+        TextField {
+            anchors.centerIn: parent
+            anchors.verticalCenterOffset: -height
+        }
     }
 }
