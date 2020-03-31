@@ -25,15 +25,16 @@
 #include "vkbinputlayoutitem.h"
 #include "vkbinputlayoutattached.h"
 #include "vkbinputlayoutdelegate.h"
+#include "vkbinputpopup.h"
 
 #include <QtQml/qqmlcomponent.h>
 #include <QtQml/qqmlcontext.h>
 #include <QtQml/qqmlengine.h>
 #include <QtQuickTemplates2/private/qquickabstractbutton_p.h>
 
-static VkbInputLayoutAttached *attachedLayoutObject(QQuickAbstractButton *button)
+static VkbInputLayoutAttached *attachedLayoutObject(QObject *object)
 {
-    return qobject_cast<VkbInputLayoutAttached *>(qmlAttachedPropertiesObject<VkbInputLayoutAttached>(button));
+    return qobject_cast<VkbInputLayoutAttached *>(qmlAttachedPropertiesObject<VkbInputLayoutAttached>(object));
 }
 
 VkbInputLayoutItem::VkbInputLayoutItem(QQuickItem *parent) : QQuickItem(parent)
@@ -131,7 +132,7 @@ void VkbInputLayoutItem::updatePolish()
 
 void VkbInputLayoutItem::handleKeyClick()
 {
-    VkbInputLayoutAttached *attached = attachedLayoutObject(qobject_cast<QQuickAbstractButton *>(sender()));
+    VkbInputLayoutAttached *attached = attachedLayoutObject(sender());
     if (!attached)
         return;
 
@@ -140,9 +141,19 @@ void VkbInputLayoutItem::handleKeyClick()
 
 void VkbInputLayoutItem::handleKeyPressAndHold()
 {
-    VkbInputLayoutAttached *attached = attachedLayoutObject(qobject_cast<QQuickAbstractButton *>(sender()));
+    QQuickAbstractButton *button = qobject_cast<QQuickAbstractButton *>(sender());
+    VkbInputLayoutAttached *attached = attachedLayoutObject(button);
     if (!attached)
         return;
+
+    VkbInputPopup *popup = createPopup(attached->inputKey(), button);
+    if (!popup)
+        return;
+
+    popup->open();
+    connect(popup, &QQuickPopup::closed, popup, &QObject::deleteLater);
+    connect(popup, &VkbInputPopup::keySelected, this, &VkbInputLayoutItem::keyClicked);
+    connect(button, &QQuickAbstractButton::released, popup, &QQuickPopup::close);
 
     emit keyPressAndHold(attached->key());
 }
@@ -157,13 +168,9 @@ VkbInputLayoutDelegate *VkbInputLayoutItem::findDelegate(const QString &key) con
     return nullptr;
 }
 
-QQuickAbstractButton *VkbInputLayoutItem::createButton(const VkbInputKey &key, QQuickItem *parent) const
+template <typename T>
+static T *beginCreate(const VkbInputKey &key, QQmlComponent *component, QObject *parent)
 {
-    VkbInputLayoutDelegate *delegate = findDelegate(key.key);
-    if (!delegate)
-        return nullptr;
-
-    QQmlComponent *component = delegate->button();
     if (!component)
         return nullptr;
 
@@ -172,11 +179,31 @@ QQuickAbstractButton *VkbInputLayoutItem::createButton(const VkbInputKey &key, Q
         creationContext = qmlContext(parent);
     QQmlContext *context = new QQmlContext(creationContext, parent);
 
-    QObject *object = component->beginCreate(context);
-    QQuickAbstractButton *button = qobject_cast<QQuickAbstractButton *>(object);
+    QObject *instance = component->beginCreate(context);
+    T *object = qobject_cast<T *>(instance);
+    if (!object) {
+        delete instance;
+        return nullptr;
+    }
+
+    VkbInputLayoutAttached *attached = attachedLayoutObject(instance);
+    if (attached)
+        attached->setInputKey(key);
+
+    return object;
+}
+
+QQuickAbstractButton *VkbInputLayoutItem::createButton(const VkbInputKey &key, QQuickItem *parent) const
+{
+    VkbInputLayoutDelegate *delegate = findDelegate(key.key);
+    if (!delegate)
+        return nullptr;
+
+    QQmlComponent *component = delegate->button();
+    QQuickAbstractButton *button = beginCreate<QQuickAbstractButton>(key, component, parent);
     if (!button) {
-        qWarning() << "VkbInputLayoutItem::createButton: the button delegate for" << key.key << "is not a Button";
-        delete object;
+        qWarning() << "VkbInputLayoutItem::createButton: button delegate for" << key.key << "is not a Button";
+        return nullptr;
     }
 
     button->setParentItem(parent);
@@ -184,11 +211,24 @@ QQuickAbstractButton *VkbInputLayoutItem::createButton(const VkbInputKey &key, Q
     button->setCheckable(key.checkable);
     if (key.checked)
         button->setChecked(true);
-
-    VkbInputLayoutAttached *attached = attachedLayoutObject(button);
-    if (attached)
-        attached->setKey(key);
-
     component->completeCreate();
     return button;
+}
+
+VkbInputPopup *VkbInputLayoutItem::createPopup(const VkbInputKey &key, QQuickAbstractButton *button) const
+{
+    VkbInputLayoutDelegate *delegate = findDelegate(key.key);
+    if (!delegate)
+        return nullptr;
+
+    QQmlComponent *component = delegate->popup();
+    VkbInputPopup *popup = beginCreate<VkbInputPopup>(key, component, button);
+    if (!popup) {
+        qWarning() << "VkbInputLayout::createPopup: popup delegate for" << key.key << "is not an InputPopup";
+        return nullptr;
+    }
+
+    popup->setParentItem(button);
+    component->completeCreate();
+    return popup;
 }

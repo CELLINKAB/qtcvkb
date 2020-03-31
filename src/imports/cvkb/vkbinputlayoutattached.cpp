@@ -53,7 +53,12 @@ bool VkbInputLayoutAttached::isChecked() const
     return m_key.checked;
 }
 
-void VkbInputLayoutAttached::setKey(const VkbInputKey &key)
+VkbInputKey VkbInputLayoutAttached::inputKey() const
+{
+    return m_key;
+}
+
+void VkbInputLayoutAttached::setInputKey(const VkbInputKey &key)
 {
     m_key = key;
 }

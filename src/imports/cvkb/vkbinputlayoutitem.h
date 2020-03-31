@@ -30,6 +30,7 @@
 #include <QtQuick/qquickitem.h>
 #include <QtCVkb/vkbinputlayout.h>
 
+class VkbInputPopup;
 class VkbInputLayoutAttached;
 class VkbInputLayoutDelegate;
 
@@ -72,6 +73,7 @@ protected:
 private:
     VkbInputLayoutDelegate *findDelegate(const QString &key) const;
     QQuickAbstractButton *createButton(const VkbInputKey &key, QQuickItem *parent) const;
+    VkbInputPopup *createPopup(const VkbInputKey &key, QQuickAbstractButton *button) const;
 
     static void delegates_append(QQmlListProperty<VkbInputLayoutDelegate> *property, VkbInputLayoutDelegate *delegate);
     static int delegates_count(QQmlListProperty<VkbInputLayoutDelegate> *property);

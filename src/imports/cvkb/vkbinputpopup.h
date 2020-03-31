@@ -22,40 +22,35 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTLAYOUTATTACHED_H
-#define VKBINPUTLAYOUTATTACHED_H
+#ifndef VKBINPUTPOPUP_H
+#define VKBINPUTPOPUP_H
 
-#include <QtCore/qobject.h>
-#include <QtQml/qqml.h>
-#include <QtCVkb/vkbinputlayout.h>
+#include <QtQuickTemplates2/private/qquickpopup_p.h>
 
-class VkbInputLayoutAttached : public QObject
+QT_FORWARD_DECLARE_CLASS(QQuickAbstractButton)
+
+class VkbInputPopup : public QQuickPopup
 {
     Q_OBJECT
-    Q_PROPERTY(QString key READ key CONSTANT FINAL)
-    Q_PROPERTY(QStringList alt READ alt CONSTANT FINAL)
-    Q_PROPERTY(bool autoRepeat READ autoRepeat CONSTANT FINAL)
-    Q_PROPERTY(bool checkable READ isCheckable CONSTANT FINAL)
-    Q_PROPERTY(bool checked READ isChecked CONSTANT FINAL)
 
 public:
-    explicit VkbInputLayoutAttached(QObject *parent = nullptr);
+    explicit VkbInputPopup(QObject *parent = nullptr);
 
-    QString key() const;
-    QStringList alt() const;
-    bool autoRepeat() const;
-    bool isCheckable() const;
-    bool isChecked() const;
+    void setVisible(bool visible) override;
 
-    VkbInputKey inputKey() const;
-    void setInputKey(const VkbInputKey &key);
+signals:
+    void keySelected(const QString &key);
 
-    static VkbInputLayoutAttached *qmlAttachedProperties(QObject *object);
+protected:
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseUngrabEvent() override;
+
+    void updateCurrentButton(QQuickAbstractButton *button);
 
 private:
-    VkbInputKey m_key;
+    QQuickAbstractButton *m_currentButton = nullptr;
 };
 
-QML_DECLARE_TYPEINFO(VkbInputLayoutAttached, QML_HAS_ATTACHED_PROPERTIES)
-
-#endif // VKBINPUTLAYOUTATTACHED_H
+#endif // VKBINPUTPOPUP_H
