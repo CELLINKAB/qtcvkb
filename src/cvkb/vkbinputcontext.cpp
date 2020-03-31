@@ -27,6 +27,8 @@
 
 #include <QtCore/qrect.h>
 #include <QtCore/qlocale.h>
+#include <QtGui/private/qguiapplication_p.h>
+#include <QtGui/qpa/qplatformintegration.h>
 
 VkbInputContext::VkbInputContext(const QStringList &params)
     : d_ptr(new VkbInputContextPrivate)
@@ -36,6 +38,11 @@ VkbInputContext::VkbInputContext(const QStringList &params)
 
 VkbInputContext::~VkbInputContext()
 {
+}
+
+VkbInputContext *VkbInputContext::instance()
+{
+    return qobject_cast<VkbInputContext *>(QGuiApplicationPrivate::platformIntegration()->inputContext());
 }
 
 bool VkbInputContext::isValid() const

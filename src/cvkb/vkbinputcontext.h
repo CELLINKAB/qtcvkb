@@ -39,6 +39,8 @@ public:
     explicit VkbInputContext(const QStringList &params = QStringList());
     ~VkbInputContext();
 
+    static VkbInputContext *instance();
+
     bool isValid() const override;
     bool hasCapability(Capability capability) const override;
 
