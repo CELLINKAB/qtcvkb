@@ -136,7 +136,7 @@ void VkbInputLayoutItem::handleKeyClick()
     if (!attached)
         return;
 
-    emit keyClicked(attached->key());
+    emit keyClicked(attached->inputKey());
 }
 
 void VkbInputLayoutItem::handleKeyPressAndHold()
@@ -155,7 +155,7 @@ void VkbInputLayoutItem::handleKeyPressAndHold()
     connect(popup, &VkbInputPopup::keySelected, this, &VkbInputLayoutItem::keyClicked);
     connect(button, &QQuickAbstractButton::released, popup, &QQuickPopup::close);
 
-    emit keyPressAndHold(attached->key());
+    emit keyPressAndHold(attached->inputKey());
 }
 
 VkbInputLayoutDelegate *VkbInputLayoutItem::findDelegate(const QString &key) const

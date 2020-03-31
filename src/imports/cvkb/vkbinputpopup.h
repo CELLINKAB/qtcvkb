@@ -27,6 +27,8 @@
 
 #include <QtQuickTemplates2/private/qquickpopup_p.h>
 
+class VkbInputKey;
+
 QT_FORWARD_DECLARE_CLASS(QQuickAbstractButton)
 
 class VkbInputPopup : public QQuickPopup
@@ -39,7 +41,7 @@ public:
     void setVisible(bool visible) override;
 
 signals:
-    void keySelected(const QString &key);
+    void keySelected(const VkbInputKey &key);
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;

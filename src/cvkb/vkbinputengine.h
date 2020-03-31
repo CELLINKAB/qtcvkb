@@ -28,6 +28,8 @@
 #include <QtCVkb/vkbglobal.h>
 #include <QtCore/qobject.h>
 
+class VkbInputKey;
+
 class Q_CVKB_EXPORT VkbInputEngine : public QObject
 {
     Q_OBJECT
@@ -51,7 +53,7 @@ public:
     void setKeyboardModifiers(Qt::KeyboardModifiers keyboardModifiers);
 
 public slots:
-    void handleKeyClick(const QString &key);
+    void handleKeyClick(const VkbInputKey &key);
 
 signals:
     void inputModeChanged();

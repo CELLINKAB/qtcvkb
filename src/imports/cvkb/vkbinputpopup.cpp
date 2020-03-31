@@ -23,6 +23,7 @@
  */
 
 #include "vkbinputpopup.h"
+#include "vkbinputlayoutattached.h"
 
 #include <QtQuickTemplates2/private/qquickabstractbutton_p.h>
 
@@ -72,8 +73,11 @@ void VkbInputPopup::mouseMoveEvent(QMouseEvent *event)
 void VkbInputPopup::mouseReleaseEvent(QMouseEvent *event)
 {
     QQuickPopup::mouseReleaseEvent(event);
-    if (m_currentButton)
-        emit keySelected(m_currentButton->text());
+    if (m_currentButton) {
+        VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(m_currentButton);
+        if (attached)
+            emit keySelected(attached->inputKey());
+    }
     close();
 }
 

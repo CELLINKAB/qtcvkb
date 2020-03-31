@@ -28,6 +28,7 @@
 #include <QtCVkb/vkbglobal.h>
 #include <QtCore/qobject.h>
 
+class VkbInputKey;
 class VkbInputLayout;
 
 QT_FORWARD_DECLARE_CLASS(QRectF)
@@ -56,7 +57,7 @@ signals:
     virtual void localeChanged() = 0;
     virtual void inputDirectionChanged() = 0;
     virtual void layoutChanged() = 0;
-    virtual void keyClicked(const QString &key) = 0;
+    virtual void keyClicked(const VkbInputKey &key) = 0;
 };
 
 #define VkbInputPanelInterface_iid "VkbInputPanelInterface/0.1"

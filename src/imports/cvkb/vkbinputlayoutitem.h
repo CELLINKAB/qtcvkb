@@ -59,8 +59,8 @@ public:
 signals:
     void spacingChanged();
     void layoutChanged();
-    void keyClicked(const QString &key);
-    void keyPressAndHold(const QString &key);
+    void keyClicked(const VkbInputKey &key);
+    void keyPressAndHold(const VkbInputKey &key);
 
 protected slots:
     void handleKeyClick();

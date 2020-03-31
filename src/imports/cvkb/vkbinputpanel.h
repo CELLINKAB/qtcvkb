@@ -57,7 +57,7 @@ signals:
     void localeChanged() override;
     void inputDirectionChanged() override;
     void layoutChanged() override;
-    void keyClicked(const QString &key) override;
+    void keyClicked(const VkbInputKey &key) override;
 
 protected:
     void contentItemChange(QQuickItem *newItem, QQuickItem *oldItem) override;

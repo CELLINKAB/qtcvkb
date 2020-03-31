@@ -23,6 +23,7 @@
  */
 
 #include "vkbinputengine.h"
+#include "vkbinputkey.h"
 
 #include <QtGui/qpa/qwindowsysteminterface.h>
 
@@ -74,7 +75,7 @@ void VkbInputEngine::setKeyboardModifiers(Qt::KeyboardModifiers keyboardModifier
     emit keyboardModifiersChanged();
 }
 
-void VkbInputEngine::handleKeyClick(const QString &key)
+void VkbInputEngine::handleKeyClick(const VkbInputKey &key)
 {
     // ### TODO: press & release, key codes
     typedef std::function<void(VkbInputEngine *engine, const QString &key)> KeyHandler;
@@ -89,9 +90,9 @@ void VkbInputEngine::handleKeyClick(const QString &key)
         { QStringLiteral("escape"), [](VkbInputEngine *engine, const QString &) { engine->sendKey(Qt::Key_Escape); } },
     };
 
-    KeyHandler handler = handlers.value(key, [=](VkbInputEngine *engine, const QString &key) { engine->sendKey(key); });
+    KeyHandler handler = handlers.value(key.key, [=](VkbInputEngine *engine, const QString &key) { engine->sendKey(key); });
     if (handler)
-        handler(this, key);
+        handler(this, key.key);
 }
 
 void VkbInputEngine::resolveInputMode()
