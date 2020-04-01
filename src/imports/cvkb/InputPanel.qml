@@ -37,22 +37,22 @@ T.InputPanel {
     padding: 10
 
     enter: Transition {
-        NumberAnimation { property: "y"; from: parent.height; to: parent.height - control.height; easing.type: Easing.InOutCubic }
+        NumberAnimation { property: "y"; from: parent.height; to: parent.height - control.height }
     }
 
     exit: Transition {
-        NumberAnimation { property: "y"; from: parent.height - control.height; to: parent.height; easing.type: Easing.InOutCubic }
+        NumberAnimation { property: "y"; from: parent.height - control.height; to: parent.height }
     }
 
     contentItem: T.InputLayoutItem {
         spacing: control.spacing
         delegates: [
             T.InputLayoutDelegate { button: InputKey { } popup: InputPopup { } },
-            T.InputLayoutDelegate { key: Qt.Key_Meta; button: InputKey { text: "123#" } popup: InputPopup { } },
-            T.InputLayoutDelegate { key: Qt.Key_Enter; button: InputKey { text: "\u23ce" } popup: InputPopup { } },
-            T.InputLayoutDelegate { key: Qt.Key_Shift; button: InputKey { text: "\u21e7" } popup: InputPopup { } },
-            T.InputLayoutDelegate { key: Qt.Key_Escape; button: InputKey { text: "\u21e9" } popup: InputPopup { } },
-            T.InputLayoutDelegate { key: Qt.Key_Backspace; button: InputKey { text: "\u21e6" } popup: InputPopup { } }
+            T.InputLayoutDelegate { key: Qt.Key_Meta; button: InputKey { text: "123#"; ToolTip.visible: false } },
+            T.InputLayoutDelegate { key: Qt.Key_Enter; button: InputKey { text: "\u23ce"; ToolTip.visible: false } },
+            T.InputLayoutDelegate { key: Qt.Key_Shift; button: InputKey { text: "\u21e7"; ToolTip.visible: false } },
+            T.InputLayoutDelegate { key: Qt.Key_Escape; button: InputKey { text: "\u21e9"; ToolTip.visible: false } },
+            T.InputLayoutDelegate { key: Qt.Key_Backspace; button: InputKey { text: "\u21e6"; ToolTip.visible: false } }
         ]
     }
 
