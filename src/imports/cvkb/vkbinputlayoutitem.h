@@ -60,9 +60,10 @@ protected:
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
     void updatePolish() override;
 
-    void relayout();
-
 private:
+    void relayout();
+    void updateImplicitSize();
+
     qreal m_spacing = 0;
     VkbInputLayout m_layout;
     QHash<VkbInputKey, QQuickAbstractButton *> m_buttons;

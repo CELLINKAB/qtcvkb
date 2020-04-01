@@ -43,6 +43,7 @@ void VkbInputLayoutItem::setSpacing(qreal spacing)
 
     m_spacing = spacing;
     polish();
+    updateImplicitSize();
     emit spacingChanged();
 }
 
@@ -58,6 +59,7 @@ void VkbInputLayoutItem::setLayout(const VkbInputLayout &layout)
 
     m_layout = layout;
     polish();
+    updateImplicitSize();
     emit layoutChanged();
 }
 
@@ -73,6 +75,7 @@ void VkbInputLayoutItem::setButtons(const QHash<VkbInputKey, QQuickAbstractButto
 
     m_buttons = buttons;
     polish();
+    updateImplicitSize();
     emit buttonsChanged();
 }
 
@@ -107,4 +110,31 @@ void VkbInputLayoutItem::relayout()
             button->setSize(geometry.size());
         }
     }
+}
+
+void VkbInputLayoutItem::updateImplicitSize()
+{
+    qreal width = 0;
+    qreal height = 0;
+
+    const int rows = m_layout.rowCount();
+    for (int r = 0; r < rows; ++r) {
+        qreal rowWidth = 0;
+        qreal rowHeight = 0;
+        const QVector<VkbInputKey> row = m_layout.rowAt(r);
+        for (int c = 0; c < row.count(); ++c) {
+            const VkbInputKey key = row.at(c);
+            QQuickAbstractButton *button = m_buttons.value(key);
+            if (!button)
+                continue;
+
+            rowWidth += button->implicitWidth() + m_spacing;
+            rowHeight = std::max(rowHeight, button->implicitHeight());
+        }
+
+        width = std::max(width, rowWidth - m_spacing);
+        height += rowHeight + m_spacing;
+    }
+
+    setImplicitSize(width, height - m_spacing);
 }
