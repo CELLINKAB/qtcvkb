@@ -61,6 +61,27 @@ void VkbInputLayoutItem::setLayout(const VkbInputLayout &layout)
     if (m_layout == layout)
         return;
 
+    QHash<VkbInputKey, QQuickAbstractButton *> oldButtons = m_buttons;
+    m_buttons.clear();
+
+    for (int r = 0; r < layout.rowCount(); ++r) {
+        const QVector<VkbInputKey> row = layout.rowAt(r);
+        for (int c = 0; c < row.count(); ++c) {
+            const VkbInputKey &key = row.at(c);
+            QQuickAbstractButton *button = oldButtons.take(key);
+            if (!button) {
+                button = createButton(key, this);
+                connect(button, &QQuickAbstractButton::clicked, this, &VkbInputLayoutItem::handleKeyClick);
+                if (!key.alt.isEmpty())
+                    connect(button, &QQuickAbstractButton::pressAndHold, this, &VkbInputLayoutItem::handleKeyPressAndHold);
+            }
+            m_buttons.insert(key, button);
+        }
+    }
+
+    for (QQuickAbstractButton *button : qAsConst(oldButtons))
+        button->deleteLater();
+
     m_layout = layout;
     polish();
     emit layoutChanged();
@@ -82,9 +103,6 @@ void VkbInputLayoutItem::updatePolish()
 {
     QQuickItem::updatePolish();
 
-    QHash<VkbInputKey, QQuickAbstractButton *> oldButtons = m_buttons;
-    m_buttons.clear();
-
     const qreal cw = width();
     const qreal ch = height();
     const qreal sp = spacing();
@@ -101,14 +119,7 @@ void VkbInputLayoutItem::updatePolish()
         const int cc = row.count();
         for (int c = 0; c < cc; ++c) {
             const VkbInputKey &key = row.at(c);
-            QQuickAbstractButton *button = oldButtons.take(key);
-            if (!button) {
-                button = createButton(key, this);
-                connect(button, &QQuickAbstractButton::clicked, this, &VkbInputLayoutItem::handleKeyClick);
-                if (!key.alt.isEmpty())
-                    connect(button, &QQuickAbstractButton::pressAndHold, this, &VkbInputLayoutItem::handleKeyPressAndHold);
-            }
-            m_buttons[key] = button;
+            QQuickAbstractButton *button = m_buttons.value(key);
             if (!button)
                 continue;
             const qreal w = kw * key.span + sp * (key.span - 1.0);
@@ -125,9 +136,6 @@ void VkbInputLayoutItem::updatePolish()
 
         y += kh + sp;
     }
-
-    for (QQuickAbstractButton *button : qAsConst(oldButtons))
-        button->deleteLater();
 }
 
 void VkbInputLayoutItem::handleKeyClick()
