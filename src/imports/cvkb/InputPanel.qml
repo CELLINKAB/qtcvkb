@@ -46,11 +46,11 @@ T.InputPanel {
     ]
 
     enter: Transition {
-        NumberAnimation { property: "y"; from: parent.height; to: parent.height - control.height }
+        NumberAnimation { property: "y"; from: parent.height; to: parent.height - control.height; duration: 175 }
     }
 
     exit: Transition {
-        NumberAnimation { property: "y"; from: parent.height - control.height; to: parent.height }
+        NumberAnimation { property: "y"; from: parent.height - control.height; to: parent.height; duration: 175 }
     }
 
     background: Rectangle {

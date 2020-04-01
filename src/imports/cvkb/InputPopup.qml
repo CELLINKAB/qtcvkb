@@ -39,6 +39,17 @@ T.InputPopup {
     margins: 0
     padding: 10
 
+    scale: 0
+    transformOrigin: Popup.Bottom
+
+    enter: Transition {
+        NumberAnimation { property: "scale"; to: 1; duration: 125 }
+    }
+
+    exit: Transition {
+        NumberAnimation { property: "scale"; to: 0; duration: 125 }
+    }
+
     contentItem: Row {
         spacing: control.spacing
         Repeater {
