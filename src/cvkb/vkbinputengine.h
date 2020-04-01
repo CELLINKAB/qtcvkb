@@ -27,8 +27,10 @@
 
 #include <QtCVkb/vkbglobal.h>
 #include <QtCore/qobject.h>
+#include <QtCore/qscopedpointer.h>
 
 class VkbInputKey;
+class VkbInputEnginePrivate;
 
 class Q_CVKB_EXPORT VkbInputEngine : public QObject
 {
@@ -63,18 +65,9 @@ signals:
     void inputMethodHintsChanged();
     void keyboardModifiersChanged();
 
-private slots:
-    void resolveInputMode();
-    void sendKeyPress(const VkbInputKey &key);
-    void sendKeyRelease(const VkbInputKey &key);
-    void sendKeyText(const QString &text);
-    void sendKeyEvent(QEvent::Type type, int key);
-    void toggleKeyboardModifier(Qt::KeyboardModifier modifier);
-
 private:
-    InputMode m_inputMode = Letters;
-    Qt::InputMethodHints m_inputMethodHints = Qt::ImhNone;
-    Qt::KeyboardModifiers m_keyboardModifiers = Qt::NoModifier;
+    Q_DISABLE_COPY(VkbInputEngine)
+    Q_DECLARE_PRIVATE(VkbInputEngine)
 };
 
 #endif // VKBINPUTENGINE_H

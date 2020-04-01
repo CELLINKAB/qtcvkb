@@ -25,74 +25,101 @@
 #include "vkbinputengine.h"
 #include "vkbinputkey.h"
 
+#include <QtCore/private/qobject_p.h>
 #include <QtGui/qpa/qwindowsysteminterface.h>
 
-VkbInputEngine::VkbInputEngine(QObject *parent) : QObject(parent)
+class VkbInputEnginePrivate : public QObjectPrivate
+{
+    Q_DECLARE_PUBLIC(VkbInputEngine)
+
+public:
+    void resolveInputMode();
+    void sendKeyPress(const VkbInputKey &key);
+    void sendKeyRelease(const VkbInputKey &key);
+    void sendKeyText(const QString &text);
+    void sendKeyEvent(QEvent::Type type, int key);
+    void toggleKeyboardModifier(Qt::KeyboardModifier modifier);
+
+    VkbInputEngine::InputMode inputMode = VkbInputEngine::Letters;
+    Qt::InputMethodHints inputMethodHints = Qt::ImhNone;
+    Qt::KeyboardModifiers keyboardModifiers = Qt::NoModifier;
+};
+
+VkbInputEngine::VkbInputEngine(QObject *parent)
+    : QObject(*(new VkbInputEnginePrivate), parent)
 {
 }
 
 VkbInputEngine::InputMode VkbInputEngine::inputMode() const
 {
-    return m_inputMode;
+    Q_D(const VkbInputEngine);
+    return d->inputMode;
 }
 
 void VkbInputEngine::setInputMode(InputMode inputMode)
 {
-    if (m_inputMode == inputMode)
+    Q_D(VkbInputEngine);
+    if (d->inputMode == inputMode)
         return;
 
-    m_inputMode = inputMode;
+    d->inputMode = inputMode;
     emit inputModeChanged();
 }
 
 Qt::InputMethodHints VkbInputEngine::inputMethodHints() const
 {
-    return m_inputMethodHints;
+    Q_D(const VkbInputEngine);
+    return d->inputMethodHints;
 }
 
 void VkbInputEngine::setInputMethodHints(Qt::InputMethodHints inputMethodHints)
 {
-    if (m_inputMethodHints == inputMethodHints)
+    Q_D(VkbInputEngine);
+    if (d->inputMethodHints == inputMethodHints)
         return;
 
-    m_inputMethodHints = inputMethodHints;
-    resolveInputMode();
+    d->inputMethodHints = inputMethodHints;
+    d->resolveInputMode();
     emit inputMethodHintsChanged();
 }
 
 Qt::KeyboardModifiers VkbInputEngine::keyboardModifiers() const
 {
-    return m_keyboardModifiers;
+    Q_D(const VkbInputEngine);
+    return d->keyboardModifiers;
 }
 
 void VkbInputEngine::setKeyboardModifiers(Qt::KeyboardModifiers keyboardModifiers)
 {
-    if (m_keyboardModifiers == keyboardModifiers)
+    Q_D(VkbInputEngine);
+    if (d->keyboardModifiers == keyboardModifiers)
         return;
 
-    m_keyboardModifiers = keyboardModifiers;
-    resolveInputMode();
+    d->keyboardModifiers = keyboardModifiers;
+    d->resolveInputMode();
     emit keyboardModifiersChanged();
 }
 
 void VkbInputEngine::handleKeyPress(const VkbInputKey &key)
 {
-    typedef std::function<void(VkbInputEngine *engine, const VkbInputKey &key)> KeyHandler;
+    Q_D(VkbInputEngine);
+    typedef std::function<void(VkbInputEnginePrivate *engine, const VkbInputKey &key)> KeyHandler;
     static const QHash<Qt::Key, KeyHandler> handlers = {
-        { Qt::Key_Meta, [](VkbInputEngine *engine, const VkbInputKey &) { engine->toggleKeyboardModifier(Qt::MetaModifier); } },
-        { Qt::Key_Shift, [](VkbInputEngine *engine, const VkbInputKey &) { engine->toggleKeyboardModifier(Qt::ShiftModifier); } },
-        { Qt::Key_Control, [](VkbInputEngine *engine, const VkbInputKey &) { engine->toggleKeyboardModifier(Qt::ControlModifier); } },
-        { Qt::Key_Alt, [](VkbInputEngine *engine, const VkbInputKey &) { engine->toggleKeyboardModifier(Qt::AltModifier); } }
+        { Qt::Key_Meta, [](VkbInputEnginePrivate *engine, const VkbInputKey &) { engine->toggleKeyboardModifier(Qt::MetaModifier); } },
+        { Qt::Key_Shift, [](VkbInputEnginePrivate *engine, const VkbInputKey &) { engine->toggleKeyboardModifier(Qt::ShiftModifier); } },
+        { Qt::Key_Control, [](VkbInputEnginePrivate *engine, const VkbInputKey &) { engine->toggleKeyboardModifier(Qt::ControlModifier); } },
+        { Qt::Key_Alt, [](VkbInputEnginePrivate *engine, const VkbInputKey &) { engine->toggleKeyboardModifier(Qt::AltModifier); } }
     };
 
-    KeyHandler handler = handlers.value(key.key, [=](VkbInputEngine *engine, const VkbInputKey &key) { engine->sendKeyPress(key); });
+    KeyHandler handler = handlers.value(key.key, [=](VkbInputEnginePrivate *engine, const VkbInputKey &key) { engine->sendKeyPress(key); });
     if (handler)
-        handler(this, key);
+        handler(d, key);
 }
 
 void VkbInputEngine::handleKeyRelease(const VkbInputKey &key)
 {
-    sendKeyRelease(key);
+    Q_D(VkbInputEngine);
+    d->sendKeyRelease(key);
 }
 
 void VkbInputEngine::handleKeyCancel(const VkbInputKey &key)
@@ -105,25 +132,26 @@ void VkbInputEngine::handleKeyPressAndHold(const VkbInputKey &key)
     Q_UNUSED(key);
 }
 
-void VkbInputEngine::resolveInputMode()
+void VkbInputEnginePrivate::resolveInputMode()
 {
-    if (m_inputMethodHints & Qt::ImhDigitsOnly)
-        setInputMode(Digits);
-    else if (m_keyboardModifiers & Qt::MetaModifier)
-        setInputMode(Symbols);
-    else if (m_keyboardModifiers & Qt::ShiftModifier)
-        setInputMode(Capitals);
+    Q_Q(VkbInputEngine);
+    if (inputMethodHints & Qt::ImhDigitsOnly)
+        q->setInputMode(VkbInputEngine::Digits);
+    else if (keyboardModifiers & Qt::MetaModifier)
+        q->setInputMode(VkbInputEngine::Symbols);
+    else if (keyboardModifiers & Qt::ShiftModifier)
+        q->setInputMode(VkbInputEngine::Capitals);
     else
-        setInputMode(Letters);
+        q->setInputMode(VkbInputEngine::Letters);
 }
 
-void VkbInputEngine::sendKeyPress(const VkbInputKey &key)
+void VkbInputEnginePrivate::sendKeyPress(const VkbInputKey &key)
 {
     if (key.key != Qt::Key_unknown)
         sendKeyEvent(QEvent::KeyPress, key.key);
 }
 
-void VkbInputEngine::sendKeyRelease(const VkbInputKey &key)
+void VkbInputEnginePrivate::sendKeyRelease(const VkbInputKey &key)
 {
     if (key.key != Qt::Key_unknown)
         sendKeyEvent(QEvent::KeyRelease, key.key);
@@ -131,19 +159,20 @@ void VkbInputEngine::sendKeyRelease(const VkbInputKey &key)
         sendKeyText(key.text);
 }
 
-void VkbInputEngine::sendKeyText(const QString &text)
+void VkbInputEnginePrivate::sendKeyText(const QString &text)
 {
     QInputMethodEvent event;
     event.setCommitString(text);
     QCoreApplication::sendEvent(QGuiApplication::focusObject(), &event);
 }
 
-void VkbInputEngine::sendKeyEvent(QEvent::Type type, int key)
+void VkbInputEnginePrivate::sendKeyEvent(QEvent::Type type, int key)
 {
-    QWindowSystemInterface::handleKeyEvent(QGuiApplication::focusWindow(), type, key, m_keyboardModifiers);
+    QWindowSystemInterface::handleKeyEvent(QGuiApplication::focusWindow(), type, key, keyboardModifiers);
 }
 
-void VkbInputEngine::toggleKeyboardModifier(Qt::KeyboardModifier modifier)
+void VkbInputEnginePrivate::toggleKeyboardModifier(Qt::KeyboardModifier modifier)
 {
-    setKeyboardModifiers(m_keyboardModifiers ^ modifier);
+    Q_Q(VkbInputEngine);
+    q->setKeyboardModifiers(keyboardModifiers ^ modifier);
 }
