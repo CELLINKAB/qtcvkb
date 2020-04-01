@@ -117,8 +117,8 @@ void VkbInputLayoutItem::relayout()
             buttons += button;
         }
 
-        const qreal rw = x - m_spacing;
-        const qreal dx = (layoutWidth - rw) / 2.0;
+        const qreal rowWidth = x - m_spacing;
+        const qreal dx = (layoutWidth - rowWidth) / 2.0;
         for (QQuickItem *item : qAsConst(buttons))
             item->setX(item->x() + dx);
 
