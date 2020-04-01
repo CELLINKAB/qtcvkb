@@ -36,24 +36,21 @@ T.InputPanel {
     spacing: 10
     padding: 10
 
+    delegates: [
+        InputDelegate { },
+        InputDelegate { key: Qt.Key_Meta; button: InputKey { text: "123#"; ToolTip.visible: false } },
+        InputDelegate { key: Qt.Key_Enter; button: InputKey { text: "\u23ce"; ToolTip.visible: false } },
+        InputDelegate { key: Qt.Key_Shift; button: InputKey { text: "\u21e7"; ToolTip.visible: false } },
+        InputDelegate { key: Qt.Key_Escape; button: InputKey { text: "\u21e9"; ToolTip.visible: false } },
+        InputDelegate { key: Qt.Key_Backspace; button: InputKey { text: "\u21e6"; ToolTip.visible: false } }
+    ]
+
     enter: Transition {
         NumberAnimation { property: "y"; from: parent.height; to: parent.height - control.height }
     }
 
     exit: Transition {
         NumberAnimation { property: "y"; from: parent.height - control.height; to: parent.height }
-    }
-
-    contentItem: T.InputLayoutItem {
-        spacing: control.spacing
-        delegates: [
-            InputDelegate { },
-            InputDelegate { key: Qt.Key_Meta; button: InputKey { text: "123#"; ToolTip.visible: false } },
-            InputDelegate { key: Qt.Key_Enter; button: InputKey { text: "\u23ce"; ToolTip.visible: false } },
-            InputDelegate { key: Qt.Key_Shift; button: InputKey { text: "\u21e7"; ToolTip.visible: false } },
-            InputDelegate { key: Qt.Key_Escape; button: InputKey { text: "\u21e9"; ToolTip.visible: false } },
-            InputDelegate { key: Qt.Key_Backspace; button: InputKey { text: "\u21e6"; ToolTip.visible: false } }
-        ]
     }
 
     background: Rectangle {

@@ -31,7 +31,6 @@
 #include <QtCVkb/vkbinputlayout.h>
 
 class VkbInputPopup;
-class VkbInputDelegate;
 
 QT_FORWARD_DECLARE_CLASS(QQuickAbstractButton)
 
@@ -39,8 +38,6 @@ class VkbInputLayoutItem : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(qreal spacing READ spacing WRITE setSpacing NOTIFY spacingChanged)
-    Q_PROPERTY(QQmlListProperty<VkbInputDelegate> delegates READ delegates)
-    Q_CLASSINFO("DefaultProperty", "delegates")
 
 public:
     explicit VkbInputLayoutItem(QQuickItem *parent = nullptr);
@@ -51,35 +48,23 @@ public:
     VkbInputLayout layout() const;
     void setLayout(const VkbInputLayout &layout);
 
-    QQmlListProperty<VkbInputDelegate> delegates();
+    QHash<VkbInputKey, QQuickAbstractButton *> buttons() const;
+    void setButtons(const QHash<VkbInputKey, QQuickAbstractButton *> &buttons);
 
 signals:
     void spacingChanged();
     void layoutChanged();
-    void keyClicked(const VkbInputKey &key);
-    void keyPressAndHold(const VkbInputKey &key);
-
-protected slots:
-    void handleKeyClick();
-    void handleKeyPressAndHold();
+    void buttonsChanged();
 
 protected:
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
     void updatePolish() override;
 
+    void relayout();
+
 private:
-    VkbInputDelegate *findDelegate(Qt::Key key) const;
-    QQuickAbstractButton *createButton(const VkbInputKey &key, QQuickItem *parent) const;
-    VkbInputPopup *createPopup(const VkbInputKey &key, QQuickAbstractButton *button) const;
-
-    static void delegates_append(QQmlListProperty<VkbInputDelegate> *property, VkbInputDelegate *delegate);
-    static int delegates_count(QQmlListProperty<VkbInputDelegate> *property);
-    static VkbInputDelegate *delegates_at(QQmlListProperty<VkbInputDelegate> *property, int index);
-    static void delegates_clear(QQmlListProperty<VkbInputDelegate> *property);
-
     qreal m_spacing = 0;
     VkbInputLayout m_layout;
-    QList<VkbInputDelegate *> m_delegates;
     QHash<VkbInputKey, QQuickAbstractButton *> m_buttons;
 };
 

@@ -23,13 +23,7 @@
  */
 
 #include "vkbinputlayoutitem.h"
-#include "vkbinputlayoutattached.h"
-#include "vkbinputdelegate.h"
-#include "vkbinputpopup.h"
 
-#include <QtQml/qqmlcomponent.h>
-#include <QtQml/qqmlcontext.h>
-#include <QtQml/qqmlengine.h>
 #include <QtQuickTemplates2/private/qquickabstractbutton_p.h>
 
 VkbInputLayoutItem::VkbInputLayoutItem(QQuickItem *parent) : QQuickItem(parent)
@@ -61,35 +55,24 @@ void VkbInputLayoutItem::setLayout(const VkbInputLayout &layout)
     if (m_layout == layout)
         return;
 
-    QHash<VkbInputKey, QQuickAbstractButton *> oldButtons = m_buttons;
-    m_buttons.clear();
-
-    for (int r = 0; r < layout.rowCount(); ++r) {
-        const QVector<VkbInputKey> row = layout.rowAt(r);
-        for (int c = 0; c < row.count(); ++c) {
-            const VkbInputKey &key = row.at(c);
-            QQuickAbstractButton *button = oldButtons.take(key);
-            if (!button) {
-                button = createButton(key, this);
-                connect(button, &QQuickAbstractButton::clicked, this, &VkbInputLayoutItem::handleKeyClick);
-                if (!key.alt.isEmpty())
-                    connect(button, &QQuickAbstractButton::pressAndHold, this, &VkbInputLayoutItem::handleKeyPressAndHold);
-            }
-            m_buttons.insert(key, button);
-        }
-    }
-
-    for (QQuickAbstractButton *button : qAsConst(oldButtons))
-        button->deleteLater();
-
     m_layout = layout;
     polish();
     emit layoutChanged();
 }
 
-QQmlListProperty<VkbInputDelegate> VkbInputLayoutItem::delegates()
+QHash<VkbInputKey, QQuickAbstractButton *> VkbInputLayoutItem::buttons() const
 {
-    return QQmlListProperty<VkbInputDelegate>(this, nullptr, delegates_append, delegates_count, delegates_at, delegates_clear);
+    return m_buttons;
+}
+
+void VkbInputLayoutItem::setButtons(const QHash<VkbInputKey, QQuickAbstractButton *> &buttons)
+{
+    if (m_buttons == buttons)
+        return;
+
+    m_buttons = buttons;
+    polish();
+    emit buttonsChanged();
 }
 
 void VkbInputLayoutItem::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
@@ -102,168 +85,43 @@ void VkbInputLayoutItem::geometryChanged(const QRectF &newGeometry, const QRectF
 void VkbInputLayoutItem::updatePolish()
 {
     QQuickItem::updatePolish();
+    relayout();
+}
 
-    const qreal cw = width();
-    const qreal ch = height();
-    const qreal sp = spacing();
-    const int rc = m_layout.rowCount();
-    const int mc = m_layout.columnCount();
-    const qreal kh = (ch - (rc - 1) * sp) / rc;
-    const qreal kw = std::min((cw - (mc - 1) * sp) / mc, kh * 1.5);
+void VkbInputLayoutItem::relayout()
+{
+    const qreal layoutWidth = width();
+    const qreal layoutHeight = height();
+    const int rowCount = m_layout.rowCount();
+    const int maxColumnCount = m_layout.columnCount();
+    const qreal itemHeight = (layoutHeight - (rowCount - 1) * m_spacing) / rowCount;
+    const qreal itemWidth = std::min((layoutWidth - (maxColumnCount - 1) * m_spacing) / maxColumnCount, itemHeight * 1.5);
 
     qreal y = 0;
-    for (int r = 0; r < rc; ++r) {
+    for (int r = 0; r < rowCount; ++r) {
         qreal x = 0;
         QList<QQuickAbstractButton *> buttons;
+
         const QVector<VkbInputKey> row = m_layout.rowAt(r);
-        const int cc = row.count();
-        for (int c = 0; c < cc; ++c) {
+        const int columnCount = row.count();
+        for (int c = 0; c < columnCount; ++c) {
             const VkbInputKey &key = row.at(c);
             QQuickAbstractButton *button = m_buttons.value(key);
             if (!button)
                 continue;
-            const qreal w = kw * key.span + sp * (key.span - 1.0);
+
+            const qreal effectiveItemWidth = itemWidth * key.span + m_spacing * (key.span - 1.0);
             button->setPosition(QPointF(x, y));
-            button->setSize(QSize(w, kh));
-            x += w + sp;
+            button->setSize(QSize(effectiveItemWidth, itemHeight));
+            x += effectiveItemWidth + m_spacing;
             buttons += button;
         }
 
-        const qreal rw = x - sp;
-        const qreal dx = (cw - rw) / 2.0;
+        const qreal rw = x - m_spacing;
+        const qreal dx = (layoutWidth - rw) / 2.0;
         for (QQuickItem *item : qAsConst(buttons))
             item->setX(item->x() + dx);
 
-        y += kh + sp;
+        y += itemHeight + m_spacing;
     }
-}
-
-void VkbInputLayoutItem::handleKeyClick()
-{
-    VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(sender());
-    if (!attached)
-        return;
-
-    emit keyClicked(attached->inputKey());
-}
-
-void VkbInputLayoutItem::handleKeyPressAndHold()
-{
-    QQuickAbstractButton *button = qobject_cast<QQuickAbstractButton *>(sender());
-    VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(button);
-    if (!attached)
-        return;
-
-    VkbInputPopup *popup = createPopup(attached->inputKey(), button);
-    if (!popup)
-        return;
-
-    popup->open();
-    connect(popup, &QQuickPopup::closed, popup, &QObject::deleteLater);
-    connect(popup, &VkbInputPopup::keySelected, this, &VkbInputLayoutItem::keyClicked);
-    connect(button, &QQuickAbstractButton::released, popup, &QQuickPopup::close);
-
-    emit keyPressAndHold(attached->inputKey());
-}
-
-VkbInputDelegate *VkbInputLayoutItem::findDelegate(Qt::Key key) const
-{
-    auto it = std::find_if(m_delegates.cbegin(), m_delegates.cend(), [&key](VkbInputDelegate *delegate) { return delegate->key() == key; });
-    if (it != m_delegates.cend())
-        return *it;
-    if (key != Qt::Key_unknown)
-        return findDelegate(Qt::Key_unknown);
-    return nullptr;
-}
-
-template <typename T>
-static T *beginCreate(const VkbInputKey &key, QQmlComponent *component, QObject *parent)
-{
-    if (!component)
-        return nullptr;
-
-    QQmlContext *creationContext = component->creationContext();
-    if (!creationContext)
-        creationContext = qmlContext(parent);
-    QQmlContext *context = new QQmlContext(creationContext, parent);
-
-    QObject *instance = component->beginCreate(context);
-    T *object = qobject_cast<T *>(instance);
-    if (!object) {
-        delete instance;
-        return nullptr;
-    }
-
-    VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(instance);
-    if (attached)
-        attached->setInputKey(key);
-
-    return object;
-}
-
-QQuickAbstractButton *VkbInputLayoutItem::createButton(const VkbInputKey &key, QQuickItem *parent) const
-{
-    VkbInputDelegate *delegate = findDelegate(key.key);
-    if (!delegate)
-        return nullptr;
-
-    QQmlComponent *component = delegate->button();
-    QQuickAbstractButton *button = beginCreate<QQuickAbstractButton>(key, component, parent);
-    if (!button) {
-        qWarning() << "VkbInputLayoutItem::createButton: button delegate for" << key.key << "is not a Button";
-        return nullptr;
-    }
-
-    button->setParentItem(parent);
-    button->setFocusPolicy(Qt::NoFocus);
-    button->setAutoRepeat(key.autoRepeat);
-    button->setCheckable(key.checkable);
-    if (key.checked)
-        button->setChecked(true);
-    component->completeCreate();
-    return button;
-}
-
-VkbInputPopup *VkbInputLayoutItem::createPopup(const VkbInputKey &key, QQuickAbstractButton *button) const
-{
-    VkbInputDelegate *delegate = findDelegate(key.key);
-    if (!delegate)
-        return nullptr;
-
-    QQmlComponent *component = delegate->popup();
-    VkbInputPopup *popup = beginCreate<VkbInputPopup>(key, component, button);
-    if (!popup) {
-        qWarning() << "VkbInputLayout::createPopup: popup delegate for" << key.key << "is not an InputPopup";
-        return nullptr;
-    }
-
-    popup->setParentItem(button);
-    component->completeCreate();
-    return popup;
-}
-
-void VkbInputLayoutItem::delegates_append(QQmlListProperty<VkbInputDelegate> *property, VkbInputDelegate *delegate)
-{
-    VkbInputLayoutItem *that = static_cast<VkbInputLayoutItem *>(property->object);
-    that->m_delegates.append(delegate);
-    that->polish();
-}
-
-int VkbInputLayoutItem::delegates_count(QQmlListProperty<VkbInputDelegate> *property)
-{
-    VkbInputLayoutItem *that = static_cast<VkbInputLayoutItem *>(property->object);
-    return that->m_delegates.count();
-}
-
-VkbInputDelegate *VkbInputLayoutItem::delegates_at(QQmlListProperty<VkbInputDelegate> *property, int index)
-{
-    VkbInputLayoutItem *that = static_cast<VkbInputLayoutItem *>(property->object);
-    return that->m_delegates.value(index);
-}
-
-void VkbInputLayoutItem::delegates_clear(QQmlListProperty<VkbInputDelegate> *property)
-{
-    VkbInputLayoutItem *that = static_cast<VkbInputLayoutItem *>(property->object);
-    that->m_delegates.clear();
-    that->polish();
 }

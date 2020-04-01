@@ -26,14 +26,20 @@
 #define VKBINPUTPANEL_H
 
 #include <QtQuickTemplates2/private/qquickpopup_p.h>
+#include <QtQml/qqmllist.h>
 #include <QtCVkb/vkbinputpanelinterface.h>
 #include <QtCVkb/vkbinputlayout.h>
 
+class VkbInputPopup;
+class VkbInputDelegate;
 class VkbInputLayoutItem;
+
+QT_FORWARD_DECLARE_CLASS(QQuickAbstractButton)
 
 class VkbInputPanel : public QQuickPopup, public VkbInputPanelInterface
 {
     Q_OBJECT
+    Q_PROPERTY(QQmlListProperty<VkbInputDelegate> delegates READ delegates)
     Q_INTERFACES(VkbInputPanelInterface)
 
 public:
@@ -50,6 +56,8 @@ public:
     VkbInputLayout layout() const override;
     void setLayout(const VkbInputLayout &layout) override;
 
+    QQmlListProperty<VkbInputDelegate> delegates();
+
 signals:
     void visibleChanged() override;
     void animatingChanged() override;
@@ -57,18 +65,35 @@ signals:
     void localeChanged() override;
     void inputDirectionChanged() override;
     void layoutChanged() override;
+
     void keyClicked(const VkbInputKey &key) override;
+    void keyPressAndHold(const VkbInputKey &key);
+
+protected slots:
+    void handleKeyClick();
+    void handleKeyPressAndHold();
 
 protected:
-    void contentItemChange(QQuickItem *newItem, QQuickItem *oldItem) override;
+    void componentComplete() override;
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
+    void spacingChange(qreal newSpacing, qreal oldSpacing) override;
 
 private:
     void updateRect(const QRectF &rect);
-    void updateLayoutItem(VkbInputLayoutItem *layoutItem);
+    void updateButtons();
+
+    VkbInputDelegate *findDelegate(Qt::Key key) const;
+    QQuickAbstractButton *createButton(const VkbInputKey &key, QQuickItem *parent) const;
+    VkbInputPopup *createPopup(const VkbInputKey &key, QQuickAbstractButton *button) const;
+
+    static void delegates_append(QQmlListProperty<VkbInputDelegate> *property, VkbInputDelegate *delegate);
+    static int delegates_count(QQmlListProperty<VkbInputDelegate> *property);
+    static VkbInputDelegate *delegates_at(QQmlListProperty<VkbInputDelegate> *property, int index);
+    static void delegates_clear(QQmlListProperty<VkbInputDelegate> *property);
 
     QRectF m_rect;
     VkbInputLayout m_layout;
+    QList<VkbInputDelegate *> m_delegates;
     VkbInputLayoutItem *m_layoutItem = nullptr;
 };
 
