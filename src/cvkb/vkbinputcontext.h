@@ -26,13 +26,11 @@
 #define VKBINPUTCONTEXT_H
 
 #include <QtCVkb/vkbinputglobal.h>
+#include <QtCVkb/vkbinputfactory.h>
 #include <QtGui/qpa/qplatforminputcontext.h>
 #include <QtCore/qscopedpointer.h>
-#include <functional>
 
 class VkbInputContextPrivate;
-
-typedef std::function<QObject *(QObject *)> VkbInputPanelFactory;
 
 class Q_CVKB_EXPORT VkbInputContext : public QPlatformInputContext
 {
@@ -44,8 +42,8 @@ public:
 
     static VkbInputContext *instance();
 
-    VkbInputPanelFactory inputPanelFactory() const;
-    void setInputPanelFactory(VkbInputPanelFactory inputPanelFactory);
+    VkbInputFactory inputPanelFactory() const;
+    void setInputPanelFactory(VkbInputFactory inputPanelFactory);
 
     bool isValid() const override;
     bool hasCapability(Capability capability) const override;

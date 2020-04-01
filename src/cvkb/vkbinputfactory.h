@@ -22,37 +22,14 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTCONTEXT_P_H
-#define VKBINPUTCONTEXT_P_H
+#ifndef VKBINPUTFACTORY_H
+#define VKBINPUTFACTORY_H
 
-#include <QtCVkb/vkbinputcontext.h>
-#include <QtCVkb/vkbinputengine.h>
-#include <QtCVkb/vkbinputpanelinterface.h>
-#include <QtCore/qpointer.h>
+#include <QtCore/qglobal.h>
+#include <functional>
 
-class VkbInputPanelInterface;
+QT_FORWARD_DECLARE_CLASS(QObject)
 
-class VkbInputContextPrivate
-{
-    Q_DECLARE_PUBLIC(VkbInputContext)
+typedef std::function<QObject *(QObject *)> VkbInputFactory;
 
-public:
-    VkbInputPanelInterface *inputPanel() const;
-    VkbInputPanelInterface *createInputPanel();
-
-    bool loadInputLayout();
-
-    // ### TODO: mark QPlatformInputContext::emitXxx() as slots
-    void _q_emitInputPanelVisibleChanged();
-    void _q_emitAnimatingChanged();
-    void _q_emitKeyboardRectChanged();
-    void _q_emitLocaleChanged();
-    void _q_emitInputDirectionChanged();
-
-    VkbInputContext *q_ptr = nullptr;
-    QPointer<QObject> inputPanelObject;
-    VkbInputFactory inputPanelFactory;
-    VkbInputEngine inputEngine;
-};
-
-#endif // VKBINPUTCONTEXT_P_H
+#endif // VKBINPUTFACTORY_H
