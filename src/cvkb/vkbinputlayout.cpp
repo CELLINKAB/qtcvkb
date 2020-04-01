@@ -83,38 +83,45 @@ bool VkbInputLayout::operator!=(const VkbInputLayout &other) const
 
 int VkbInputLayout::rowCount() const
 {
-    return d_ptr->layout.count();
+    Q_D(const VkbInputLayout);
+    return d->layout.count();
 }
 
 int VkbInputLayout::columnCount() const
 {
-    return d_ptr->maxColumns;
+    Q_D(const VkbInputLayout);
+    return d->maxColumns;
 }
 
 QVector<VkbInputKey> VkbInputLayout::rowAt(int row) const
 {
-    return d_ptr->layout.value(row);
+    Q_D(const VkbInputLayout);
+    return d->layout.value(row);
 }
 
 void VkbInputLayout::addRow(const QVector<VkbInputKey> &row)
 {
-    insertRow(d_ptr->layout.count(), row);
+    Q_D(VkbInputLayout);
+    insertRow(d->layout.count(), row);
 }
 
 void VkbInputLayout::insertRow(int index, const QVector<VkbInputKey> &row)
 {
-    d_ptr->layout.insert(index, row);
-    d_ptr->maxColumns = std::max(row.count(), d_ptr->maxColumns);
+    Q_D(VkbInputLayout);
+    d->layout.insert(index, row);
+    d->maxColumns = std::max(row.count(), d->maxColumns);
 }
 
 VkbInputKey VkbInputLayout::keyAt(int row, int column) const
 {
-    return d_ptr->layout.value(row).value(column);
+    Q_D(const VkbInputLayout);
+    return d->layout.value(row).value(column);
 }
 
 void VkbInputLayout::setKey(int row, int column, const VkbInputKey &key)
 {
-    d_ptr->layout[row][column] = key;
+    Q_D(VkbInputLayout);
+    d->layout[row][column] = key;
 }
 
 // ### TODO: add QJsonArray::toStringList()
@@ -184,6 +191,7 @@ static QVector<QVector<VkbInputKey>> parseLayout(const QJsonArray &json, int &ma
 
 bool VkbInputLayout::load(const QString &filePath)
 {
+    Q_D(VkbInputLayout);
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qWarning().nospace().noquote() << "VkbInputLayout::load: error opening " << filePath << ": " << file.errorString();
@@ -197,7 +205,7 @@ bool VkbInputLayout::load(const QString &filePath)
         return false;
     }
 
-    d_ptr->maxColumns = 0;
-    d_ptr->layout = parseLayout(doc.array(), d_ptr->maxColumns);
+    d->maxColumns = 0;
+    d->layout = parseLayout(doc.array(), d->maxColumns);
     return true;
 }
