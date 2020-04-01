@@ -27,6 +27,7 @@
 
 #include <QtCore/qrect.h>
 #include <QtCore/qlocale.h>
+#include <QtGui/qevent.h>
 #include <QtGui/private/qguiapplication_p.h>
 #include <QtGui/qpa/qplatformintegration.h>
 
@@ -92,6 +93,10 @@ void VkbInputContext::invokeAction(QInputMethod::Action action, int cursorPositi
 
 bool VkbInputContext::filterEvent(const QEvent *event)
 {
+    Q_D(VkbInputContext);
+    if (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease)
+        d->inputEngine.setKeyboardModifiers(static_cast<const QKeyEvent *>(event)->modifiers());
+
     return QPlatformInputContext::filterEvent(event);
 }
 
