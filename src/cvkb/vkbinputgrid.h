@@ -25,7 +25,7 @@
 #ifndef VKBINPUTGRID_H
 #define VKBINPUTGRID_H
 
-#include <QtCVkb/vkbglobal.h>
+#include <QtCVkb/vkbinputglobal.h>
 #include <QtCore/qshareddata.h>
 
 class VkbInputKey;

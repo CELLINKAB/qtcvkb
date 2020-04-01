@@ -25,7 +25,7 @@
 #ifndef VKBINPUTSTYLE_H
 #define VKBINPUTSTYLE_H
 
-#include <QtCVkb/vkbglobal.h>
+#include <QtCVkb/vkbinputglobal.h>
 #include <QtCore/qobject.h>
 
 class VkbInputStylePrivate;

@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef QTCVKBGLOBAL_H
-#define QTCVKBGLOBAL_H
+#ifndef VKBINPUTGLOBAL_H
+#define VKBINPUTGLOBAL_H
 
 #include <QtCore/qglobal.h>
 
@@ -37,4 +37,4 @@
 #  define Q_CVKB_EXPORT
 #endif
 
-#endif // QTCVKBGLOBAL_H
+#endif // VKBINPUTGLOBAL_H

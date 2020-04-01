@@ -25,7 +25,7 @@
 #ifndef VKBINPUTCONTEXT_H
 #define VKBINPUTCONTEXT_H
 
-#include <QtCVkb/vkbglobal.h>
+#include <QtCVkb/vkbinputglobal.h>
 #include <QtGui/qpa/qplatforminputcontext.h>
 #include <QtCore/qscopedpointer.h>
 #include <functional>

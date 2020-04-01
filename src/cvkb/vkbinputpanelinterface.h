@@ -25,7 +25,7 @@
 #ifndef VKBINPUTPANELINTERFACE_H
 #define VKBINPUTPANELINTERFACE_H
 
-#include <QtCVkb/vkbglobal.h>
+#include <QtCVkb/vkbinputglobal.h>
 #include <QtCore/qobject.h>
 
 class VkbInputKey;

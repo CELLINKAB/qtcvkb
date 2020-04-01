@@ -25,7 +25,7 @@
 #ifndef VKBINPUTLAYOUT_H
 #define VKBINPUTLAYOUT_H
 
-#include <QtCVkb/vkbglobal.h>
+#include <QtCVkb/vkbinputglobal.h>
 #include <QtCVkb/vkbinputkey.h>
 #include <QtCore/qshareddata.h>
 #include <QtCore/qstringlist.h>

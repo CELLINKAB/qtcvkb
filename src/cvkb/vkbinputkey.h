@@ -25,7 +25,7 @@
 #ifndef VKBINPUTKEY_H
 #define VKBINPUTKEY_H
 
-#include <QtCVkb/vkbglobal.h>
+#include <QtCVkb/vkbinputglobal.h>
 #include <QtCore/qobjectdefs.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qstringlist.h>

@@ -25,7 +25,7 @@
 #ifndef VKBINPUTENGINE_H
 #define VKBINPUTENGINE_H
 
-#include <QtCVkb/vkbglobal.h>
+#include <QtCVkb/vkbinputglobal.h>
 #include <QtCore/qobject.h>
 #include <QtCore/qscopedpointer.h>
 
