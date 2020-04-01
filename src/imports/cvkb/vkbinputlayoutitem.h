@@ -32,7 +32,6 @@
 
 class VkbInputPopup;
 class VkbInputDelegate;
-class VkbInputLayoutAttached;
 
 QT_FORWARD_DECLARE_CLASS(QQuickAbstractButton)
 
@@ -53,8 +52,6 @@ public:
     void setLayout(const VkbInputLayout &layout);
 
     QQmlListProperty<VkbInputDelegate> delegates();
-
-    static VkbInputLayoutAttached *qmlAttachedProperties(QObject *object);
 
 signals:
     void spacingChanged();
