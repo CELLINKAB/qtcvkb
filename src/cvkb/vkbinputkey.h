@@ -42,6 +42,9 @@ class Q_CVKB_EXPORT VkbInputKey
     Q_PROPERTY(bool checked MEMBER checked)
 
 public:
+    VkbInputKey(Qt::Key key = Qt::Key_unknown) : key(key) { }
+    VkbInputKey(const QString &text) : text(text) { }
+
     inline bool operator==(const VkbInputKey &other) const;
     inline bool operator!=(const VkbInputKey &other) const;
 
