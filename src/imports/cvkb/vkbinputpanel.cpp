@@ -112,14 +112,16 @@ void VkbInputPanel::handleKeyPressAndHold()
     if (!attached)
         return;
 
-    VkbInputPopup *popup = createPopup(attached->inputKey(), button);
-    if (!popup)
-        return;
+    if (!attached->alt().isEmpty()) {
+        VkbInputPopup *popup = createPopup(attached->inputKey(), button);
+        if (!popup)
+            return;
 
-    popup->open();
-    connect(popup, &QQuickPopup::closed, popup, &QObject::deleteLater);
-    connect(popup, &VkbInputPopup::keySelected, this, &VkbInputPanel::keyClicked);
-    connect(button, &QQuickAbstractButton::released, popup, &QQuickPopup::close);
+        popup->open();
+        connect(popup, &QQuickPopup::closed, popup, &QObject::deleteLater);
+        connect(popup, &VkbInputPopup::keySelected, this, &VkbInputPanel::keyClicked);
+        connect(button, &QQuickAbstractButton::released, popup, &QQuickPopup::close);
+    }
 
     emit keyPressAndHold(attached->inputKey());
 }
@@ -168,9 +170,7 @@ void VkbInputPanel::updateButtons()
             if (!button) {
                 button = createButton(key, m_layoutItem);
                 connect(button, &QQuickAbstractButton::clicked, this, &VkbInputPanel::handleKeyClick);
-                if (!key.alt.isEmpty())
-                    connect(button, &QQuickAbstractButton::pressAndHold, this, &VkbInputPanel::handleKeyPressAndHold);
-
+                connect(button, &QQuickAbstractButton::pressAndHold, this, &VkbInputPanel::handleKeyPressAndHold);
             }
             newButtons.insert(key, button);
         }

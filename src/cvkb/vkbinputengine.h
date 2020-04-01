@@ -54,6 +54,7 @@ public:
 
 public slots:
     void handleKeyClick(const VkbInputKey &key);
+    void handleKeyPressAndHold(const VkbInputKey &key);
 
 signals:
     void inputModeChanged();

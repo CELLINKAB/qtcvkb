@@ -33,6 +33,7 @@ bool VkbInputContextPrivate::createInputPanel(QObject *parent)
         inputPanel = inputPanelFactory(parent);
         if (inputPanel) {
             QObject::connect(inputPanel, SIGNAL(keyClicked(VkbInputKey)), &inputEngine, SLOT(handleKeyClick(VkbInputKey)));
+            QObject::connect(inputPanel, SIGNAL(keyPressAndHold(VkbInputKey)), &inputEngine, SLOT(handleKeyPressAndHold(VkbInputKey)));
             QObject::connect(inputPanel, SIGNAL(visibleChanged()), q, SLOT(_q_emitInputPanelVisibleChanged()));
             QObject::connect(inputPanel, SIGNAL(animatingChanged()), q, SLOT(_q_emitAnimatingChanged()));
             QObject::connect(inputPanel, SIGNAL(rectChanged()), q, SLOT(_q_emitKeyboardRectChanged()));

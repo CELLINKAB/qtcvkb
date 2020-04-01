@@ -68,7 +68,7 @@ signals:
     void layoutChanged() override;
 
     void keyClicked(const VkbInputKey &key) override;
-    void keyPressAndHold(const VkbInputKey &key);
+    void keyPressAndHold(const VkbInputKey &key) override;
 
 protected slots:
     void handleKeyClick();

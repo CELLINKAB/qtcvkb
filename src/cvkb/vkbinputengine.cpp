@@ -91,6 +91,11 @@ void VkbInputEngine::handleKeyClick(const VkbInputKey &key)
         handler(this, key);
 }
 
+void VkbInputEngine::handleKeyPressAndHold(const VkbInputKey &key)
+{
+    Q_UNUSED(key);
+}
+
 void VkbInputEngine::resolveInputMode()
 {
     if (m_inputMethodHints & Qt::ImhDigitsOnly)
