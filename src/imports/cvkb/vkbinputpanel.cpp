@@ -257,6 +257,7 @@ VkbInputPopup *VkbInputPanel::createPopup(const VkbInputKey &key, QQuickAbstract
     }
 
     popup->setParentItem(button);
+    popup->setAlt(key.alt);
     component->completeCreate();
     return popup;
 }
