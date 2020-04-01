@@ -122,9 +122,7 @@ void VkbInputPanel::handleKeyPressAndHold()
             return;
 
         popup->open();
-        connect(popup, &QQuickPopup::closed, popup, &QObject::deleteLater);
         connect(popup, &VkbInputPopup::keySelected, this, &VkbInputPanel::keyClicked);
-        connect(button, &QQuickAbstractButton::released, popup, &QQuickPopup::close);
     }
 
     emit keyPressAndHold(attached->inputKey());

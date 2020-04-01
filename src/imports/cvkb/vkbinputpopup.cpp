@@ -30,6 +30,7 @@
 VkbInputPopup::VkbInputPopup(QObject *parent)
     : QQuickPopup(parent)
 {
+    connect(this, &QQuickPopup::closed, this, &QObject::deleteLater);
 }
 
 QStringList VkbInputPopup::alt() const
