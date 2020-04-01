@@ -28,9 +28,10 @@
 #include <QtQuickTemplates2/private/qquickpopup_p.h>
 #include <QtQml/qqmllist.h>
 #include <QtCVkb/vkbinputpanelinterface.h>
-#include <QtCVkb/vkbinputlayout.h>
 
+class VkbInputKey;
 class VkbInputPopup;
+class VkbInputLayout;
 class VkbInputDelegate;
 class VkbInputLayoutItem;
 
@@ -92,7 +93,6 @@ private:
     static void delegates_clear(QQmlListProperty<VkbInputDelegate> *property);
 
     QRectF m_rect;
-    VkbInputLayout m_layout;
     QList<VkbInputDelegate *> m_delegates;
     VkbInputLayoutItem *m_layoutItem = nullptr;
 };
