@@ -30,6 +30,6 @@ import QtCellink.Vkb.Templates 0.1 as T
 T.InputDelegate {
     id: control
 
-    button: InputKey { }
+    button: InputButton { }
     popup: InputPopup { }
 }

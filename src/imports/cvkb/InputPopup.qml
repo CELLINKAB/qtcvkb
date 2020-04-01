@@ -43,7 +43,7 @@ T.InputPopup {
         spacing: control.spacing
         Repeater {
             model: control.alt
-            InputKey {
+            InputButton {
                 text: modelData
                 width: control.parent.width
                 height: control.parent.height
