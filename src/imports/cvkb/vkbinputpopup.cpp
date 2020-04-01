@@ -116,6 +116,7 @@ void VkbInputPopup::mouseReleaseEvent(QMouseEvent *event)
         VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(m_currentButton);
         if (attached)
             emit keySelected(attached->inputKey());
+        updateCurrentButton(nullptr);
     }
     close();
 }
@@ -123,6 +124,7 @@ void VkbInputPopup::mouseReleaseEvent(QMouseEvent *event)
 void VkbInputPopup::mouseUngrabEvent()
 {
     QQuickPopup::mouseUngrabEvent();
+    updateCurrentButton(nullptr);
     close();
 }
 
