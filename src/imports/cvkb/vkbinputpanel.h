@@ -31,6 +31,7 @@
 
 class VkbInputKey;
 class VkbInputPopup;
+class VkbInputModel;
 class VkbInputLayout;
 class VkbInputDelegate;
 class VkbInputLayoutItem;
@@ -83,16 +84,8 @@ private:
     void updateSpacing();
     void updateButtons();
 
-    VkbInputDelegate *findDelegate(Qt::Key key) const;
-    QQuickAbstractButton *createButton(const VkbInputKey &key, QQuickItem *parent) const;
-    VkbInputPopup *createPopup(const VkbInputKey &key, QQuickAbstractButton *button) const;
-
-    static void delegates_append(QQmlListProperty<VkbInputDelegate> *property, VkbInputDelegate *delegate);
-    static int delegates_count(QQmlListProperty<VkbInputDelegate> *property);
-    static VkbInputDelegate *delegates_at(QQmlListProperty<VkbInputDelegate> *property, int index);
-    static void delegates_clear(QQmlListProperty<VkbInputDelegate> *property);
-
     QRectF m_rect;
+    VkbInputModel *m_model = nullptr;
     QList<VkbInputDelegate *> m_delegates;
     VkbInputLayoutItem *m_layoutItem = nullptr;
 };

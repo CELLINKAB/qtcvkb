@@ -21,6 +21,7 @@ HEADERS += \
     $$PWD/vkbinputdelegate.h \
     $$PWD/vkbinputlayoutattached.h \
     $$PWD/vkbinputlayoutitem.h \
+    $$PWD/vkbinputmodel.h \
     $$PWD/vkbinputpanel.h \
     $$PWD/vkbinputpopup.h
 
@@ -28,6 +29,7 @@ SOURCES += \
     $$PWD/vkbinputdelegate.cpp \
     $$PWD/vkbinputlayoutattached.cpp \
     $$PWD/vkbinputlayoutitem.cpp \
+    $$PWD/vkbinputmodel.cpp \
     $$PWD/vkbinputpanel.cpp \
     $$PWD/vkbinputpopup.cpp \
     $$PWD/vkbqmlplugin.cpp

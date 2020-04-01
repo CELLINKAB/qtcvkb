@@ -26,19 +26,21 @@
 #include "vkbinputdelegate.h"
 #include "vkbinputlayoutattached.h"
 #include "vkbinputlayoutitem.h"
+#include "vkbinputmodel.h"
 #include "vkbinputpopup.h"
 
-#include <QtQml/qqmlcomponent.h>
-#include <QtQml/qqmlcontext.h>
-#include <QtQml/qqmlengine.h>
+#include <QtQuickTemplates2/private/qquickcontrol_p.h>
 #include <QtQuickTemplates2/private/qquickabstractbutton_p.h>
 
 VkbInputPanel::VkbInputPanel(QObject *parent)
     : QQuickPopup(parent),
+      m_model(new VkbInputModel(this)),
       m_layoutItem(new VkbInputLayoutItem(popupItem()))
 {
     setClosePolicy(CloseOnEscape);
     setContentItem(m_layoutItem);
+
+    connect(m_model, &VkbInputModel::delegatesChanged, this, &VkbInputPanel::updateButtons);
 
     connect(this, &QQuickPopup::visibleChanged, this, &VkbInputPanel::visibleChanged);
     connect(this, &QQuickPopup::openedChanged, this, &VkbInputPanel::animatingChanged);
@@ -97,7 +99,7 @@ void VkbInputPanel::setLayout(const VkbInputLayout &layout)
 
 QQmlListProperty<VkbInputDelegate> VkbInputPanel::delegates()
 {
-    return QQmlListProperty<VkbInputDelegate>(this, nullptr, delegates_append, delegates_count, delegates_at, delegates_clear);
+    return m_model->delegates();
 }
 
 void VkbInputPanel::handleKeyClick()
@@ -117,7 +119,7 @@ void VkbInputPanel::handleKeyPressAndHold()
         return;
 
     if (!attached->alt().isEmpty()) {
-        VkbInputPopup *popup = createPopup(attached->inputKey(), button);
+        VkbInputPopup *popup = m_model->createPopup(attached->inputKey(), button);
         if (!popup)
             return;
 
@@ -169,7 +171,7 @@ void VkbInputPanel::updateButtons()
             const VkbInputKey &key = row.at(c);
             QQuickAbstractButton *button = oldButtons.take(key);
             if (!button) {
-                button = createButton(key, m_layoutItem);
+                button = m_model->createButton(key, m_layoutItem);
                 connect(button, &QQuickAbstractButton::clicked, this, &VkbInputPanel::handleKeyClick);
                 connect(button, &QQuickAbstractButton::pressAndHold, this, &VkbInputPanel::handleKeyPressAndHold);
             }
@@ -181,107 +183,4 @@ void VkbInputPanel::updateButtons()
         button->deleteLater();
 
     m_layoutItem->setButtons(newButtons);
-}
-
-VkbInputDelegate *VkbInputPanel::findDelegate(Qt::Key key) const
-{
-    auto it = std::find_if(m_delegates.cbegin(), m_delegates.cend(), [&key](VkbInputDelegate *delegate) { return delegate->key() == key; });
-    if (it != m_delegates.cend())
-        return *it;
-    if (key != Qt::Key_unknown)
-        return findDelegate(Qt::Key_unknown);
-    return nullptr;
-}
-
-template <typename T>
-static T *beginCreate(const VkbInputKey &key, QQmlComponent *component, QObject *parent)
-{
-    if (!component)
-        return nullptr;
-
-    QQmlContext *creationContext = component->creationContext();
-    if (!creationContext)
-        creationContext = qmlContext(parent);
-    QQmlContext *context = new QQmlContext(creationContext, parent);
-
-    QObject *instance = component->beginCreate(context);
-    T *object = qobject_cast<T *>(instance);
-    if (!object) {
-        delete instance;
-        return nullptr;
-    }
-
-    VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(instance);
-    if (attached)
-        attached->setInputKey(key);
-
-    return object;
-}
-
-QQuickAbstractButton *VkbInputPanel::createButton(const VkbInputKey &key, QQuickItem *parent) const
-{
-    VkbInputDelegate *delegate = findDelegate(key.key);
-    if (!delegate)
-        return nullptr;
-
-    QQmlComponent *component = delegate->button();
-    QQuickAbstractButton *button = beginCreate<QQuickAbstractButton>(key, component, parent);
-    if (!button) {
-        qWarning() << "VkbInputLayoutItem::createButton: button delegate for" << key.key << "is not a Button";
-        return nullptr;
-    }
-
-    button->setParentItem(parent);
-    button->setFocusPolicy(Qt::NoFocus);
-    button->setAutoRepeat(key.autoRepeat);
-    button->setCheckable(key.checkable);
-    if (key.checked)
-        button->setChecked(true);
-    component->completeCreate();
-    return button;
-}
-
-VkbInputPopup *VkbInputPanel::createPopup(const VkbInputKey &key, QQuickAbstractButton *button) const
-{
-    VkbInputDelegate *delegate = findDelegate(key.key);
-    if (!delegate)
-        return nullptr;
-
-    QQmlComponent *component = delegate->popup();
-    VkbInputPopup *popup = beginCreate<VkbInputPopup>(key, component, button);
-    if (!popup) {
-        qWarning() << "VkbInputLayout::createPopup: popup delegate for" << key.key << "is not an InputPopup";
-        return nullptr;
-    }
-
-    popup->setParentItem(button);
-    popup->setAlt(key.alt);
-    component->completeCreate();
-    return popup;
-}
-
-void VkbInputPanel::delegates_append(QQmlListProperty<VkbInputDelegate> *property, VkbInputDelegate *delegate)
-{
-    VkbInputPanel *that = static_cast<VkbInputPanel *>(property->object);
-    that->m_delegates.append(delegate);
-    that->updateButtons();
-}
-
-int VkbInputPanel::delegates_count(QQmlListProperty<VkbInputDelegate> *property)
-{
-    VkbInputPanel *that = static_cast<VkbInputPanel *>(property->object);
-    return that->m_delegates.count();
-}
-
-VkbInputDelegate *VkbInputPanel::delegates_at(QQmlListProperty<VkbInputDelegate> *property, int index)
-{
-    VkbInputPanel *that = static_cast<VkbInputPanel *>(property->object);
-    return that->m_delegates.value(index);
-}
-
-void VkbInputPanel::delegates_clear(QQmlListProperty<VkbInputDelegate> *property)
-{
-    VkbInputPanel *that = static_cast<VkbInputPanel *>(property->object);
-    that->m_delegates.clear();
-    that->updateButtons();
 }
