@@ -6,8 +6,7 @@ HEADERS += \
     $$PWD/vkbinputkey.h \
     $$PWD/vkbinputlayout.h \
     $$PWD/vkbinputpanelinterface.h \
-    $$PWD/vkbinputstyle.h \
-    $$PWD/vkbinputstyle_p.h
+    $$PWD/vkbinputstyle.h
 
 SOURCES += \
     $$PWD/vkbinputcontext.cpp \

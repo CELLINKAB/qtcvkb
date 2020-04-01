@@ -23,48 +23,52 @@
  */
 
 #include "vkbinputstyle.h"
-#include "vkbinputstyle_p.h"
 
 #include <QtCore/qcoreapplication.h>
+#include <QtCore/private/qobject_p.h>
 
-Q_GLOBAL_STATIC(VkbInputStylePrivate, dd)
-
-#define V_D(Class) Class##Private * const d = dd()
-
-VkbInputStyle::VkbInputStyle(QObject *parent) : QObject(parent)
+class VkbInputStylePrivate : public QObjectPrivate
 {
-    V_D(VkbInputStyle);
-    Q_ASSERT(!d->instance);
-    d->instance = this;
+public:
+    int pressAndHoldInterval = 0;
+    static VkbInputStyle *instance;
+};
+
+VkbInputStyle *VkbInputStylePrivate::instance = nullptr;
+
+#define vkbStyle VkbInputStylePrivate::instance
+
+VkbInputStyle::VkbInputStyle(QObject *parent)
+    : QObject(*(new VkbInputStylePrivate), parent)
+{
+    Q_ASSERT(!vkbStyle);
+    vkbStyle = this;
 }
 
 VkbInputStyle::~VkbInputStyle()
 {
-    V_D(VkbInputStyle);
-    d->instance = nullptr;
+    vkbStyle = nullptr;
 }
 
 VkbInputStyle *VkbInputStyle::instance()
 {
-    V_D(VkbInputStyle);
-    if (!d->instance)
-        d->instance = new VkbInputStyle(QCoreApplication::instance());
-    return d->instance;
+    if (!vkbStyle)
+        vkbStyle = new VkbInputStyle(QCoreApplication::instance());
+    return vkbStyle;
 }
 
 int VkbInputStyle::pressAndHoldInterval()
 {
-    V_D(VkbInputStyle);
+    Q_D(VkbInputStyle);
     return d->pressAndHoldInterval;
 }
 
 void VkbInputStyle::setPressAndHoldInterval(int pressAndHoldInterval)
 {
-    V_D(VkbInputStyle);
+    Q_D(VkbInputStyle);
     if (d->pressAndHoldInterval == pressAndHoldInterval)
         return;
 
     d->pressAndHoldInterval = pressAndHoldInterval;
-    if (d->instance)
-        emit d->instance->pressAndHoldIntervalChanged(pressAndHoldInterval);
+    emit pressAndHoldIntervalChanged(pressAndHoldInterval);
 }

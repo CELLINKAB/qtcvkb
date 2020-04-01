@@ -41,13 +41,14 @@ public:
 
     static VkbInputStyle *instance();
 
-    static int pressAndHoldInterval();
-    static void setPressAndHoldInterval(int pressAndHoldInterval);
+    int pressAndHoldInterval();
+    void setPressAndHoldInterval(int pressAndHoldInterval);
 
 signals:
     void pressAndHoldIntervalChanged(int pressAndHoldInterval);
 
 private:
+    Q_DISABLE_COPY(VkbInputStyle)
     Q_DECLARE_PRIVATE(VkbInputStyle)
 };
 
