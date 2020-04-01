@@ -36,6 +36,7 @@ class Q_CVKB_EXPORT VkbInputLayout
 {
 public:
     VkbInputLayout();
+    VkbInputLayout(const QVector<VkbInputKey> &row);
     VkbInputLayout(const VkbInputLayout &other);
     ~VkbInputLayout();
 

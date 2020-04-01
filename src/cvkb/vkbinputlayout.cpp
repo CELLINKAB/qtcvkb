@@ -52,6 +52,12 @@ VkbInputLayout::VkbInputLayout() : d_ptr(new VkbInputLayoutPrivate)
 {
 }
 
+VkbInputLayout::VkbInputLayout(const QVector<VkbInputKey> &row) : d_ptr(new VkbInputLayoutPrivate)
+{
+    d_ptr->layout += row;
+    d_ptr->maxColumns = row.count();
+}
+
 VkbInputLayout::VkbInputLayout(const VkbInputLayout &other) : d_ptr(other.d_ptr)
 {
 }
