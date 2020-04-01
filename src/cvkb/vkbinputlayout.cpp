@@ -54,8 +54,7 @@ VkbInputLayout::VkbInputLayout() : d_ptr(new VkbInputLayoutPrivate)
 
 VkbInputLayout::VkbInputLayout(const QVector<VkbInputKey> &row) : d_ptr(new VkbInputLayoutPrivate)
 {
-    d_ptr->layout += row;
-    d_ptr->maxColumns = row.count();
+    addRow(row);
 }
 
 VkbInputLayout::VkbInputLayout(const VkbInputLayout &other) : d_ptr(other.d_ptr)
@@ -97,9 +96,25 @@ QVector<VkbInputKey> VkbInputLayout::rowAt(int row) const
     return d_ptr->layout.value(row);
 }
 
+void VkbInputLayout::addRow(const QVector<VkbInputKey> &row)
+{
+    insertRow(d_ptr->layout.count(), row);
+}
+
+void VkbInputLayout::insertRow(int index, const QVector<VkbInputKey> &row)
+{
+    d_ptr->layout.insert(index, row);
+    d_ptr->maxColumns = std::max(row.count(), d_ptr->maxColumns);
+}
+
 VkbInputKey VkbInputLayout::keyAt(int row, int column) const
 {
     return d_ptr->layout.value(row).value(column);
+}
+
+void VkbInputLayout::setKey(int row, int column, const VkbInputKey &key)
+{
+    d_ptr->layout[row][column] = key;
 }
 
 // ### TODO: add QJsonArray::toStringList()

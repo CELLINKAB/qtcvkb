@@ -46,8 +46,13 @@ public:
 
     int rowCount() const;
     int columnCount() const;
+
     QVector<VkbInputKey> rowAt(int row) const;
+    void addRow(const QVector<VkbInputKey> &row);
+    void insertRow(int index, const QVector<VkbInputKey> &row);
+
     VkbInputKey keyAt(int row, int column) const;
+    void setKey(int row, int column, const VkbInputKey &key);
 
     bool load(const QString &filePath);
 
