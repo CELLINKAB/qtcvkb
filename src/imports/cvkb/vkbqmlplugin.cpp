@@ -133,7 +133,7 @@ void VkbQmlPlugin::registerStyles(const char *uri, int majorVersion, int minorVe
     selector.setPaths(QQuickStyle::stylePathList() << importPath(uri));
 
     qmlRegisterType(selector.select(QStringLiteral("InputButton.qml")), uri, majorVersion, minorVersion, "InputButton");
-    qmlRegisterType(selector.select(QStringLiteral("InputDelegate.qml")), uri, majorVersion, minorVersion, "InputDelegate");
+    qmlRegisterType<VkbInputDelegate>(uri, majorVersion, minorVersion, "InputDelegate");
     qmlRegisterUncreatableType<VkbInputLayoutAttached>(uri, majorVersion, minorVersion, "InputLayout", QStringLiteral("InputLayout is an attached property"));
     qmlRegisterType(selector.select(QStringLiteral("InputPanel.qml")), uri, majorVersion, minorVersion, "InputPanel");
     qmlRegisterType(selector.select(QStringLiteral("InputPopup.qml")), uri, majorVersion, minorVersion, "InputPopup");

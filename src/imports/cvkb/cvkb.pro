@@ -9,7 +9,6 @@ DEFINES += QT_NO_CAST_TO_ASCII QT_NO_CAST_FROM_ASCII
 
 QML_FILES += \
     $$PWD/InputButton.qml \
-    $$PWD/InputDelegate.qml \
     $$PWD/InputPanel.qml \
     $$PWD/InputPopup.qml \
     $$PWD/StyleHints.qml
