@@ -23,14 +23,27 @@
  */
 
 #include "vkbinputpopup.h"
+#include "vkbinputdelegate.h"
 #include "vkbinputlayoutattached.h"
+#include "vkbinputlayoutitem.h"
+#include "vkbinputmodel.h"
 
 #include <QtQuickTemplates2/private/qquickabstractbutton_p.h>
 
 VkbInputPopup::VkbInputPopup(QObject *parent)
-    : QQuickPopup(parent)
+    : QQuickPopup(parent),
+      m_model(new VkbInputModel(this)),
+      m_layoutItem(new VkbInputLayoutItem(popupItem()))
 {
+    setClosePolicy(CloseOnEscape);
+    setContentItem(m_layoutItem);
+
     connect(this, &QQuickPopup::closed, this, &QObject::deleteLater);
+    connect(m_model, &VkbInputModel::delegatesChanged, this, &VkbInputPopup::updateButtons);
+
+    // ### TODO: fix QQuickPopup::spacingChange()
+    if (QQuickControl *control = qobject_cast<QQuickControl *>(popupItem()))
+        connect(control, &QQuickControl::spacingChanged, this, &VkbInputPopup::updateSpacing);
 }
 
 QStringList VkbInputPopup::alt() const
@@ -47,11 +60,22 @@ void VkbInputPopup::setAlt(const QStringList &alt)
     emit altChanged();
 }
 
+QQmlListProperty<VkbInputDelegate> VkbInputPopup::delegates()
+{
+    return m_model->delegates();
+}
+
 void VkbInputPopup::setVisible(bool visible)
 {
     QQuickPopup::setVisible(visible);
     if (visible)
         popupItem()->grabMouse();
+}
+
+void VkbInputPopup::componentComplete()
+{
+    QQuickPopup::componentComplete();
+    updateButtons();
 }
 
 QQuickItem *childAt(QQuickItem *parent, const QPointF &globalPos)
@@ -100,6 +124,36 @@ void VkbInputPopup::mouseUngrabEvent()
 {
     QQuickPopup::mouseUngrabEvent();
     close();
+}
+
+void VkbInputPopup::updateSpacing()
+{
+    m_layoutItem->setSpacing(spacing());
+}
+
+void VkbInputPopup::updateButtons()
+{
+    if (!isComponentComplete())
+        return;
+
+    QHash<VkbInputKey, QQuickAbstractButton *> newButtons;
+    QHash<VkbInputKey, QQuickAbstractButton *> oldButtons = m_layoutItem->buttons();
+
+    QVector<VkbInputKey> row;
+    for (const QString &text : qAsConst(m_alt)) {
+        VkbInputKey key(text);
+        QQuickAbstractButton *button = oldButtons.take(key);
+        if (!button)
+            button = m_model->createButton(key, m_layoutItem);
+        newButtons.insert(key, button);
+        row += key;
+    }
+
+    for (QQuickAbstractButton *button : qAsConst(oldButtons))
+        button->deleteLater();
+
+    m_layoutItem->setLayout(VkbInputLayout(row));
+    m_layoutItem->setButtons(newButtons);
 }
 
 void VkbInputPopup::updateCurrentButton(QQuickAbstractButton *button)

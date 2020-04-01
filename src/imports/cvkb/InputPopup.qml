@@ -38,6 +38,7 @@ T.InputPopup {
 
     margins: 0
     padding: 10
+    spacing: 10
 
     scale: 0
     transformOrigin: Popup.Bottom
@@ -50,17 +51,14 @@ T.InputPopup {
         NumberAnimation { property: "scale"; to: 0; duration: 125 }
     }
 
-    contentItem: Row {
-        spacing: control.spacing
-        Repeater {
-            model: control.alt
-            InputButton {
-                text: modelData
-                width: control.parent.width
-                height: control.parent.height
+    delegates: [
+        InputDelegate {
+            button: InputButton {
+                implicitWidth: control.parent.width
+                implicitHeight: control.parent.height
             }
         }
-    }
+    ]
 
     background: Rectangle {
         radius: 2
