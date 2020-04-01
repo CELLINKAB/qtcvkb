@@ -25,6 +25,7 @@
 #include "vkbinputlayoutitem.h"
 
 #include <QtQuickTemplates2/private/qquickabstractbutton_p.h>
+#include <QtCVkb/vkbinputgrid.h>
 
 VkbInputLayoutItem::VkbInputLayoutItem(QQuickItem *parent) : QQuickItem(parent)
 {
@@ -90,38 +91,20 @@ void VkbInputLayoutItem::updatePolish()
 
 void VkbInputLayoutItem::relayout()
 {
-    const qreal layoutWidth = width();
-    const qreal layoutHeight = height();
-    const int rowCount = m_layout.rowCount();
-    const int maxColumnCount = m_layout.columnCount();
-    const qreal itemHeight = (layoutHeight - (rowCount - 1) * m_spacing) / rowCount;
-    const qreal itemWidth = std::min((layoutWidth - (maxColumnCount - 1) * m_spacing) / maxColumnCount, itemHeight * 1.5);
+    VkbInputGrid grid(m_layout);
+    grid.setSize(width(), height());
+    grid.setSpacing(m_spacing);
 
-    qreal y = 0;
-    for (int r = 0; r < rowCount; ++r) {
-        qreal x = 0;
-        QList<QQuickAbstractButton *> buttons;
-
-        const QVector<VkbInputKey> row = m_layout.rowAt(r);
-        const int columnCount = row.count();
-        for (int c = 0; c < columnCount; ++c) {
-            const VkbInputKey &key = row.at(c);
+    for (int r = 0; r < grid.rowCount(); ++r) {
+        for (int c = 0; c < grid.columnCount(); ++c) {
+            const VkbInputKey key = grid.keyAt(r, c);
             QQuickAbstractButton *button = m_buttons.value(key);
             if (!button)
                 continue;
 
-            const qreal effectiveItemWidth = itemWidth * key.span + m_spacing * (key.span - 1.0);
-            button->setPosition(QPointF(x, y));
-            button->setSize(QSize(effectiveItemWidth, itemHeight));
-            x += effectiveItemWidth + m_spacing;
-            buttons += button;
+            const QRectF geometry = grid.geometryAt(r, c);
+            button->setPosition(geometry.topLeft());
+            button->setSize(geometry.size());
         }
-
-        const qreal rowWidth = x - m_spacing;
-        const qreal dx = (layoutWidth - rowWidth) / 2.0;
-        for (QQuickItem *item : qAsConst(buttons))
-            item->setX(item->x() + dx);
-
-        y += itemHeight + m_spacing;
     }
 }
