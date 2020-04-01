@@ -34,13 +34,18 @@ QT_FORWARD_DECLARE_CLASS(QQuickAbstractButton)
 class VkbInputPopup : public QQuickPopup
 {
     Q_OBJECT
+    Q_PROPERTY(QStringList alt READ alt WRITE setAlt NOTIFY altChanged)
 
 public:
     explicit VkbInputPopup(QObject *parent = nullptr);
 
+    QStringList alt() const;
+    void setAlt(const QStringList &alt);
+
     void setVisible(bool visible) override;
 
 signals:
+    void altChanged();
     void keySelected(const VkbInputKey &key);
 
 protected:
@@ -52,6 +57,7 @@ protected:
     void updateCurrentButton(QQuickAbstractButton *button);
 
 private:
+    QStringList m_alt;
     QQuickAbstractButton *m_currentButton = nullptr;
 };
 

@@ -32,6 +32,20 @@ VkbInputPopup::VkbInputPopup(QObject *parent)
 {
 }
 
+QStringList VkbInputPopup::alt() const
+{
+    return m_alt;
+}
+
+void VkbInputPopup::setAlt(const QStringList &alt)
+{
+    if (m_alt == alt)
+        return;
+
+    m_alt = alt;
+    emit altChanged();
+}
+
 void VkbInputPopup::setVisible(bool visible)
 {
     QQuickPopup::setVisible(visible);
