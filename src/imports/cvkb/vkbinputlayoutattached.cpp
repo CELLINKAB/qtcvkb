@@ -75,5 +75,8 @@ VkbInputLayoutAttached *VkbInputLayoutAttached::qmlAttachedProperties(QObject *o
 
 VkbInputLayoutAttached *VkbInputLayoutAttached::qmlAttachedPropertiesObject(QObject *object)
 {
+    if (!object)
+        return nullptr;
+
     return qobject_cast<VkbInputLayoutAttached *>(::qmlAttachedPropertiesObject<VkbInputLayoutAttached>(object));
 }
