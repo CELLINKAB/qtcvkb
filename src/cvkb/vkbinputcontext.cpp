@@ -103,43 +103,43 @@ bool VkbInputContext::filterEvent(const QEvent *event)
 QRectF VkbInputContext::keyboardRect() const
 {
     Q_D(const VkbInputContext);
-    return d->inputPanelRect();
+    return d->inputPanel()->rect();
 }
 
 bool VkbInputContext::isAnimating() const
 {
     Q_D(const VkbInputContext);
-    return d->isInputPanelAnimating();
+    return d->inputPanel()->isAnimating();
 }
 
 void VkbInputContext::showInputPanel()
 {
     Q_D(VkbInputContext);
-    d->setInputPanelVisible(true);
+    d->createInputPanel()->setVisible(true);
 }
 
 void VkbInputContext::hideInputPanel()
 {
     Q_D(VkbInputContext);
-    d->setInputPanelVisible(false);
+    d->inputPanel()->setVisible(false);
 }
 
 bool VkbInputContext::isInputPanelVisible() const
 {
     Q_D(const VkbInputContext);
-    return d->isInputPanelVisible();
+    return d->inputPanel()->isVisible();
 }
 
 QLocale VkbInputContext::locale() const
 {
     Q_D(const VkbInputContext);
-    return d->inputPanelLocale();
+    return d->inputPanel()->locale();
 }
 
 Qt::LayoutDirection VkbInputContext::inputDirection() const
 {
     Q_D(const VkbInputContext);
-    return d->inputPanelDirection();
+    return d->inputPanel()->inputDirection();
 }
 
 void VkbInputContext::setFocusObject(QObject *focusObject)

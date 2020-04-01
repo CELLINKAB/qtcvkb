@@ -27,23 +27,20 @@
 
 #include <QtCVkb/vkbinputcontext.h>
 #include <QtCVkb/vkbinputengine.h>
+#include <QtCVkb/vkbinputpanelinterface.h>
 #include <QtCore/qpointer.h>
+
+class VkbInputPanelInterface;
 
 class VkbInputContextPrivate
 {
     Q_DECLARE_PUBLIC(VkbInputContext)
 
 public:
-    bool createInputPanel(QObject *parent);
-    bool isInputPanelVisible() const;
-    void setInputPanelVisible(bool visible);
+    VkbInputPanelInterface *inputPanel() const;
+    VkbInputPanelInterface *createInputPanel();
 
     bool loadInputLayout();
-
-    bool isInputPanelAnimating() const;
-    QRectF inputPanelRect() const;
-    QLocale inputPanelLocale() const;
-    Qt::LayoutDirection inputPanelDirection() const;
 
     // ### TODO: mark QPlatformInputContext::emitXxx() as slots
     void _q_emitInputPanelVisibleChanged();
@@ -53,7 +50,7 @@ public:
     void _q_emitInputDirectionChanged();
 
     VkbInputContext *q_ptr = nullptr;
-    QPointer<QObject> inputPanel;
+    QPointer<QObject> inputPanelObject;
     VkbInputPanelFactory inputPanelFactory;
     VkbInputEngine inputEngine;
 };

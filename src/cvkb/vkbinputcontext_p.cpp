@@ -23,49 +23,60 @@
  */
 
 #include "vkbinputcontext_p.h"
-#include "vkbinputpanelinterface.h"
 #include "vkbinputlayout.h"
 
-bool VkbInputContextPrivate::createInputPanel(QObject *parent)
+class VkbNullInputPanel : public VkbInputPanelInterface
+{
+public:
+    bool isVisible() const override { return false; }
+    void setVisible(bool) override { }
+    bool isAnimating() const override { return false; }
+    QRectF rect() const override { return QRectF(); }
+    QLocale locale() const override { return QLocale(); }
+    Qt::LayoutDirection inputDirection() const override { return Qt::LeftToRight; }
+    VkbInputLayout layout() const override { return VkbInputLayout(); }
+    void setLayout(const VkbInputLayout &) override { }
+    void visibleChanged() override { }
+    void animatingChanged() override { }
+    void rectChanged() override { }
+    void localeChanged() override { }
+    void inputDirectionChanged() override { }
+    void layoutChanged() override { }
+    void keyPressed(const VkbInputKey &) override { }
+    void keyReleased(const VkbInputKey &) override { }
+    void keyCanceled(const VkbInputKey &) override { }
+    void keyPressAndHold(const VkbInputKey &) override { }
+};
+
+VkbInputPanelInterface *VkbInputContextPrivate::inputPanel() const
+{
+    VkbInputPanelInterface *inputPanel = qobject_cast<VkbInputPanelInterface *>(inputPanelObject);
+    if (!inputPanel) {
+        static VkbNullInputPanel nullInputPanel;
+        return &nullInputPanel;
+    }
+    return inputPanel;
+}
+
+VkbInputPanelInterface *VkbInputContextPrivate::createInputPanel()
 {
     Q_Q(VkbInputContext);
-    if (inputPanel.isNull() && inputPanelFactory) {
-        inputPanel = inputPanelFactory(parent);
-        if (inputPanel) {
-            QObject::connect(inputPanel, SIGNAL(keyPressed(VkbInputKey)), &inputEngine, SLOT(handleKeyPress(VkbInputKey)));
-            QObject::connect(inputPanel, SIGNAL(keyReleased(VkbInputKey)), &inputEngine, SLOT(handleKeyRelease(VkbInputKey)));
-            QObject::connect(inputPanel, SIGNAL(keyCanceled(VkbInputKey)), &inputEngine, SLOT(handleKeyCancel(VkbInputKey)));
-            QObject::connect(inputPanel, SIGNAL(keyPressAndHold(VkbInputKey)), &inputEngine, SLOT(handleKeyPressAndHold(VkbInputKey)));
-            QObject::connect(inputPanel, SIGNAL(visibleChanged()), q, SLOT(_q_emitInputPanelVisibleChanged()));
-            QObject::connect(inputPanel, SIGNAL(animatingChanged()), q, SLOT(_q_emitAnimatingChanged()));
-            QObject::connect(inputPanel, SIGNAL(rectChanged()), q, SLOT(_q_emitKeyboardRectChanged()));
-            QObject::connect(inputPanel, SIGNAL(localeChanged()), q, SLOT(_q_emitLocaleChanged()));
-            QObject::connect(inputPanel, SIGNAL(inputDirectionChanged()), q, SLOT(_q_emitInputDirectionChanged()));
-            return loadInputLayout();
+    if (inputPanelObject.isNull() && inputPanelFactory) {
+        inputPanelObject = inputPanelFactory(QGuiApplication::focusWindow());
+        if (inputPanelObject) {
+            QObject::connect(inputPanelObject, SIGNAL(keyPressed(VkbInputKey)), &inputEngine, SLOT(handleKeyPress(VkbInputKey)));
+            QObject::connect(inputPanelObject, SIGNAL(keyReleased(VkbInputKey)), &inputEngine, SLOT(handleKeyRelease(VkbInputKey)));
+            QObject::connect(inputPanelObject, SIGNAL(keyCanceled(VkbInputKey)), &inputEngine, SLOT(handleKeyCancel(VkbInputKey)));
+            QObject::connect(inputPanelObject, SIGNAL(keyPressAndHold(VkbInputKey)), &inputEngine, SLOT(handleKeyPressAndHold(VkbInputKey)));
+            QObject::connect(inputPanelObject, SIGNAL(visibleChanged()), q, SLOT(_q_emitInputPanelVisibleChanged()));
+            QObject::connect(inputPanelObject, SIGNAL(animatingChanged()), q, SLOT(_q_emitAnimatingChanged()));
+            QObject::connect(inputPanelObject, SIGNAL(rectChanged()), q, SLOT(_q_emitKeyboardRectChanged()));
+            QObject::connect(inputPanelObject, SIGNAL(localeChanged()), q, SLOT(_q_emitLocaleChanged()));
+            QObject::connect(inputPanelObject, SIGNAL(inputDirectionChanged()), q, SLOT(_q_emitInputDirectionChanged()));
+            loadInputLayout();
         }
     }
-    return !inputPanel.isNull();
-}
-
-bool VkbInputContextPrivate::isInputPanelVisible() const
-{
-    VkbInputPanelInterface *ip = qobject_cast<VkbInputPanelInterface *>(inputPanel);
-    if (!ip)
-        return false;
-
-    return ip->isVisible();
-}
-
-void VkbInputContextPrivate::setInputPanelVisible(bool visible)
-{
-    if (visible && !createInputPanel(QGuiApplication::focusWindow()))
-        return;
-
-    VkbInputPanelInterface *ip = qobject_cast<VkbInputPanelInterface *>(inputPanel);
-    if (!ip)
-        return;
-
-    ip->setVisible(visible);
+    return inputPanel();
 }
 
 static QString resolveInputLayout(VkbInputEngine::InputMode inputMode)
@@ -80,52 +91,12 @@ static QString resolveInputLayout(VkbInputEngine::InputMode inputMode)
 
 bool VkbInputContextPrivate::loadInputLayout()
 {
-    VkbInputPanelInterface *ip = qobject_cast<VkbInputPanelInterface *>(inputPanel);
-    if (!ip)
-        return false;
-
     VkbInputLayout layout;
     if (!layout.load(resolveInputLayout(inputEngine.inputMode())))
         return false;
 
-    ip->setLayout(layout);
+    createInputPanel()->setLayout(layout);
     return true;
-}
-
-bool VkbInputContextPrivate::isInputPanelAnimating() const
-{
-    VkbInputPanelInterface *ip = qobject_cast<VkbInputPanelInterface *>(inputPanel);
-    if (!ip)
-        return false;
-
-    return ip->isAnimating();
-}
-
-QRectF VkbInputContextPrivate::inputPanelRect() const
-{
-    VkbInputPanelInterface *ip = qobject_cast<VkbInputPanelInterface *>(inputPanel);
-    if (!ip)
-        return QRectF();
-
-    return ip->rect();
-}
-
-QLocale VkbInputContextPrivate::inputPanelLocale() const
-{
-    VkbInputPanelInterface *ip = qobject_cast<VkbInputPanelInterface *>(inputPanel);
-    if (!ip)
-        return QLocale::system();
-
-    return ip->locale();
-}
-
-Qt::LayoutDirection VkbInputContextPrivate::inputPanelDirection() const
-{
-    VkbInputPanelInterface *ip = qobject_cast<VkbInputPanelInterface *>(inputPanel);
-    if (!ip)
-        return Qt::LeftToRight;
-
-    return ip->inputDirection();
 }
 
 void VkbInputContextPrivate::_q_emitInputPanelVisibleChanged()
@@ -155,5 +126,5 @@ void VkbInputContextPrivate::_q_emitLocaleChanged()
 void VkbInputContextPrivate::_q_emitInputDirectionChanged()
 {
     Q_Q(VkbInputContext);
-    q->emitInputDirectionChanged(inputPanelDirection());
+    q->emitInputDirectionChanged(inputPanel()->inputDirection());
 }
