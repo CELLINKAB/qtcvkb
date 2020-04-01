@@ -31,8 +31,8 @@
 #include <QtCVkb/vkbstylehints.h>
 #include <QtCVkb/vkbinputcontext.h>
 
+#include "vkbinputdelegate.h"
 #include "vkbinputlayoutattached.h"
-#include "vkbinputlayoutdelegate.h"
 #include "vkbinputlayoutitem.h"
 #include "vkbinputpanel.h"
 #include "vkbinputpopup.h"
@@ -108,9 +108,9 @@ void VkbQmlPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 
 void VkbQmlPlugin::registerTemplates(const char *uri, int majorVersion, int minorVersion)
 {
+    qmlRegisterType<VkbInputDelegate>(uri, majorVersion, minorVersion, "InputDelegate");
     qmlRegisterUncreatableType<VkbInputLayoutAttached>(uri, majorVersion, minorVersion, "InputLayout", QStringLiteral("InputLayout is an attached property"));
     qmlRegisterType<VkbInputLayoutItem>(uri, majorVersion, minorVersion, "InputLayoutItem");
-    qmlRegisterType<VkbInputLayoutDelegate>(uri, majorVersion, minorVersion, "InputLayoutDelegate");
     qmlRegisterType<VkbInputPanel>(uri, majorVersion, minorVersion, "InputPanel");
     qmlRegisterType<VkbInputPopup>(uri, majorVersion, minorVersion, "InputPopup");
     qmlRegisterType<VkbStyleHints>(uri, majorVersion, minorVersion, "StyleHints");

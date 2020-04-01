@@ -31,8 +31,8 @@
 #include <QtCVkb/vkbinputlayout.h>
 
 class VkbInputPopup;
+class VkbInputDelegate;
 class VkbInputLayoutAttached;
-class VkbInputLayoutDelegate;
 
 QT_FORWARD_DECLARE_CLASS(QQuickAbstractButton)
 
@@ -40,7 +40,7 @@ class VkbInputLayoutItem : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(qreal spacing READ spacing WRITE setSpacing NOTIFY spacingChanged)
-    Q_PROPERTY(QQmlListProperty<VkbInputLayoutDelegate> delegates READ delegates)
+    Q_PROPERTY(QQmlListProperty<VkbInputDelegate> delegates READ delegates)
     Q_CLASSINFO("DefaultProperty", "delegates")
 
 public:
@@ -52,7 +52,7 @@ public:
     VkbInputLayout layout() const;
     void setLayout(const VkbInputLayout &layout);
 
-    QQmlListProperty<VkbInputLayoutDelegate> delegates();
+    QQmlListProperty<VkbInputDelegate> delegates();
 
     static VkbInputLayoutAttached *qmlAttachedProperties(QObject *object);
 
@@ -71,18 +71,18 @@ protected:
     void updatePolish() override;
 
 private:
-    VkbInputLayoutDelegate *findDelegate(Qt::Key key) const;
+    VkbInputDelegate *findDelegate(Qt::Key key) const;
     QQuickAbstractButton *createButton(const VkbInputKey &key, QQuickItem *parent) const;
     VkbInputPopup *createPopup(const VkbInputKey &key, QQuickAbstractButton *button) const;
 
-    static void delegates_append(QQmlListProperty<VkbInputLayoutDelegate> *property, VkbInputLayoutDelegate *delegate);
-    static int delegates_count(QQmlListProperty<VkbInputLayoutDelegate> *property);
-    static VkbInputLayoutDelegate *delegates_at(QQmlListProperty<VkbInputLayoutDelegate> *property, int index);
-    static void delegates_clear(QQmlListProperty<VkbInputLayoutDelegate> *property);
+    static void delegates_append(QQmlListProperty<VkbInputDelegate> *property, VkbInputDelegate *delegate);
+    static int delegates_count(QQmlListProperty<VkbInputDelegate> *property);
+    static VkbInputDelegate *delegates_at(QQmlListProperty<VkbInputDelegate> *property, int index);
+    static void delegates_clear(QQmlListProperty<VkbInputDelegate> *property);
 
     qreal m_spacing = 0;
     VkbInputLayout m_layout;
-    QList<VkbInputLayoutDelegate *> m_delegates;
+    QList<VkbInputDelegate *> m_delegates;
     QHash<VkbInputKey, QQuickAbstractButton *> m_buttons;
 };
 
