@@ -11,7 +11,7 @@ QML_FILES += \
     $$PWD/InputButton.qml \
     $$PWD/InputPanel.qml \
     $$PWD/InputPopup.qml \
-    $$PWD/StyleHints.qml
+    $$PWD/InputStyle.qml
 
 OTHER_FILES += \
     $$PWD/qmldir

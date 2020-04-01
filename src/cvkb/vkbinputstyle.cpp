@@ -22,13 +22,49 @@
  * SOFTWARE.
  */
 
-import QtQuick 2.14
-import QtQuick.Controls 2.14
-import QtCellink.Vkb 0.1
-import QtCellink.Vkb.Templates 0.1 as T
+#include "vkbinputstyle.h"
+#include "vkbinputstyle_p.h"
 
-pragma Singleton
+#include <QtCore/qcoreapplication.h>
 
-T.StyleHints {
-    pressAndHoldInterval: 1000
+Q_GLOBAL_STATIC(VkbInputStylePrivate, dd)
+
+#define V_D(Class) Class##Private * const d = dd()
+
+VkbInputStyle::VkbInputStyle(QObject *parent) : QObject(parent)
+{
+    V_D(VkbInputStyle);
+    Q_ASSERT(!d->instance);
+    d->instance = this;
+}
+
+VkbInputStyle::~VkbInputStyle()
+{
+    V_D(VkbInputStyle);
+    d->instance = nullptr;
+}
+
+VkbInputStyle *VkbInputStyle::instance()
+{
+    V_D(VkbInputStyle);
+    if (!d->instance)
+        d->instance = new VkbInputStyle(QCoreApplication::instance());
+    return d->instance;
+}
+
+int VkbInputStyle::pressAndHoldInterval()
+{
+    V_D(VkbInputStyle);
+    return d->pressAndHoldInterval;
+}
+
+void VkbInputStyle::setPressAndHoldInterval(int pressAndHoldInterval)
+{
+    V_D(VkbInputStyle);
+    if (d->pressAndHoldInterval == pressAndHoldInterval)
+        return;
+
+    d->pressAndHoldInterval = pressAndHoldInterval;
+    if (d->instance)
+        emit d->instance->pressAndHoldIntervalChanged(pressAndHoldInterval);
 }

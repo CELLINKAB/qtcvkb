@@ -22,33 +22,13 @@
  * SOFTWARE.
  */
 
-#ifndef VKBSTYLEHINTS_H
-#define VKBSTYLEHINTS_H
+import QtQuick 2.14
+import QtQuick.Controls 2.14
+import QtCellink.Vkb 0.1
+import QtCellink.Vkb.Templates 0.1 as T
 
-#include <QtCVkb/vkbglobal.h>
-#include <QtCore/qobject.h>
+pragma Singleton
 
-class VkbStyleHintsPrivate;
-
-class Q_CVKB_EXPORT VkbStyleHints : public QObject
-{
-    Q_OBJECT
-    Q_PROPERTY(int pressAndHoldInterval READ pressAndHoldInterval WRITE setPressAndHoldInterval NOTIFY pressAndHoldIntervalChanged)
-
-public:
-    explicit VkbStyleHints(QObject *parent = nullptr);
-    ~VkbStyleHints();
-
-    static VkbStyleHints *instance();
-
-    static int pressAndHoldInterval();
-    static void setPressAndHoldInterval(int pressAndHoldInterval);
-
-signals:
-    void pressAndHoldIntervalChanged(int pressAndHoldInterval);
-
-private:
-    Q_DECLARE_PRIVATE(VkbStyleHints)
-};
-
-#endif // VKBSTYLEHINTS_H
+T.InputStyle {
+    pressAndHoldInterval: 1000
+}

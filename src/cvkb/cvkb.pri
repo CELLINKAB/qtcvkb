@@ -6,8 +6,8 @@ HEADERS += \
     $$PWD/vkbinputkey.h \
     $$PWD/vkbinputlayout.h \
     $$PWD/vkbinputpanelinterface.h \
-    $$PWD/vkbstylehints.h \
-    $$PWD/vkbstylehints_p.h
+    $$PWD/vkbinputstyle.h \
+    $$PWD/vkbinputstyle_p.h
 
 SOURCES += \
     $$PWD/vkbinputcontext.cpp \
@@ -15,4 +15,4 @@ SOURCES += \
     $$PWD/vkbinputgrid.cpp \
     $$PWD/vkbinputengine.cpp \
     $$PWD/vkbinputlayout.cpp \
-    $$PWD/vkbstylehints.cpp
+    $$PWD/vkbinputstyle.cpp

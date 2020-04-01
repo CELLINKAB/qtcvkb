@@ -22,16 +22,33 @@
  * SOFTWARE.
  */
 
-#ifndef VKBSTYLEHINTS_P_H
-#define VKBSTYLEHINTS_P_H
+#ifndef VKBINPUTSTYLE_H
+#define VKBINPUTSTYLE_H
 
-class VkbStyleHints;
+#include <QtCVkb/vkbglobal.h>
+#include <QtCore/qobject.h>
 
-class VkbStyleHintsPrivate
+class VkbInputStylePrivate;
+
+class Q_CVKB_EXPORT VkbInputStyle : public QObject
 {
+    Q_OBJECT
+    Q_PROPERTY(int pressAndHoldInterval READ pressAndHoldInterval WRITE setPressAndHoldInterval NOTIFY pressAndHoldIntervalChanged)
+
 public:
-    int pressAndHoldInterval = 0;
-    VkbStyleHints *instance = nullptr;
+    explicit VkbInputStyle(QObject *parent = nullptr);
+    ~VkbInputStyle();
+
+    static VkbInputStyle *instance();
+
+    static int pressAndHoldInterval();
+    static void setPressAndHoldInterval(int pressAndHoldInterval);
+
+signals:
+    void pressAndHoldIntervalChanged(int pressAndHoldInterval);
+
+private:
+    Q_DECLARE_PRIVATE(VkbInputStyle)
 };
 
-#endif // VKBSTYLEHINTS_P_H
+#endif // VKBINPUTSTYLE_H
