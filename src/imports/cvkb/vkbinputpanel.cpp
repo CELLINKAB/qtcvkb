@@ -102,13 +102,31 @@ QQmlListProperty<VkbInputDelegate> VkbInputPanel::delegates()
     return m_model->delegates();
 }
 
-void VkbInputPanel::handleKeyClick()
+void VkbInputPanel::handleKeyPress()
 {
     VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(sender());
     if (!attached)
         return;
 
-    emit keyClicked(attached->inputKey());
+    emit keyPressed(attached->inputKey());
+}
+
+void VkbInputPanel::handleKeyRelease()
+{
+    VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(sender());
+    if (!attached)
+        return;
+
+    emit keyReleased(attached->inputKey());
+}
+
+void VkbInputPanel::handleKeyCancel()
+{
+    VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(sender());
+    if (!attached)
+        return;
+
+    emit keyCanceled(attached->inputKey());
 }
 
 void VkbInputPanel::handleKeyPressAndHold()
@@ -124,7 +142,9 @@ void VkbInputPanel::handleKeyPressAndHold()
             return;
 
         popup->open();
-        connect(popup, &VkbInputPopup::keySelected, this, &VkbInputPanel::keyClicked);
+        connect(popup, &VkbInputPopup::keyPressed, this, &VkbInputPanel::keyPressed);
+        connect(popup, &VkbInputPopup::keyReleased, this, &VkbInputPanel::keyReleased);
+        connect(popup, &VkbInputPopup::keyCanceled, this, &VkbInputPanel::keyCanceled);
     }
 
     emit keyPressAndHold(attached->inputKey());
@@ -172,7 +192,9 @@ void VkbInputPanel::updateButtons()
             QQuickAbstractButton *button = oldButtons.take(key);
             if (!button) {
                 button = m_model->createButton(key, m_layoutItem);
-                connect(button, &QQuickAbstractButton::clicked, this, &VkbInputPanel::handleKeyClick);
+                connect(button, &QQuickAbstractButton::pressed, this, &VkbInputPanel::handleKeyPress);
+                connect(button, &QQuickAbstractButton::released, this, &VkbInputPanel::handleKeyRelease);
+                connect(button, &QQuickAbstractButton::canceled, this, &VkbInputPanel::handleKeyCancel);
                 connect(button, &QQuickAbstractButton::pressAndHold, this, &VkbInputPanel::handleKeyPressAndHold);
             }
             newButtons.insert(key, button);

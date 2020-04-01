@@ -75,9 +75,8 @@ void VkbInputEngine::setKeyboardModifiers(Qt::KeyboardModifiers keyboardModifier
     emit keyboardModifiersChanged();
 }
 
-void VkbInputEngine::handleKeyClick(const VkbInputKey &key)
+void VkbInputEngine::handleKeyPress(const VkbInputKey &key)
 {
-    // ### TODO: press & release
     typedef std::function<void(VkbInputEngine *engine, const VkbInputKey &key)> KeyHandler;
     static const QHash<Qt::Key, KeyHandler> handlers = {
         { Qt::Key_Meta, [](VkbInputEngine *engine, const VkbInputKey &) { engine->toggleKeyboardModifier(Qt::MetaModifier); } },
@@ -86,9 +85,19 @@ void VkbInputEngine::handleKeyClick(const VkbInputKey &key)
         { Qt::Key_Alt, [](VkbInputEngine *engine, const VkbInputKey &) { engine->toggleKeyboardModifier(Qt::AltModifier); } }
     };
 
-    KeyHandler handler = handlers.value(key.key, [=](VkbInputEngine *engine, const VkbInputKey &key) { engine->sendKey(key); });
+    KeyHandler handler = handlers.value(key.key, [=](VkbInputEngine *engine, const VkbInputKey &key) { engine->sendKeyPress(key); });
     if (handler)
         handler(this, key);
+}
+
+void VkbInputEngine::handleKeyRelease(const VkbInputKey &key)
+{
+    sendKeyRelease(key);
+}
+
+void VkbInputEngine::handleKeyCancel(const VkbInputKey &key)
+{
+    Q_UNUSED(key);
 }
 
 void VkbInputEngine::handleKeyPressAndHold(const VkbInputKey &key)
@@ -108,17 +117,30 @@ void VkbInputEngine::resolveInputMode()
         setInputMode(Letters);
 }
 
-void VkbInputEngine::sendKey(const VkbInputKey &key)
+void VkbInputEngine::sendKeyPress(const VkbInputKey &key)
 {
-    if (key.key != Qt::Key_unknown) {
-        QWindow *window = QGuiApplication::focusWindow();
-        QWindowSystemInterface::handleKeyEvent(window, QEvent::KeyPress, key.key, m_keyboardModifiers);
-        QWindowSystemInterface::handleKeyEvent(window, QEvent::KeyRelease, key.key, m_keyboardModifiers);
-    } else {
-        QInputMethodEvent event;
-        event.setCommitString(key.text);
-        QCoreApplication::sendEvent(QGuiApplication::focusObject(), &event);
-    }
+    if (key.key != Qt::Key_unknown)
+        sendKeyEvent(QEvent::KeyPress, key.key);
+}
+
+void VkbInputEngine::sendKeyRelease(const VkbInputKey &key)
+{
+    if (key.key != Qt::Key_unknown)
+        sendKeyEvent(QEvent::KeyRelease, key.key);
+    else
+        sendKeyText(key.text);
+}
+
+void VkbInputEngine::sendKeyText(const QString &text)
+{
+    QInputMethodEvent event;
+    event.setCommitString(text);
+    QCoreApplication::sendEvent(QGuiApplication::focusObject(), &event);
+}
+
+void VkbInputEngine::sendKeyEvent(QEvent::Type type, int key)
+{
+    QWindowSystemInterface::handleKeyEvent(QGuiApplication::focusWindow(), type, key, m_keyboardModifiers);
 }
 
 void VkbInputEngine::toggleKeyboardModifier(Qt::KeyboardModifier modifier)

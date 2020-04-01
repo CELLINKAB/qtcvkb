@@ -53,7 +53,9 @@ public:
     void setKeyboardModifiers(Qt::KeyboardModifiers keyboardModifiers);
 
 public slots:
-    void handleKeyClick(const VkbInputKey &key);
+    void handleKeyPress(const VkbInputKey &key);
+    void handleKeyRelease(const VkbInputKey &key);
+    void handleKeyCancel(const VkbInputKey &key);
     void handleKeyPressAndHold(const VkbInputKey &key);
 
 signals:
@@ -63,7 +65,10 @@ signals:
 
 private slots:
     void resolveInputMode();
-    void sendKey(const VkbInputKey &key);
+    void sendKeyPress(const VkbInputKey &key);
+    void sendKeyRelease(const VkbInputKey &key);
+    void sendKeyText(const QString &text);
+    void sendKeyEvent(QEvent::Type type, int key);
     void toggleKeyboardModifier(Qt::KeyboardModifier modifier);
 
 private:

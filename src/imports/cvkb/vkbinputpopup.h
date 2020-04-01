@@ -53,7 +53,9 @@ public:
 
 signals:
     void altChanged();
-    void keySelected(const VkbInputKey &key);
+    void keyPressed(const VkbInputKey &key);
+    void keyReleased(const VkbInputKey &key);
+    void keyCanceled(const VkbInputKey &key);
 
 protected:
     void componentComplete() override;
@@ -61,6 +63,10 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseUngrabEvent() override;
+
+    void handlePress(QQuickAbstractButton *button);
+    void handleRelease(QQuickAbstractButton *button);
+    void handleCancel(QQuickAbstractButton *button);
 
 private:
     void updateSpacing();

@@ -101,31 +101,55 @@ void VkbInputPopup::mousePressEvent(QMouseEvent *event)
 {
     QQuickPopup::mousePressEvent(event);
     updateCurrentButton(buttonAt(contentItem(), event->globalPos()));
+    handlePress(m_currentButton);
 }
 
 void VkbInputPopup::mouseMoveEvent(QMouseEvent *event)
 {
     QQuickPopup::mouseMoveEvent(event);
+    QQuickAbstractButton *oldCurrent = m_currentButton;
     updateCurrentButton(buttonAt(contentItem(), event->globalPos()));
+    if (m_currentButton != oldCurrent) {
+        handleCancel(oldCurrent);
+        handlePress(m_currentButton);
+    }
 }
 
 void VkbInputPopup::mouseReleaseEvent(QMouseEvent *event)
 {
     QQuickPopup::mouseReleaseEvent(event);
-    if (m_currentButton) {
-        VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(m_currentButton);
-        if (attached)
-            emit keySelected(attached->inputKey());
-        updateCurrentButton(nullptr);
-    }
+    handleRelease(m_currentButton);
+    updateCurrentButton(nullptr);
     close();
 }
 
 void VkbInputPopup::mouseUngrabEvent()
 {
     QQuickPopup::mouseUngrabEvent();
+    handleCancel(m_currentButton);
     updateCurrentButton(nullptr);
     close();
+}
+
+void VkbInputPopup::handlePress(QQuickAbstractButton *button)
+{
+    VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(button);
+    if (attached)
+        emit keyPressed(attached->inputKey());
+}
+
+void VkbInputPopup::handleRelease(QQuickAbstractButton *button)
+{
+    VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(button);
+    if (attached)
+        emit keyReleased(attached->inputKey());
+}
+
+void VkbInputPopup::handleCancel(QQuickAbstractButton *button)
+{
+    VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(button);
+    if (attached)
+        emit keyCanceled(attached->inputKey());
 }
 
 void VkbInputPopup::updateSpacing()

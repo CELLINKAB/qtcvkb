@@ -58,7 +58,9 @@ signals:
     virtual void inputDirectionChanged() = 0;
     virtual void layoutChanged() = 0;
 
-    virtual void keyClicked(const VkbInputKey &key) = 0;
+    virtual void keyPressed(const VkbInputKey &key) = 0;
+    virtual void keyReleased(const VkbInputKey &key) = 0;
+    virtual void keyCanceled(const VkbInputKey &key) = 0;
     virtual void keyPressAndHold(const VkbInputKey &key) = 0;
 };
 
