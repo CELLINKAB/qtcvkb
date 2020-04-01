@@ -44,6 +44,10 @@ VkbInputPanel::VkbInputPanel(QObject *parent)
     connect(this, &QQuickPopup::openedChanged, this, &VkbInputPanel::animatingChanged);
     connect(this, &QQuickPopup::visibleChanged, this, &VkbInputPanel::animatingChanged);
     connect(this, &QQuickPopup::localeChanged, this, &VkbInputPanel::localeChanged);
+
+    // ### TODO: fix QQuickPopup::spacingChange()
+    if (QQuickControl *control = qobject_cast<QQuickControl *>(popupItem()))
+        connect(control, &QQuickControl::spacingChanged, this, &VkbInputPanel::updateSpacing);
 }
 
 bool VkbInputPanel::isVisible() const
@@ -138,12 +142,6 @@ void VkbInputPanel::geometryChanged(const QRectF &newGeometry, const QRectF &old
     updateRect(newGeometry);
 }
 
-void VkbInputPanel::spacingChange(qreal newSpacing, qreal oldSpacing)
-{
-    QQuickPopup::spacingChange(newSpacing, oldSpacing);
-    m_layoutItem->setSpacing(newSpacing);
-}
-
 void VkbInputPanel::updateRect(const QRectF &rect)
 {
     if (m_rect == rect)
@@ -151,6 +149,11 @@ void VkbInputPanel::updateRect(const QRectF &rect)
 
     m_rect = rect;
     emit rectChanged();
+}
+
+void VkbInputPanel::updateSpacing()
+{
+    m_layoutItem->setSpacing(spacing());
 }
 
 void VkbInputPanel::updateButtons()

@@ -77,10 +77,10 @@ protected slots:
 protected:
     void componentComplete() override;
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
-    void spacingChange(qreal newSpacing, qreal oldSpacing) override;
 
 private:
     void updateRect(const QRectF &rect);
+    void updateSpacing();
     void updateButtons();
 
     VkbInputDelegate *findDelegate(Qt::Key key) const;
