@@ -80,7 +80,8 @@ void VkbInputGridPrivate::calculate()
 
 VkbInputGrid::VkbInputGrid(const VkbInputLayout &layout) : d_ptr(new VkbInputGridPrivate)
 {
-    d_ptr->layout = layout;
+    Q_D(VkbInputGrid);
+    d->layout = layout;
 }
 
 VkbInputGrid::~VkbInputGrid()
@@ -89,47 +90,56 @@ VkbInputGrid::~VkbInputGrid()
 
 QSizeF VkbInputGrid::size() const
 {
-    return d_ptr->size;
+    Q_D(const VkbInputGrid);
+    return d->size;
 }
 
 void VkbInputGrid::setSize(const QSizeF &size)
 {
-    d_ptr->size = size;
+    Q_D(VkbInputGrid);
+    d->size = size;
 }
 
 void VkbInputGrid::setSize(qreal width, qreal height)
 {
-    d_ptr->size = QSizeF(width, height);
+    Q_D(VkbInputGrid);
+    d->size = QSizeF(width, height);
 }
 
 qreal VkbInputGrid::spacing() const
 {
-    return d_ptr->spacing;
+    Q_D(const VkbInputGrid);
+    return d->spacing;
 }
 
 void VkbInputGrid::setSpacing(qreal spacing)
 {
-    d_ptr->spacing = spacing;
+    Q_D(VkbInputGrid);
+    d->spacing = spacing;
 }
 
 int VkbInputGrid::rowCount() const
 {
-    return d_ptr->layout.rowCount();
+    Q_D(const VkbInputGrid);
+    return d->layout.rowCount();
 }
 
 int VkbInputGrid::columnCount() const
 {
-    return d_ptr->layout.columnCount();
+    Q_D(const VkbInputGrid);
+    return d->layout.columnCount();
 }
 
 VkbInputKey VkbInputGrid::keyAt(int row, int column) const
 {
-    return d_ptr->layout.keyAt(row, column);
+    Q_D(const VkbInputGrid);
+    return d->layout.keyAt(row, column);
 }
 
 QRectF VkbInputGrid::geometryAt(int row, int column) const
 {
-    if (d_ptr->geometries.isEmpty())
-        const_cast<VkbInputGridPrivate *>(d_ptr.data())->calculate();
-    return d_ptr->geometries.value(row).value(column);
+    Q_D(const VkbInputGrid);
+    if (d->geometries.isEmpty())
+        const_cast<VkbInputGridPrivate *>(d)->calculate();
+    return d->geometries.value(row).value(column);
 }
