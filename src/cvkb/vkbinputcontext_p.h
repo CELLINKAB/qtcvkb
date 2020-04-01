@@ -36,8 +36,7 @@ class VkbInputContextPrivate
 public:
     bool createInputPanel(QObject *parent);
     bool isInputPanelVisible() const;
-    void showInputPanel();
-    void hideInputPanel();
+    void setInputPanelVisible(bool visible);
 
     bool loadInputLayout();
 

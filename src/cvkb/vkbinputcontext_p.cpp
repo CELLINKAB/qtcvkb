@@ -56,25 +56,16 @@ bool VkbInputContextPrivate::isInputPanelVisible() const
     return ip->isVisible();
 }
 
-void VkbInputContextPrivate::showInputPanel()
+void VkbInputContextPrivate::setInputPanelVisible(bool visible)
 {
-    if (!createInputPanel(QGuiApplication::focusWindow()))
+    if (visible && !createInputPanel(QGuiApplication::focusWindow()))
         return;
 
     VkbInputPanelInterface *ip = qobject_cast<VkbInputPanelInterface *>(inputPanel);
-    if (!ip || ip->isVisible())
+    if (!ip)
         return;
 
-    ip->setVisible(true);
-}
-
-void VkbInputContextPrivate::hideInputPanel()
-{
-    VkbInputPanelInterface *ip = qobject_cast<VkbInputPanelInterface *>(inputPanel);
-    if (!ip || !ip->isVisible())
-        return;
-
-    ip->setVisible(false);
+    ip->setVisible(visible);
 }
 
 static QString resolveInputLayout(VkbInputEngine::InputMode inputMode)
