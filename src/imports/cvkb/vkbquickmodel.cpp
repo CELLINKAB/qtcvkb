@@ -24,7 +24,7 @@
 
 #include "vkbquickmodel.h"
 #include "vkbquickdelegate.h"
-#include "vkbquicklayoutattached.h"
+#include "vkbquicklayout.h"
 #include "vkbquickpopup.h"
 
 #include <QtQml/qqmlcomponent.h>
@@ -69,7 +69,7 @@ static T *beginCreate(const VkbInputKey &key, QQmlComponent *component, QObject 
         return nullptr;
     }
 
-    VkbQuickLayoutAttached *attached = VkbQuickLayoutAttached::qmlAttachedPropertiesObject(instance);
+    VkbQuickLayoutAttached *attached = VkbQuickLayout::qmlAttachedPropertiesObject(instance);
     if (attached)
         attached->setInputKey(key);
 

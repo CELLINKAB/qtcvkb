@@ -26,9 +26,11 @@
 #define VKBQUICKLAYOUT_H
 
 #include <QtCore/qhash.h>
-#include <QtQml/qqmllist.h>
 #include <QtQuick/qquickitem.h>
+#include <QtCVkb/vkbinputkey.h>
 #include <QtCVkb/vkbinputlayout.h>
+
+class VkbQuickLayoutAttached;
 
 QT_FORWARD_DECLARE_CLASS(QQuickAbstractButton)
 
@@ -49,6 +51,9 @@ public:
     QHash<VkbInputKey, QQuickAbstractButton *> buttons() const;
     void setButtons(const QHash<VkbInputKey, QQuickAbstractButton *> &buttons);
 
+    static VkbQuickLayoutAttached *qmlAttachedProperties(QObject *object);
+    static VkbQuickLayoutAttached *qmlAttachedPropertiesObject(QObject *object);
+
 signals:
     void spacingChanged();
     void layoutChanged();
@@ -66,5 +71,34 @@ private:
     VkbInputLayout m_layout;
     QHash<VkbInputKey, QQuickAbstractButton *> m_buttons;
 };
+
+class VkbQuickLayoutAttached : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(Qt::Key key READ key CONSTANT FINAL)
+    Q_PROPERTY(QString text READ text CONSTANT FINAL)
+    Q_PROPERTY(QStringList alt READ alt CONSTANT FINAL)
+    Q_PROPERTY(bool autoRepeat READ autoRepeat CONSTANT FINAL)
+    Q_PROPERTY(bool checkable READ isCheckable CONSTANT FINAL)
+    Q_PROPERTY(bool checked READ isChecked CONSTANT FINAL)
+
+public:
+    explicit VkbQuickLayoutAttached(QObject *parent = nullptr);
+
+    Qt::Key key() const;
+    QString text() const;
+    QStringList alt() const;
+    bool autoRepeat() const;
+    bool isCheckable() const;
+    bool isChecked() const;
+
+    VkbInputKey inputKey() const;
+    void setInputKey(const VkbInputKey &key);
+
+private:
+    VkbInputKey m_key;
+};
+
+QML_DECLARE_TYPEINFO(VkbQuickLayout, QML_HAS_ATTACHED_PROPERTIES)
 
 #endif // VKBQUICKLAYOUT_H

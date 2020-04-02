@@ -79,6 +79,20 @@ void VkbQuickLayout::setButtons(const QHash<VkbInputKey, QQuickAbstractButton *>
     emit buttonsChanged();
 }
 
+
+VkbQuickLayoutAttached *VkbQuickLayout::qmlAttachedProperties(QObject *object)
+{
+    return new VkbQuickLayoutAttached(object);
+}
+
+VkbQuickLayoutAttached *VkbQuickLayout::qmlAttachedPropertiesObject(QObject *object)
+{
+    if (!object)
+        return nullptr;
+
+    return qobject_cast<VkbQuickLayoutAttached *>(::qmlAttachedPropertiesObject<VkbQuickLayout>(object));
+}
+
 void VkbQuickLayout::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
@@ -137,4 +151,48 @@ void VkbQuickLayout::updateImplicitSize()
     }
 
     setImplicitSize(width, height - m_spacing);
+}
+
+VkbQuickLayoutAttached::VkbQuickLayoutAttached(QObject *parent) : QObject(parent)
+{
+}
+
+Qt::Key VkbQuickLayoutAttached::key() const
+{
+    return m_key.key;
+}
+
+QString VkbQuickLayoutAttached::text() const
+{
+    return m_key.text;
+}
+
+QStringList VkbQuickLayoutAttached::alt() const
+{
+    return m_key.alt;
+}
+
+bool VkbQuickLayoutAttached::autoRepeat() const
+{
+    return m_key.autoRepeat;
+}
+
+bool VkbQuickLayoutAttached::isCheckable() const
+{
+    return m_key.checkable;
+}
+
+bool VkbQuickLayoutAttached::isChecked() const
+{
+    return m_key.checked;
+}
+
+VkbInputKey VkbQuickLayoutAttached::inputKey() const
+{
+    return m_key;
+}
+
+void VkbQuickLayoutAttached::setInputKey(const VkbInputKey &key)
+{
+    m_key = key;
 }

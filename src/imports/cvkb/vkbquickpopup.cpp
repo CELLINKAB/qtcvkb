@@ -24,7 +24,6 @@
 
 #include "vkbquickpopup.h"
 #include "vkbquickdelegate.h"
-#include "vkbquicklayoutattached.h"
 #include "vkbquicklayout.h"
 #include "vkbquickmodel.h"
 
@@ -133,21 +132,21 @@ void VkbQuickPopup::mouseUngrabEvent()
 
 void VkbQuickPopup::handlePress(QQuickAbstractButton *button)
 {
-    VkbQuickLayoutAttached *attached = VkbQuickLayoutAttached::qmlAttachedPropertiesObject(button);
+    VkbQuickLayoutAttached *attached = VkbQuickLayout::qmlAttachedPropertiesObject(button);
     if (attached)
         emit keyPressed(attached->inputKey());
 }
 
 void VkbQuickPopup::handleRelease(QQuickAbstractButton *button)
 {
-    VkbQuickLayoutAttached *attached = VkbQuickLayoutAttached::qmlAttachedPropertiesObject(button);
+    VkbQuickLayoutAttached *attached = VkbQuickLayout::qmlAttachedPropertiesObject(button);
     if (attached)
         emit keyReleased(attached->inputKey());
 }
 
 void VkbQuickPopup::handleCancel(QQuickAbstractButton *button)
 {
-    VkbQuickLayoutAttached *attached = VkbQuickLayoutAttached::qmlAttachedPropertiesObject(button);
+    VkbQuickLayoutAttached *attached = VkbQuickLayout::qmlAttachedPropertiesObject(button);
     if (attached)
         emit keyCanceled(attached->inputKey());
 }

@@ -24,7 +24,6 @@
 
 #include "vkbquickpanel.h"
 #include "vkbquickdelegate.h"
-#include "vkbquicklayoutattached.h"
 #include "vkbquicklayout.h"
 #include "vkbquickmodel.h"
 #include "vkbquickpopup.h"
@@ -104,7 +103,7 @@ QQmlListProperty<VkbQuickDelegate> VkbQuickPanel::delegates()
 
 void VkbQuickPanel::handleKeyPress()
 {
-    VkbQuickLayoutAttached *attached = VkbQuickLayoutAttached::qmlAttachedPropertiesObject(sender());
+    VkbQuickLayoutAttached *attached = VkbQuickLayout::qmlAttachedPropertiesObject(sender());
     if (!attached)
         return;
 
@@ -113,7 +112,7 @@ void VkbQuickPanel::handleKeyPress()
 
 void VkbQuickPanel::handleKeyRelease()
 {
-    VkbQuickLayoutAttached *attached = VkbQuickLayoutAttached::qmlAttachedPropertiesObject(sender());
+    VkbQuickLayoutAttached *attached = VkbQuickLayout::qmlAttachedPropertiesObject(sender());
     if (!attached)
         return;
 
@@ -122,7 +121,7 @@ void VkbQuickPanel::handleKeyRelease()
 
 void VkbQuickPanel::handleKeyCancel()
 {
-    VkbQuickLayoutAttached *attached = VkbQuickLayoutAttached::qmlAttachedPropertiesObject(sender());
+    VkbQuickLayoutAttached *attached = VkbQuickLayout::qmlAttachedPropertiesObject(sender());
     if (!attached)
         return;
 
@@ -132,7 +131,7 @@ void VkbQuickPanel::handleKeyCancel()
 void VkbQuickPanel::handleKeyPressAndHold()
 {
     QQuickAbstractButton *button = qobject_cast<QQuickAbstractButton *>(sender());
-    VkbQuickLayoutAttached *attached = VkbQuickLayoutAttached::qmlAttachedPropertiesObject(button);
+    VkbQuickLayoutAttached *attached = VkbQuickLayout::qmlAttachedPropertiesObject(button);
     if (!attached)
         return;
 

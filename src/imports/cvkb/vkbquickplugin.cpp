@@ -32,7 +32,7 @@
 #include <QtCVkb/vkbinputstyle.h>
 
 #include "vkbquickdelegate.h"
-#include "vkbquicklayoutattached.h"
+#include "vkbquicklayout.h"
 #include "vkbquickpanel.h"
 #include "vkbquickpopup.h"
 
@@ -108,7 +108,8 @@ void VkbQuickPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 void VkbQuickPlugin::registerTemplates(const char *uri, int majorVersion, int minorVersion)
 {
     qmlRegisterType<VkbQuickDelegate>(uri, majorVersion, minorVersion, "InputDelegate");
-    qmlRegisterUncreatableType<VkbQuickLayoutAttached>(uri, majorVersion, minorVersion, "InputLayout", QStringLiteral("InputLayout is an attached property"));
+    qmlRegisterAnonymousType<VkbQuickLayoutAttached>(uri, majorVersion);
+    qmlRegisterUncreatableType<VkbQuickLayout>(uri, majorVersion, minorVersion, "InputLayout", QStringLiteral("InputLayout is an attached property"));
     qmlRegisterType<VkbQuickPanel>(uri, majorVersion, minorVersion, "InputPanel");
     qmlRegisterType<VkbQuickPopup>(uri, majorVersion, minorVersion, "InputPopup");
     qmlRegisterType<VkbInputStyle>(uri, majorVersion, minorVersion, "InputStyle");
@@ -134,7 +135,8 @@ void VkbQuickPlugin::registerStyles(const char *uri, int majorVersion, int minor
 
     qmlRegisterType(selector.select(QStringLiteral("InputButton.qml")), uri, majorVersion, minorVersion, "InputButton");
     qmlRegisterType<VkbQuickDelegate>(uri, majorVersion, minorVersion, "InputDelegate");
-    qmlRegisterUncreatableType<VkbQuickLayoutAttached>(uri, majorVersion, minorVersion, "InputLayout", QStringLiteral("InputLayout is an attached property"));
+    qmlRegisterAnonymousType<VkbQuickLayoutAttached>(uri, majorVersion);
+    qmlRegisterUncreatableType<VkbQuickLayout>(uri, majorVersion, minorVersion, "InputLayout", QStringLiteral("InputLayout is an attached property"));
     qmlRegisterType(selector.select(QStringLiteral("InputPanel.qml")), uri, majorVersion, minorVersion, "InputPanel");
     qmlRegisterType(selector.select(QStringLiteral("InputPopup.qml")), uri, majorVersion, minorVersion, "InputPopup");
     qmlRegisterSingletonType(selector.select(QStringLiteral("InputStyle.qml")), uri, majorVersion, minorVersion, "InputStyle");
