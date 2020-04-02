@@ -26,7 +26,7 @@
 #include "vkbinputfactory.h"
 #include "vkbinputlayout.h"
 
-class VkbNullInputPanel : public VkbInputPanelInterface
+class VkbNullInputPanel : public VkbInputPanel
 {
 public:
     bool isVisible() const override { return false; }
@@ -49,9 +49,9 @@ public:
     void keyPressAndHold(const VkbInputKey &) override { }
 };
 
-VkbInputPanelInterface *VkbInputContextPrivate::inputPanel() const
+VkbInputPanel *VkbInputContextPrivate::inputPanel() const
 {
-    VkbInputPanelInterface *inputPanel = qobject_cast<VkbInputPanelInterface *>(inputPanelObject);
+    VkbInputPanel *inputPanel = qobject_cast<VkbInputPanel *>(inputPanelObject);
     if (!inputPanel) {
         static VkbNullInputPanel nullInputPanel;
         return &nullInputPanel;
@@ -59,7 +59,7 @@ VkbInputPanelInterface *VkbInputContextPrivate::inputPanel() const
     return inputPanel;
 }
 
-VkbInputPanelInterface *VkbInputContextPrivate::createInputPanel()
+VkbInputPanel *VkbInputContextPrivate::createInputPanel()
 {
     Q_Q(VkbInputContext);
     if (inputPanelObject.isNull()) {

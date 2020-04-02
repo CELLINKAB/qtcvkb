@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTPANELINTERFACE_H
-#define VKBINPUTPANELINTERFACE_H
+#ifndef VKBINPUTPANEL_H
+#define VKBINPUTPANEL_H
 
 #include <QtCVkb/vkbinputglobal.h>
 #include <QtCore/qobject.h>
@@ -34,10 +34,10 @@ class VkbInputLayout;
 QT_FORWARD_DECLARE_CLASS(QRectF)
 QT_FORWARD_DECLARE_CLASS(QLocaleF)
 
-class Q_CVKB_EXPORT VkbInputPanelInterface
+class Q_CVKB_EXPORT VkbInputPanel
 {
 public:
-    virtual ~VkbInputPanelInterface() = default;
+    virtual ~VkbInputPanel() = default;
 
     virtual bool isVisible() const = 0;
     virtual void setVisible(bool visible) = 0;
@@ -64,7 +64,7 @@ signals:
     virtual void keyPressAndHold(const VkbInputKey &key) = 0;
 };
 
-#define VkbInputPanelInterface_iid "VkbInputPanelInterface/0.1"
-Q_DECLARE_INTERFACE(VkbInputPanelInterface, VkbInputPanelInterface_iid)
+#define VkbInputPanel_iid "VkbInputPanel/0.1"
+Q_DECLARE_INTERFACE(VkbInputPanel, VkbInputPanel_iid)
 
-#endif // VKBINPUTPANELINTERFACE_H
+#endif // VKBINPUTPANEL_H

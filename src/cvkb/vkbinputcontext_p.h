@@ -27,18 +27,18 @@
 
 #include <QtCVkb/vkbinputcontext.h>
 #include <QtCVkb/vkbinputengine.h>
-#include <QtCVkb/vkbinputpanelinterface.h>
+#include <QtCVkb/vkbinputpanel.h>
 #include <QtCore/qpointer.h>
 
-class VkbInputPanelInterface;
+class VkbInputPanel;
 
 class VkbInputContextPrivate
 {
     Q_DECLARE_PUBLIC(VkbInputContext)
 
 public:
-    VkbInputPanelInterface *inputPanel() const;
-    VkbInputPanelInterface *createInputPanel();
+    VkbInputPanel *inputPanel() const;
+    VkbInputPanel *createInputPanel();
 
     bool loadInputLayout();
 

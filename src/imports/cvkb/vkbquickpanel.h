@@ -27,7 +27,7 @@
 
 #include <QtQuickTemplates2/private/qquickpopup_p.h>
 #include <QtQml/qqmllist.h>
-#include <QtCVkb/vkbinputpanelinterface.h>
+#include <QtCVkb/vkbinputpanel.h>
 
 class VkbInputKey;
 class VkbInputLayout;
@@ -38,11 +38,11 @@ class VkbQuickLayout;
 
 QT_FORWARD_DECLARE_CLASS(QQuickAbstractButton)
 
-class VkbQuickPanel : public QQuickPopup, public VkbInputPanelInterface
+class VkbQuickPanel : public QQuickPopup, public VkbInputPanel
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<VkbQuickDelegate> delegates READ delegates)
-    Q_INTERFACES(VkbInputPanelInterface)
+    Q_INTERFACES(VkbInputPanel)
 
 public:
     explicit VkbQuickPanel(QObject *parent = nullptr);
