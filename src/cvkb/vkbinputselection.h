@@ -90,7 +90,6 @@ private:
 
     bool m_enabled = true;
     bool m_visible = false;
-    int m_pressAndHoldInterval = -1;
     QPointF m_pressPoint;
     QBasicTimer m_pressAndHoldTimer;
     QElapsedTimer m_pressTimer;

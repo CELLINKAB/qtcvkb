@@ -27,18 +27,16 @@
 #include "vkbinputhandle.h"
 #include "vkbinputintegration.h"
 #include "vkbinputnullobject_p.h"
+#include "vkbinputstyle.h"
 
 #include <QtCore/qtextboundaryfinder.h>
 #include <QtGui/qguiapplication.h>
 #include <QtGui/qinputmethod.h>
-#include <QtGui/qstylehints.h>
 #include <QtGui/qwindow.h>
 
 static const int Timeout = 5000;
 
-VkbInputSelection::VkbInputSelection(QObject *parent)
-    : QObject(parent),
-       m_pressAndHoldInterval(QGuiApplication::styleHints()->mousePressAndHoldInterval())
+VkbInputSelection::VkbInputSelection(QObject *parent) : QObject(parent)
 {
     QInputMethod *inputMethod = QGuiApplication::inputMethod();
     connect(inputMethod, &QInputMethod::cursorRectangleChanged, this, &VkbInputSelection::updateInputCursor);
@@ -139,7 +137,7 @@ void VkbInputSelection::handlePress(const QPointF &pos)
     startIdleTimer();
     m_pressPoint = pos;
     m_pressTimer.start();
-    m_pressAndHoldTimer.start(m_pressAndHoldInterval, this);
+    m_pressAndHoldTimer.start(VkbInputStyle::instance()->pressAndHoldInterval(), this);
 }
 
 void VkbInputSelection::handleMove(const QPointF &pos)
@@ -152,7 +150,7 @@ void VkbInputSelection::handleRelease(const QPointF &pos)
 {
     Q_UNUSED(pos);
     m_pressAndHoldTimer.stop();
-    if (m_pressTimer.elapsed() >= QGuiApplication::styleHints()->mousePressAndHoldInterval())
+    if (m_pressTimer.elapsed() >= VkbInputStyle::instance()->pressAndHoldInterval())
         return;
 
     show();

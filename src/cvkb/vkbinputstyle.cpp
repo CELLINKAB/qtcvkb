@@ -24,8 +24,9 @@
 
 #include "vkbinputstyle.h"
 
-#include <QtCore/qcoreapplication.h>
 #include <QtCore/private/qobject_p.h>
+#include <QtGui/qguiapplication.h>
+#include <QtGui/qstylehints.h>
 
 class VkbInputStylePrivate : public QObjectPrivate
 {
@@ -41,6 +42,9 @@ VkbInputStyle *VkbInputStylePrivate::instance = nullptr;
 VkbInputStyle::VkbInputStyle(QObject *parent)
     : QObject(*(new VkbInputStylePrivate), parent)
 {
+    Q_D(VkbInputStyle);
+    d->pressAndHoldInterval = QGuiApplication::styleHints()->mousePressAndHoldInterval();
+
     Q_ASSERT(!vkbStyle);
     vkbStyle = this;
 }
