@@ -22,28 +22,28 @@
  * SOFTWARE.
  */
 
-#include "vkbinputmodel.h"
-#include "vkbinputdelegate.h"
-#include "vkbinputlayoutattached.h"
-#include "vkbinputpopup.h"
+#include "vkbquickmodel.h"
+#include "vkbquickdelegate.h"
+#include "vkbquicklayoutattached.h"
+#include "vkbquickpopup.h"
 
 #include <QtQml/qqmlcomponent.h>
 #include <QtQml/qqmlcontext.h>
 #include <QtQml/qqmlengine.h>
 #include <QtQuickTemplates2/private/qquickabstractbutton_p.h>
 
-VkbInputModel::VkbInputModel(QObject *parent) : QObject(parent)
+VkbQuickModel::VkbQuickModel(QObject *parent) : QObject(parent)
 {
 }
 
-QQmlListProperty<VkbInputDelegate> VkbInputModel::delegates()
+QQmlListProperty<VkbQuickDelegate> VkbQuickModel::delegates()
 {
-    return QQmlListProperty<VkbInputDelegate>(this, nullptr, delegates_append, delegates_count, delegates_at, delegates_clear);
+    return QQmlListProperty<VkbQuickDelegate>(this, nullptr, delegates_append, delegates_count, delegates_at, delegates_clear);
 }
 
-VkbInputDelegate *VkbInputModel::findDelegate(Qt::Key key) const
+VkbQuickDelegate *VkbQuickModel::findDelegate(Qt::Key key) const
 {
-    auto it = std::find_if(m_delegates.cbegin(), m_delegates.cend(), [&key](VkbInputDelegate *delegate) { return delegate->key() == key; });
+    auto it = std::find_if(m_delegates.cbegin(), m_delegates.cend(), [&key](VkbQuickDelegate *delegate) { return delegate->key() == key; });
     if (it != m_delegates.cend())
         return *it;
     if (key != Qt::Key_unknown)
@@ -69,23 +69,23 @@ static T *beginCreate(const VkbInputKey &key, QQmlComponent *component, QObject 
         return nullptr;
     }
 
-    VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(instance);
+    VkbQuickLayoutAttached *attached = VkbQuickLayoutAttached::qmlAttachedPropertiesObject(instance);
     if (attached)
         attached->setInputKey(key);
 
     return object;
 }
 
-QQuickAbstractButton *VkbInputModel::createButton(const VkbInputKey &key, QQuickItem *parent) const
+QQuickAbstractButton *VkbQuickModel::createButton(const VkbInputKey &key, QQuickItem *parent) const
 {
-    VkbInputDelegate *delegate = findDelegate(key.key);
+    VkbQuickDelegate *delegate = findDelegate(key.key);
     if (!delegate)
         return nullptr;
 
     QQmlComponent *component = delegate->button();
     QQuickAbstractButton *button = beginCreate<QQuickAbstractButton>(key, component, parent);
     if (!button) {
-        qWarning() << "VkbInputLayoutItem::createButton: button delegate for" << key.key << "is not a Button";
+        qWarning() << "VkbQuickModel::createButton: button delegate for" << key.key << "is not a Button";
         return nullptr;
     }
 
@@ -99,16 +99,16 @@ QQuickAbstractButton *VkbInputModel::createButton(const VkbInputKey &key, QQuick
     return button;
 }
 
-VkbInputPopup *VkbInputModel::createPopup(const VkbInputKey &key, QQuickAbstractButton *button) const
+VkbQuickPopup *VkbQuickModel::createPopup(const VkbInputKey &key, QQuickAbstractButton *button) const
 {
-    VkbInputDelegate *delegate = findDelegate(key.key);
+    VkbQuickDelegate *delegate = findDelegate(key.key);
     if (!delegate)
         return nullptr;
 
     QQmlComponent *component = delegate->popup();
-    VkbInputPopup *popup = beginCreate<VkbInputPopup>(key, component, button);
+    VkbQuickPopup *popup = beginCreate<VkbQuickPopup>(key, component, button);
     if (!popup) {
-        qWarning() << "VkbInputLayout::createPopup: popup delegate for" << key.key << "is not an InputPopup";
+        qWarning() << "VkbQuickModel::createPopup: popup delegate for" << key.key << "is not an InputPopup";
         return nullptr;
     }
 
@@ -118,28 +118,28 @@ VkbInputPopup *VkbInputModel::createPopup(const VkbInputKey &key, QQuickAbstract
     return popup;
 }
 
-void VkbInputModel::delegates_append(QQmlListProperty<VkbInputDelegate> *property, VkbInputDelegate *delegate)
+void VkbQuickModel::delegates_append(QQmlListProperty<VkbQuickDelegate> *property, VkbQuickDelegate *delegate)
 {
-    VkbInputModel *that = static_cast<VkbInputModel *>(property->object);
+    VkbQuickModel *that = static_cast<VkbQuickModel *>(property->object);
     that->m_delegates.append(delegate);
     emit that->delegatesChanged();
 }
 
-int VkbInputModel::delegates_count(QQmlListProperty<VkbInputDelegate> *property)
+int VkbQuickModel::delegates_count(QQmlListProperty<VkbQuickDelegate> *property)
 {
-    VkbInputModel *that = static_cast<VkbInputModel *>(property->object);
+    VkbQuickModel *that = static_cast<VkbQuickModel *>(property->object);
     return that->m_delegates.count();
 }
 
-VkbInputDelegate *VkbInputModel::delegates_at(QQmlListProperty<VkbInputDelegate> *property, int index)
+VkbQuickDelegate *VkbQuickModel::delegates_at(QQmlListProperty<VkbQuickDelegate> *property, int index)
 {
-    VkbInputModel *that = static_cast<VkbInputModel *>(property->object);
+    VkbQuickModel *that = static_cast<VkbQuickModel *>(property->object);
     return that->m_delegates.value(index);
 }
 
-void VkbInputModel::delegates_clear(QQmlListProperty<VkbInputDelegate> *property)
+void VkbQuickModel::delegates_clear(QQmlListProperty<VkbQuickDelegate> *property)
 {
-    VkbInputModel *that = static_cast<VkbInputModel *>(property->object);
+    VkbQuickModel *that = static_cast<VkbQuickModel *>(property->object);
     that->m_delegates.clear();
     emit that->delegatesChanged();
 }

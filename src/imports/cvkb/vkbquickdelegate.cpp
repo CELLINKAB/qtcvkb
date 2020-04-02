@@ -22,18 +22,18 @@
  * SOFTWARE.
  */
 
-#include "vkbinputdelegate.h"
+#include "vkbquickdelegate.h"
 
-VkbInputDelegate::VkbInputDelegate(QObject *parent) : QObject(parent)
+VkbQuickDelegate::VkbQuickDelegate(QObject *parent) : QObject(parent)
 {
 }
 
-Qt::Key VkbInputDelegate::key() const
+Qt::Key VkbQuickDelegate::key() const
 {
     return m_key;
 }
 
-void VkbInputDelegate::setKey(Qt::Key key)
+void VkbQuickDelegate::setKey(Qt::Key key)
 {
     if (m_key == key)
         return;
@@ -42,12 +42,12 @@ void VkbInputDelegate::setKey(Qt::Key key)
     emit keyChanged();
 }
 
-QQmlComponent *VkbInputDelegate::button() const
+QQmlComponent *VkbQuickDelegate::button() const
 {
     return m_button;
 }
 
-void VkbInputDelegate::setButton(QQmlComponent *button)
+void VkbQuickDelegate::setButton(QQmlComponent *button)
 {
     if (m_button == button)
         return;
@@ -56,12 +56,12 @@ void VkbInputDelegate::setButton(QQmlComponent *button)
     emit buttonChanged();
 }
 
-QQmlComponent *VkbInputDelegate::popup() const
+QQmlComponent *VkbQuickDelegate::popup() const
 {
     return m_popup;
 }
 
-void VkbInputDelegate::setPopup(QQmlComponent *popup)
+void VkbQuickDelegate::setPopup(QQmlComponent *popup)
 {
     if (m_popup == popup)
         return;

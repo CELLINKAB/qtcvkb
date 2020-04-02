@@ -22,43 +22,61 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTDELEGATE_H
-#define VKBINPUTDELEGATE_H
+#include "vkbquicklayoutattached.h"
 
-#include <QtCore/qobject.h>
-#include <QtCore/qstring.h>
-
-QT_FORWARD_DECLARE_CLASS(QQmlComponent)
-
-class VkbInputDelegate : public QObject
+VkbQuickLayoutAttached::VkbQuickLayoutAttached(QObject *parent) : QObject(parent)
 {
-    Q_OBJECT
-    Q_PROPERTY(Qt::Key key READ key WRITE setKey NOTIFY keyChanged)
-    Q_PROPERTY(QQmlComponent *button READ button WRITE setButton NOTIFY buttonChanged)
-    Q_PROPERTY(QQmlComponent *popup READ popup WRITE setPopup NOTIFY popupChanged)
-    Q_CLASSINFO("DefaultProperty", "button")
+}
 
-public:
-    explicit VkbInputDelegate(QObject *parent = nullptr);
+Qt::Key VkbQuickLayoutAttached::key() const
+{
+    return m_key.key;
+}
 
-    Qt::Key key() const;
-    void setKey(Qt::Key key);
+QString VkbQuickLayoutAttached::text() const
+{
+    return m_key.text;
+}
 
-    QQmlComponent *button() const;
-    void setButton(QQmlComponent *button);
+QStringList VkbQuickLayoutAttached::alt() const
+{
+    return m_key.alt;
+}
 
-    QQmlComponent *popup() const;
-    void setPopup(QQmlComponent *popup);
+bool VkbQuickLayoutAttached::autoRepeat() const
+{
+    return m_key.autoRepeat;
+}
 
-signals:
-    void keyChanged();
-    void buttonChanged();
-    void popupChanged();
+bool VkbQuickLayoutAttached::isCheckable() const
+{
+    return m_key.checkable;
+}
 
-private:
-    Qt::Key m_key = Qt::Key_unknown;
-    QQmlComponent *m_button = nullptr;
-    QQmlComponent *m_popup = nullptr;
-};
+bool VkbQuickLayoutAttached::isChecked() const
+{
+    return m_key.checked;
+}
 
-#endif // VKBINPUTDELEGATE_H
+VkbInputKey VkbQuickLayoutAttached::inputKey() const
+{
+    return m_key;
+}
+
+void VkbQuickLayoutAttached::setInputKey(const VkbInputKey &key)
+{
+    m_key = key;
+}
+
+VkbQuickLayoutAttached *VkbQuickLayoutAttached::qmlAttachedProperties(QObject *object)
+{
+    return new VkbQuickLayoutAttached(object);
+}
+
+VkbQuickLayoutAttached *VkbQuickLayoutAttached::qmlAttachedPropertiesObject(QObject *object)
+{
+    if (!object)
+        return nullptr;
+
+    return qobject_cast<VkbQuickLayoutAttached *>(::qmlAttachedPropertiesObject<VkbQuickLayoutAttached>(object));
+}

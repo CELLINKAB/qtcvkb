@@ -22,61 +22,43 @@
  * SOFTWARE.
  */
 
-#include "vkbinputlayoutattached.h"
+#ifndef VKBQUICKDELEGATE_H
+#define VKBQUICKDELEGATE_H
 
-VkbInputLayoutAttached::VkbInputLayoutAttached(QObject *parent) : QObject(parent)
+#include <QtCore/qobject.h>
+#include <QtCore/qstring.h>
+
+QT_FORWARD_DECLARE_CLASS(QQmlComponent)
+
+class VkbQuickDelegate : public QObject
 {
-}
+    Q_OBJECT
+    Q_PROPERTY(Qt::Key key READ key WRITE setKey NOTIFY keyChanged)
+    Q_PROPERTY(QQmlComponent *button READ button WRITE setButton NOTIFY buttonChanged)
+    Q_PROPERTY(QQmlComponent *popup READ popup WRITE setPopup NOTIFY popupChanged)
+    Q_CLASSINFO("DefaultProperty", "button")
 
-Qt::Key VkbInputLayoutAttached::key() const
-{
-    return m_key.key;
-}
+public:
+    explicit VkbQuickDelegate(QObject *parent = nullptr);
 
-QString VkbInputLayoutAttached::text() const
-{
-    return m_key.text;
-}
+    Qt::Key key() const;
+    void setKey(Qt::Key key);
 
-QStringList VkbInputLayoutAttached::alt() const
-{
-    return m_key.alt;
-}
+    QQmlComponent *button() const;
+    void setButton(QQmlComponent *button);
 
-bool VkbInputLayoutAttached::autoRepeat() const
-{
-    return m_key.autoRepeat;
-}
+    QQmlComponent *popup() const;
+    void setPopup(QQmlComponent *popup);
 
-bool VkbInputLayoutAttached::isCheckable() const
-{
-    return m_key.checkable;
-}
+signals:
+    void keyChanged();
+    void buttonChanged();
+    void popupChanged();
 
-bool VkbInputLayoutAttached::isChecked() const
-{
-    return m_key.checked;
-}
+private:
+    Qt::Key m_key = Qt::Key_unknown;
+    QQmlComponent *m_button = nullptr;
+    QQmlComponent *m_popup = nullptr;
+};
 
-VkbInputKey VkbInputLayoutAttached::inputKey() const
-{
-    return m_key;
-}
-
-void VkbInputLayoutAttached::setInputKey(const VkbInputKey &key)
-{
-    m_key = key;
-}
-
-VkbInputLayoutAttached *VkbInputLayoutAttached::qmlAttachedProperties(QObject *object)
-{
-    return new VkbInputLayoutAttached(object);
-}
-
-VkbInputLayoutAttached *VkbInputLayoutAttached::qmlAttachedPropertiesObject(QObject *object)
-{
-    if (!object)
-        return nullptr;
-
-    return qobject_cast<VkbInputLayoutAttached *>(::qmlAttachedPropertiesObject<VkbInputLayoutAttached>(object));
-}
+#endif // VKBQUICKDELEGATE_H

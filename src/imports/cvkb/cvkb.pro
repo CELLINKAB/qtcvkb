@@ -1,4 +1,4 @@
-TARGET = cvkbqmlplugin
+TARGET = cvkbquickplugin
 TARGETPATH = QtCellink/Vkb
 IMPORT_VERSION = 0.1
 
@@ -17,21 +17,21 @@ OTHER_FILES += \
     $$PWD/qmldir
 
 HEADERS += \
-    $$PWD/vkbinputdelegate.h \
-    $$PWD/vkbinputlayoutattached.h \
-    $$PWD/vkbinputlayoutitem.h \
-    $$PWD/vkbinputmodel.h \
-    $$PWD/vkbinputpanel.h \
-    $$PWD/vkbinputpopup.h
+    $$PWD/vkbquickdelegate.h \
+    $$PWD/vkbquicklayoutattached.h \
+    $$PWD/vkbquicklayout.h \
+    $$PWD/vkbquickmodel.h \
+    $$PWD/vkbquickpanel.h \
+    $$PWD/vkbquickpopup.h
 
 SOURCES += \
-    $$PWD/vkbinputdelegate.cpp \
-    $$PWD/vkbinputlayoutattached.cpp \
-    $$PWD/vkbinputlayoutitem.cpp \
-    $$PWD/vkbinputmodel.cpp \
-    $$PWD/vkbinputpanel.cpp \
-    $$PWD/vkbinputpopup.cpp \
-    $$PWD/vkbqmlplugin.cpp
+    $$PWD/vkbquickdelegate.cpp \
+    $$PWD/vkbquicklayoutattached.cpp \
+    $$PWD/vkbquicklayout.cpp \
+    $$PWD/vkbquickmodel.cpp \
+    $$PWD/vkbquickpanel.cpp \
+    $$PWD/vkbquickpopup.cpp \
+    $$PWD/vkbquickplugin.cpp
 
 CONFIG += no_cxx_module builtin_resources qtquickcompiler
 load(qml_plugin)

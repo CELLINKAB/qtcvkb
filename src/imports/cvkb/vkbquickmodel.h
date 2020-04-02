@@ -22,51 +22,42 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTLAYOUTITEM_H
-#define VKBINPUTLAYOUTITEM_H
+#ifndef VKBQUICKMODEL_H
+#define VKBQUICKMODEL_H
 
-#include <QtCore/qhash.h>
+#include <QtCore/qobject.h>
 #include <QtQml/qqmllist.h>
-#include <QtQuick/qquickitem.h>
-#include <QtCVkb/vkbinputlayout.h>
 
-class VkbInputPopup;
+class VkbInputKey;
+class VkbQuickPopup;
+class VkbQuickDelegate;
 
+QT_FORWARD_DECLARE_CLASS(QQuickItem)
 QT_FORWARD_DECLARE_CLASS(QQuickAbstractButton)
 
-class VkbInputLayoutItem : public QQuickItem
+class VkbQuickModel : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(qreal spacing READ spacing WRITE setSpacing NOTIFY spacingChanged)
 
 public:
-    explicit VkbInputLayoutItem(QQuickItem *parent = nullptr);
+    explicit VkbQuickModel(QObject *parent = nullptr);
 
-    qreal spacing() const;
-    void setSpacing(qreal spacing);
+    QQmlListProperty<VkbQuickDelegate> delegates();
 
-    VkbInputLayout layout() const;
-    void setLayout(const VkbInputLayout &layout);
-
-    QHash<VkbInputKey, QQuickAbstractButton *> buttons() const;
-    void setButtons(const QHash<VkbInputKey, QQuickAbstractButton *> &buttons);
+    VkbQuickDelegate *findDelegate(Qt::Key key) const;
+    QQuickAbstractButton *createButton(const VkbInputKey &key, QQuickItem *parent) const;
+    VkbQuickPopup *createPopup(const VkbInputKey &key, QQuickAbstractButton *button) const;
 
 signals:
-    void spacingChanged();
-    void layoutChanged();
-    void buttonsChanged();
-
-protected:
-    void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
-    void updatePolish() override;
+    void delegatesChanged();
 
 private:
-    void relayout();
-    void updateImplicitSize();
+    static void delegates_append(QQmlListProperty<VkbQuickDelegate> *property, VkbQuickDelegate *delegate);
+    static int delegates_count(QQmlListProperty<VkbQuickDelegate> *property);
+    static VkbQuickDelegate *delegates_at(QQmlListProperty<VkbQuickDelegate> *property, int index);
+    static void delegates_clear(QQmlListProperty<VkbQuickDelegate> *property);
 
-    qreal m_spacing = 0;
-    VkbInputLayout m_layout;
-    QHash<VkbInputKey, QQuickAbstractButton *> m_buttons;
+    QList<VkbQuickDelegate *> m_delegates;
 };
 
-#endif // VKBINPUTLAYOUTITEM_H
+#endif // VKBQUICKMODEL_H

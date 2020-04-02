@@ -22,42 +22,43 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTMODEL_H
-#define VKBINPUTMODEL_H
+#ifndef VKBQUICKLAYOUTATTACHED_H
+#define VKBQUICKLAYOUTATTACHED_H
 
 #include <QtCore/qobject.h>
-#include <QtQml/qqmllist.h>
+#include <QtQml/qqml.h>
+#include <QtCVkb/vkbinputkey.h>
 
-class VkbInputKey;
-class VkbInputPopup;
-class VkbInputDelegate;
-
-QT_FORWARD_DECLARE_CLASS(QQuickItem)
-QT_FORWARD_DECLARE_CLASS(QQuickAbstractButton)
-
-class VkbInputModel : public QObject
+class VkbQuickLayoutAttached : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(Qt::Key key READ key CONSTANT FINAL)
+    Q_PROPERTY(QString text READ text CONSTANT FINAL)
+    Q_PROPERTY(QStringList alt READ alt CONSTANT FINAL)
+    Q_PROPERTY(bool autoRepeat READ autoRepeat CONSTANT FINAL)
+    Q_PROPERTY(bool checkable READ isCheckable CONSTANT FINAL)
+    Q_PROPERTY(bool checked READ isChecked CONSTANT FINAL)
 
 public:
-    explicit VkbInputModel(QObject *parent = nullptr);
+    explicit VkbQuickLayoutAttached(QObject *parent = nullptr);
 
-    QQmlListProperty<VkbInputDelegate> delegates();
+    Qt::Key key() const;
+    QString text() const;
+    QStringList alt() const;
+    bool autoRepeat() const;
+    bool isCheckable() const;
+    bool isChecked() const;
 
-    VkbInputDelegate *findDelegate(Qt::Key key) const;
-    QQuickAbstractButton *createButton(const VkbInputKey &key, QQuickItem *parent) const;
-    VkbInputPopup *createPopup(const VkbInputKey &key, QQuickAbstractButton *button) const;
+    VkbInputKey inputKey() const;
+    void setInputKey(const VkbInputKey &key);
 
-signals:
-    void delegatesChanged();
+    static VkbQuickLayoutAttached *qmlAttachedProperties(QObject *object);
+    static VkbQuickLayoutAttached *qmlAttachedPropertiesObject(QObject *object);
 
 private:
-    static void delegates_append(QQmlListProperty<VkbInputDelegate> *property, VkbInputDelegate *delegate);
-    static int delegates_count(QQmlListProperty<VkbInputDelegate> *property);
-    static VkbInputDelegate *delegates_at(QQmlListProperty<VkbInputDelegate> *property, int index);
-    static void delegates_clear(QQmlListProperty<VkbInputDelegate> *property);
-
-    QList<VkbInputDelegate *> m_delegates;
+    VkbInputKey m_key;
 };
 
-#endif // VKBINPUTMODEL_H
+QML_DECLARE_TYPEINFO(VkbQuickLayoutAttached, QML_HAS_ATTACHED_PROPERTIES)
+
+#endif // VKBQUICKLAYOUTATTACHED_H

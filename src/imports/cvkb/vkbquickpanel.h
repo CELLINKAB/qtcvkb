@@ -22,30 +22,30 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTPANEL_H
-#define VKBINPUTPANEL_H
+#ifndef VKBQUICKPANEL_H
+#define VKBQUICKPANEL_H
 
 #include <QtQuickTemplates2/private/qquickpopup_p.h>
 #include <QtQml/qqmllist.h>
 #include <QtCVkb/vkbinputpanelinterface.h>
 
 class VkbInputKey;
-class VkbInputPopup;
-class VkbInputModel;
 class VkbInputLayout;
-class VkbInputDelegate;
-class VkbInputLayoutItem;
+class VkbQuickPopup;
+class VkbQuickModel;
+class VkbQuickDelegate;
+class VkbQuickLayout;
 
 QT_FORWARD_DECLARE_CLASS(QQuickAbstractButton)
 
-class VkbInputPanel : public QQuickPopup, public VkbInputPanelInterface
+class VkbQuickPanel : public QQuickPopup, public VkbInputPanelInterface
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<VkbInputDelegate> delegates READ delegates)
+    Q_PROPERTY(QQmlListProperty<VkbQuickDelegate> delegates READ delegates)
     Q_INTERFACES(VkbInputPanelInterface)
 
 public:
-    explicit VkbInputPanel(QObject *parent = nullptr);
+    explicit VkbQuickPanel(QObject *parent = nullptr);
 
     bool isVisible() const override;
     void setVisible(bool visible) override;
@@ -58,7 +58,7 @@ public:
     VkbInputLayout layout() const override;
     void setLayout(const VkbInputLayout &layout) override;
 
-    QQmlListProperty<VkbInputDelegate> delegates();
+    QQmlListProperty<VkbQuickDelegate> delegates();
 
 signals:
     void visibleChanged() override;
@@ -89,9 +89,9 @@ private:
     void updateButtons();
 
     QRectF m_rect;
-    VkbInputModel *m_model = nullptr;
-    QList<VkbInputDelegate *> m_delegates;
-    VkbInputLayoutItem *m_layoutItem = nullptr;
+    VkbQuickModel *m_model = nullptr;
+    QList<VkbQuickDelegate *> m_delegates;
+    VkbQuickLayout *m_layout = nullptr;
 };
 
-#endif // VKBINPUTPANEL_H
+#endif // VKBQUICKPANEL_H

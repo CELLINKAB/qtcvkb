@@ -22,21 +22,21 @@
  * SOFTWARE.
  */
 
-#include "vkbinputlayoutitem.h"
+#include "vkbquicklayout.h"
 
 #include <QtQuickTemplates2/private/qquickabstractbutton_p.h>
 #include <QtCVkb/vkbinputgrid.h>
 
-VkbInputLayoutItem::VkbInputLayoutItem(QQuickItem *parent) : QQuickItem(parent)
+VkbQuickLayout::VkbQuickLayout(QQuickItem *parent) : QQuickItem(parent)
 {
 }
 
-qreal VkbInputLayoutItem::spacing() const
+qreal VkbQuickLayout::spacing() const
 {
     return m_spacing;
 }
 
-void VkbInputLayoutItem::setSpacing(qreal spacing)
+void VkbQuickLayout::setSpacing(qreal spacing)
 {
     if (qFuzzyCompare(m_spacing, spacing))
         return;
@@ -47,12 +47,12 @@ void VkbInputLayoutItem::setSpacing(qreal spacing)
     emit spacingChanged();
 }
 
-VkbInputLayout VkbInputLayoutItem::layout() const
+VkbInputLayout VkbQuickLayout::layout() const
 {
     return m_layout;
 }
 
-void VkbInputLayoutItem::setLayout(const VkbInputLayout &layout)
+void VkbQuickLayout::setLayout(const VkbInputLayout &layout)
 {
     if (m_layout == layout)
         return;
@@ -63,12 +63,12 @@ void VkbInputLayoutItem::setLayout(const VkbInputLayout &layout)
     emit layoutChanged();
 }
 
-QHash<VkbInputKey, QQuickAbstractButton *> VkbInputLayoutItem::buttons() const
+QHash<VkbInputKey, QQuickAbstractButton *> VkbQuickLayout::buttons() const
 {
     return m_buttons;
 }
 
-void VkbInputLayoutItem::setButtons(const QHash<VkbInputKey, QQuickAbstractButton *> &buttons)
+void VkbQuickLayout::setButtons(const QHash<VkbInputKey, QQuickAbstractButton *> &buttons)
 {
     if (m_buttons == buttons)
         return;
@@ -79,20 +79,20 @@ void VkbInputLayoutItem::setButtons(const QHash<VkbInputKey, QQuickAbstractButto
     emit buttonsChanged();
 }
 
-void VkbInputLayoutItem::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
+void VkbQuickLayout::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
     if (newGeometry.size() != oldGeometry.size())
         polish();
 }
 
-void VkbInputLayoutItem::updatePolish()
+void VkbQuickLayout::updatePolish()
 {
     QQuickItem::updatePolish();
     relayout();
 }
 
-void VkbInputLayoutItem::relayout()
+void VkbQuickLayout::relayout()
 {
     VkbInputGrid grid(m_layout);
     grid.setSize(width(), height());
@@ -112,7 +112,7 @@ void VkbInputLayoutItem::relayout()
     }
 }
 
-void VkbInputLayoutItem::updateImplicitSize()
+void VkbQuickLayout::updateImplicitSize()
 {
     qreal width = 0;
     qreal height = 0;

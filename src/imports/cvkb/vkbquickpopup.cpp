@@ -22,36 +22,36 @@
  * SOFTWARE.
  */
 
-#include "vkbinputpopup.h"
-#include "vkbinputdelegate.h"
-#include "vkbinputlayoutattached.h"
-#include "vkbinputlayoutitem.h"
-#include "vkbinputmodel.h"
+#include "vkbquickpopup.h"
+#include "vkbquickdelegate.h"
+#include "vkbquicklayoutattached.h"
+#include "vkbquicklayout.h"
+#include "vkbquickmodel.h"
 
 #include <QtQuickTemplates2/private/qquickabstractbutton_p.h>
 
-VkbInputPopup::VkbInputPopup(QObject *parent)
+VkbQuickPopup::VkbQuickPopup(QObject *parent)
     : QQuickPopup(parent),
-      m_model(new VkbInputModel(this)),
-      m_layoutItem(new VkbInputLayoutItem(popupItem()))
+      m_model(new VkbQuickModel(this)),
+      m_layout(new VkbQuickLayout(popupItem()))
 {
     setClosePolicy(CloseOnEscape);
-    setContentItem(m_layoutItem);
+    setContentItem(m_layout);
 
     connect(this, &QQuickPopup::closed, this, &QObject::deleteLater);
-    connect(m_model, &VkbInputModel::delegatesChanged, this, &VkbInputPopup::updateButtons);
+    connect(m_model, &VkbQuickModel::delegatesChanged, this, &VkbQuickPopup::updateButtons);
 
     // ### TODO: fix QQuickPopup::spacingChange()
     if (QQuickControl *control = qobject_cast<QQuickControl *>(popupItem()))
-        connect(control, &QQuickControl::spacingChanged, this, &VkbInputPopup::updateSpacing);
+        connect(control, &QQuickControl::spacingChanged, this, &VkbQuickPopup::updateSpacing);
 }
 
-QStringList VkbInputPopup::alt() const
+QStringList VkbQuickPopup::alt() const
 {
     return m_alt;
 }
 
-void VkbInputPopup::setAlt(const QStringList &alt)
+void VkbQuickPopup::setAlt(const QStringList &alt)
 {
     if (m_alt == alt)
         return;
@@ -60,19 +60,19 @@ void VkbInputPopup::setAlt(const QStringList &alt)
     emit altChanged();
 }
 
-QQmlListProperty<VkbInputDelegate> VkbInputPopup::delegates()
+QQmlListProperty<VkbQuickDelegate> VkbQuickPopup::delegates()
 {
     return m_model->delegates();
 }
 
-void VkbInputPopup::setVisible(bool visible)
+void VkbQuickPopup::setVisible(bool visible)
 {
     QQuickPopup::setVisible(visible);
     if (visible)
         popupItem()->grabMouse();
 }
 
-void VkbInputPopup::componentComplete()
+void VkbQuickPopup::componentComplete()
 {
     QQuickPopup::componentComplete();
     updateButtons();
@@ -97,14 +97,14 @@ QQuickAbstractButton *buttonAt(QQuickItem *parent, const QPointF &globalPos)
     return nullptr;
 }
 
-void VkbInputPopup::mousePressEvent(QMouseEvent *event)
+void VkbQuickPopup::mousePressEvent(QMouseEvent *event)
 {
     QQuickPopup::mousePressEvent(event);
     updateCurrentButton(buttonAt(contentItem(), event->globalPos()));
     handlePress(m_currentButton);
 }
 
-void VkbInputPopup::mouseMoveEvent(QMouseEvent *event)
+void VkbQuickPopup::mouseMoveEvent(QMouseEvent *event)
 {
     QQuickPopup::mouseMoveEvent(event);
     QQuickAbstractButton *oldCurrent = m_currentButton;
@@ -115,7 +115,7 @@ void VkbInputPopup::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-void VkbInputPopup::mouseReleaseEvent(QMouseEvent *event)
+void VkbQuickPopup::mouseReleaseEvent(QMouseEvent *event)
 {
     QQuickPopup::mouseReleaseEvent(event);
     handleRelease(m_currentButton);
@@ -123,7 +123,7 @@ void VkbInputPopup::mouseReleaseEvent(QMouseEvent *event)
     close();
 }
 
-void VkbInputPopup::mouseUngrabEvent()
+void VkbQuickPopup::mouseUngrabEvent()
 {
     QQuickPopup::mouseUngrabEvent();
     handleCancel(m_currentButton);
@@ -131,46 +131,46 @@ void VkbInputPopup::mouseUngrabEvent()
     close();
 }
 
-void VkbInputPopup::handlePress(QQuickAbstractButton *button)
+void VkbQuickPopup::handlePress(QQuickAbstractButton *button)
 {
-    VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(button);
+    VkbQuickLayoutAttached *attached = VkbQuickLayoutAttached::qmlAttachedPropertiesObject(button);
     if (attached)
         emit keyPressed(attached->inputKey());
 }
 
-void VkbInputPopup::handleRelease(QQuickAbstractButton *button)
+void VkbQuickPopup::handleRelease(QQuickAbstractButton *button)
 {
-    VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(button);
+    VkbQuickLayoutAttached *attached = VkbQuickLayoutAttached::qmlAttachedPropertiesObject(button);
     if (attached)
         emit keyReleased(attached->inputKey());
 }
 
-void VkbInputPopup::handleCancel(QQuickAbstractButton *button)
+void VkbQuickPopup::handleCancel(QQuickAbstractButton *button)
 {
-    VkbInputLayoutAttached *attached = VkbInputLayoutAttached::qmlAttachedPropertiesObject(button);
+    VkbQuickLayoutAttached *attached = VkbQuickLayoutAttached::qmlAttachedPropertiesObject(button);
     if (attached)
         emit keyCanceled(attached->inputKey());
 }
 
-void VkbInputPopup::updateSpacing()
+void VkbQuickPopup::updateSpacing()
 {
-    m_layoutItem->setSpacing(spacing());
+    m_layout->setSpacing(spacing());
 }
 
-void VkbInputPopup::updateButtons()
+void VkbQuickPopup::updateButtons()
 {
     if (!isComponentComplete())
         return;
 
     QHash<VkbInputKey, QQuickAbstractButton *> newButtons;
-    QHash<VkbInputKey, QQuickAbstractButton *> oldButtons = m_layoutItem->buttons();
+    QHash<VkbInputKey, QQuickAbstractButton *> oldButtons = m_layout->buttons();
 
     QVector<VkbInputKey> row;
     for (const QString &text : qAsConst(m_alt)) {
         VkbInputKey key(text);
         QQuickAbstractButton *button = oldButtons.take(key);
         if (!button)
-            button = m_model->createButton(key, m_layoutItem);
+            button = m_model->createButton(key, m_layout);
         newButtons.insert(key, button);
         row += key;
     }
@@ -178,11 +178,11 @@ void VkbInputPopup::updateButtons()
     for (QQuickAbstractButton *button : qAsConst(oldButtons))
         button->deleteLater();
 
-    m_layoutItem->setLayout(VkbInputLayout(row));
-    m_layoutItem->setButtons(newButtons);
+    m_layout->setLayout(VkbInputLayout(row));
+    m_layout->setButtons(newButtons);
 }
 
-void VkbInputPopup::updateCurrentButton(QQuickAbstractButton *button)
+void VkbQuickPopup::updateCurrentButton(QQuickAbstractButton *button)
 {
     if (m_currentButton == button)
         return;

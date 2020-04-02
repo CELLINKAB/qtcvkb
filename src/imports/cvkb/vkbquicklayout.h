@@ -22,43 +22,49 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTLAYOUTATTACHED_H
-#define VKBINPUTLAYOUTATTACHED_H
+#ifndef VKBQUICKLAYOUT_H
+#define VKBQUICKLAYOUT_H
 
-#include <QtCore/qobject.h>
-#include <QtQml/qqml.h>
+#include <QtCore/qhash.h>
+#include <QtQml/qqmllist.h>
+#include <QtQuick/qquickitem.h>
 #include <QtCVkb/vkbinputlayout.h>
 
-class VkbInputLayoutAttached : public QObject
+QT_FORWARD_DECLARE_CLASS(QQuickAbstractButton)
+
+class VkbQuickLayout : public QQuickItem
 {
     Q_OBJECT
-    Q_PROPERTY(Qt::Key key READ key CONSTANT FINAL)
-    Q_PROPERTY(QString text READ text CONSTANT FINAL)
-    Q_PROPERTY(QStringList alt READ alt CONSTANT FINAL)
-    Q_PROPERTY(bool autoRepeat READ autoRepeat CONSTANT FINAL)
-    Q_PROPERTY(bool checkable READ isCheckable CONSTANT FINAL)
-    Q_PROPERTY(bool checked READ isChecked CONSTANT FINAL)
+    Q_PROPERTY(qreal spacing READ spacing WRITE setSpacing NOTIFY spacingChanged)
 
 public:
-    explicit VkbInputLayoutAttached(QObject *parent = nullptr);
+    explicit VkbQuickLayout(QQuickItem *parent = nullptr);
 
-    Qt::Key key() const;
-    QString text() const;
-    QStringList alt() const;
-    bool autoRepeat() const;
-    bool isCheckable() const;
-    bool isChecked() const;
+    qreal spacing() const;
+    void setSpacing(qreal spacing);
 
-    VkbInputKey inputKey() const;
-    void setInputKey(const VkbInputKey &key);
+    VkbInputLayout layout() const;
+    void setLayout(const VkbInputLayout &layout);
 
-    static VkbInputLayoutAttached *qmlAttachedProperties(QObject *object);
-    static VkbInputLayoutAttached *qmlAttachedPropertiesObject(QObject *object);
+    QHash<VkbInputKey, QQuickAbstractButton *> buttons() const;
+    void setButtons(const QHash<VkbInputKey, QQuickAbstractButton *> &buttons);
+
+signals:
+    void spacingChanged();
+    void layoutChanged();
+    void buttonsChanged();
+
+protected:
+    void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
+    void updatePolish() override;
 
 private:
-    VkbInputKey m_key;
+    void relayout();
+    void updateImplicitSize();
+
+    qreal m_spacing = 0;
+    VkbInputLayout m_layout;
+    QHash<VkbInputKey, QQuickAbstractButton *> m_buttons;
 };
 
-QML_DECLARE_TYPEINFO(VkbInputLayoutAttached, QML_HAS_ATTACHED_PROPERTIES)
-
-#endif // VKBINPUTLAYOUTATTACHED_H
+#endif // VKBQUICKLAYOUT_H

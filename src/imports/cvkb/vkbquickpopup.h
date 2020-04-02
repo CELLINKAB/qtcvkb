@@ -22,32 +22,32 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTPOPUP_H
-#define VKBINPUTPOPUP_H
+#ifndef VKBQUICKPOPUP_H
+#define VKBQUICKPOPUP_H
 
 #include <QtQuickTemplates2/private/qquickpopup_p.h>
 #include <QtQml/qqmllist.h>
 
 class VkbInputKey;
-class VkbInputModel;
-class VkbInputDelegate;
-class VkbInputLayoutItem;
+class VkbQuickModel;
+class VkbQuickDelegate;
+class VkbQuickLayout;
 
 QT_FORWARD_DECLARE_CLASS(QQuickAbstractButton)
 
-class VkbInputPopup : public QQuickPopup
+class VkbQuickPopup : public QQuickPopup
 {
     Q_OBJECT
     Q_PROPERTY(QStringList alt READ alt WRITE setAlt NOTIFY altChanged)
-    Q_PROPERTY(QQmlListProperty<VkbInputDelegate> delegates READ delegates)
+    Q_PROPERTY(QQmlListProperty<VkbQuickDelegate> delegates READ delegates)
 
 public:
-    explicit VkbInputPopup(QObject *parent = nullptr);
+    explicit VkbQuickPopup(QObject *parent = nullptr);
 
     QStringList alt() const;
     void setAlt(const QStringList &alt);
 
-    QQmlListProperty<VkbInputDelegate> delegates();
+    QQmlListProperty<VkbQuickDelegate> delegates();
 
     void setVisible(bool visible) override;
 
@@ -74,9 +74,9 @@ private:
     void updateCurrentButton(QQuickAbstractButton *button);
 
     QStringList m_alt;
-    VkbInputModel *m_model = nullptr;
-    VkbInputLayoutItem *m_layoutItem = nullptr;
+    VkbQuickModel *m_model = nullptr;
+    VkbQuickLayout *m_layout = nullptr;
     QQuickAbstractButton *m_currentButton = nullptr;
 };
 
-#endif // VKBINPUTPOPUP_H
+#endif // VKBQUICKPOPUP_H

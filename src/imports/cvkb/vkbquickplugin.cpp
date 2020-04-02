@@ -31,15 +31,15 @@
 #include <QtCVkb/vkbinputcontext.h>
 #include <QtCVkb/vkbinputstyle.h>
 
-#include "vkbinputdelegate.h"
-#include "vkbinputlayoutattached.h"
-#include "vkbinputpanel.h"
-#include "vkbinputpopup.h"
+#include "vkbquickdelegate.h"
+#include "vkbquicklayoutattached.h"
+#include "vkbquickpanel.h"
+#include "vkbquickpopup.h"
 
 static const int MajorVersion = 0;
 static const int MinorVersion = 1;
 
-class VkbQmlPlugin : public QQmlExtensionPlugin
+class VkbQuickPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
@@ -54,7 +54,7 @@ private:
     void registerStyles(const char *uri, int major, int minor);
 };
 
-void VkbQmlPlugin::registerTypes(const char *uri)
+void VkbQuickPlugin::registerTypes(const char *uri)
 {
     const QByteArray tmpl = QByteArray(uri) + ".Templates";
     registerTemplates(tmpl, MajorVersion, MinorVersion);
@@ -72,7 +72,7 @@ static inline QByteArray formatType(const char *typeName)
     return QByteArray(typeName) + " {}";
 }
 
-void VkbQmlPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
+void VkbQuickPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     const QByteArray qml = formatImport(uri, MajorVersion, MinorVersion) + ";" + formatType("InputPanel");
 
@@ -81,7 +81,7 @@ void VkbQmlPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
         return;
 
     inputContext->setInputPanelFactory([=](QObject *parent) {
-        VkbInputPanel *inputPanel = nullptr;
+        VkbQuickPanel *inputPanel = nullptr;
 
         QQmlComponent component(engine);
         component.setData(qml, QUrl());
@@ -94,9 +94,9 @@ void VkbQmlPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
         if (Q_UNLIKELY(!object))
             qWarning() << component.errorString();
 
-        inputPanel = qobject_cast<VkbInputPanel *>(object);
+        inputPanel = qobject_cast<VkbQuickPanel *>(object);
         if (Q_UNLIKELY(!inputPanel))
-            qWarning() << "QML InputPanel is not an instance of VkbInputPanel";
+            qWarning() << "QML InputPanel is not an instance of VkbQuickPanel";
         else
             inputPanel->setParent(parent);
 
@@ -105,16 +105,16 @@ void VkbQmlPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
     });
 }
 
-void VkbQmlPlugin::registerTemplates(const char *uri, int majorVersion, int minorVersion)
+void VkbQuickPlugin::registerTemplates(const char *uri, int majorVersion, int minorVersion)
 {
-    qmlRegisterType<VkbInputDelegate>(uri, majorVersion, minorVersion, "InputDelegate");
-    qmlRegisterUncreatableType<VkbInputLayoutAttached>(uri, majorVersion, minorVersion, "InputLayout", QStringLiteral("InputLayout is an attached property"));
-    qmlRegisterType<VkbInputPanel>(uri, majorVersion, minorVersion, "InputPanel");
-    qmlRegisterType<VkbInputPopup>(uri, majorVersion, minorVersion, "InputPopup");
+    qmlRegisterType<VkbQuickDelegate>(uri, majorVersion, minorVersion, "InputDelegate");
+    qmlRegisterUncreatableType<VkbQuickLayoutAttached>(uri, majorVersion, minorVersion, "InputLayout", QStringLiteral("InputLayout is an attached property"));
+    qmlRegisterType<VkbQuickPanel>(uri, majorVersion, minorVersion, "InputPanel");
+    qmlRegisterType<VkbQuickPopup>(uri, majorVersion, minorVersion, "InputPopup");
     qmlRegisterType<VkbInputStyle>(uri, majorVersion, minorVersion, "InputStyle");
 }
 
-void VkbQmlPlugin::registerRevisions(const char *uri, int majorVersion, int minorVersion)
+void VkbQuickPlugin::registerRevisions(const char *uri, int majorVersion, int minorVersion)
 {
     qmlRegisterRevision<QQuickPopup, QT_VERSION_MINOR>(uri, majorVersion, minorVersion);
 }
@@ -124,7 +124,7 @@ static const QString importPath(const char *uri)
     return QStringLiteral(":/qt-project.org/imports/%1").arg(QString::fromLatin1(uri).replace(QLatin1Char('.'), QLatin1Char('/')));
 }
 
-void VkbQmlPlugin::registerStyles(const char *uri, int majorVersion, int minorVersion)
+void VkbQuickPlugin::registerStyles(const char *uri, int majorVersion, int minorVersion)
 {
     QQuickStyleSelector selector;
     const QString style = QQuickStyle::name();
@@ -133,11 +133,11 @@ void VkbQmlPlugin::registerStyles(const char *uri, int majorVersion, int minorVe
     selector.setPaths(QQuickStyle::stylePathList() << importPath(uri));
 
     qmlRegisterType(selector.select(QStringLiteral("InputButton.qml")), uri, majorVersion, minorVersion, "InputButton");
-    qmlRegisterType<VkbInputDelegate>(uri, majorVersion, minorVersion, "InputDelegate");
-    qmlRegisterUncreatableType<VkbInputLayoutAttached>(uri, majorVersion, minorVersion, "InputLayout", QStringLiteral("InputLayout is an attached property"));
+    qmlRegisterType<VkbQuickDelegate>(uri, majorVersion, minorVersion, "InputDelegate");
+    qmlRegisterUncreatableType<VkbQuickLayoutAttached>(uri, majorVersion, minorVersion, "InputLayout", QStringLiteral("InputLayout is an attached property"));
     qmlRegisterType(selector.select(QStringLiteral("InputPanel.qml")), uri, majorVersion, minorVersion, "InputPanel");
     qmlRegisterType(selector.select(QStringLiteral("InputPopup.qml")), uri, majorVersion, minorVersion, "InputPopup");
     qmlRegisterSingletonType(selector.select(QStringLiteral("InputStyle.qml")), uri, majorVersion, minorVersion, "InputStyle");
 }
 
-#include "vkbqmlplugin.moc"
+#include "vkbquickplugin.moc"
