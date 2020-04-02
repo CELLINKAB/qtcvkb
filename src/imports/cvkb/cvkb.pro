@@ -1,6 +1,5 @@
 TARGET = cvkbquickmodule
 TARGETPATH = QtCellink/Vkb
-IMPORT_VERSION = 0.1
 
 QT += qml quick cvkb
 QT_PRIVATE += core-private gui-private qml-private quick-private quicktemplates2-private quickcontrols2-private
