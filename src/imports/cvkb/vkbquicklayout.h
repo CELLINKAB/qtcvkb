@@ -37,7 +37,6 @@ QT_FORWARD_DECLARE_CLASS(QQuickAbstractButton)
 class VkbQuickLayout : public QQuickItem
 {
     Q_OBJECT
-    Q_PROPERTY(qreal spacing READ spacing WRITE setSpacing NOTIFY spacingChanged)
 
 public:
     explicit VkbQuickLayout(QQuickItem *parent = nullptr);
@@ -45,19 +44,14 @@ public:
     qreal spacing() const;
     void setSpacing(qreal spacing);
 
-    VkbInputLayout layout() const;
-    void setLayout(const VkbInputLayout &layout);
+    VkbInputLayout inputLayout() const;
+    void setInputLayout(const VkbInputLayout &inputLayout);
 
     QHash<VkbInputKey, QQuickAbstractButton *> buttons() const;
     void setButtons(const QHash<VkbInputKey, QQuickAbstractButton *> &buttons);
 
     static VkbQuickLayoutAttached *qmlAttachedProperties(QObject *object);
     static VkbQuickLayoutAttached *qmlAttachedPropertiesObject(QObject *object);
-
-signals:
-    void spacingChanged();
-    void layoutChanged();
-    void buttonsChanged();
 
 protected:
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
@@ -68,7 +62,7 @@ private:
     void updateImplicitSize();
 
     qreal m_spacing = 0;
-    VkbInputLayout m_layout;
+    VkbInputLayout m_inputLayout;
     QHash<VkbInputKey, QQuickAbstractButton *> m_buttons;
 };
 

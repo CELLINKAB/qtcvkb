@@ -44,23 +44,21 @@ void VkbQuickLayout::setSpacing(qreal spacing)
     m_spacing = spacing;
     polish();
     updateImplicitSize();
-    emit spacingChanged();
 }
 
-VkbInputLayout VkbQuickLayout::layout() const
+VkbInputLayout VkbQuickLayout::inputLayout() const
 {
-    return m_layout;
+    return m_inputLayout;
 }
 
-void VkbQuickLayout::setLayout(const VkbInputLayout &layout)
+void VkbQuickLayout::setInputLayout(const VkbInputLayout &inputLayout)
 {
-    if (m_layout == layout)
+    if (m_inputLayout == inputLayout)
         return;
 
-    m_layout = layout;
+    m_inputLayout = inputLayout;
     polish();
     updateImplicitSize();
-    emit layoutChanged();
 }
 
 QHash<VkbInputKey, QQuickAbstractButton *> VkbQuickLayout::buttons() const
@@ -76,7 +74,6 @@ void VkbQuickLayout::setButtons(const QHash<VkbInputKey, QQuickAbstractButton *>
     m_buttons = buttons;
     polish();
     updateImplicitSize();
-    emit buttonsChanged();
 }
 
 
@@ -108,7 +105,7 @@ void VkbQuickLayout::updatePolish()
 
 void VkbQuickLayout::relayout()
 {
-    VkbInputGrid grid(m_layout);
+    VkbInputGrid grid(m_inputLayout);
     grid.setSize(width(), height());
     grid.setSpacing(m_spacing);
 
@@ -131,11 +128,11 @@ void VkbQuickLayout::updateImplicitSize()
     qreal width = 0;
     qreal height = 0;
 
-    const int rows = m_layout.rowCount();
+    const int rows = m_inputLayout.rowCount();
     for (int r = 0; r < rows; ++r) {
         qreal rowWidth = 0;
         qreal rowHeight = 0;
-        const QVector<VkbInputKey> row = m_layout.rowAt(r);
+        const QVector<VkbInputKey> row = m_inputLayout.rowAt(r);
         for (int c = 0; c < row.count(); ++c) {
             const VkbInputKey key = row.at(c);
             QQuickAbstractButton *button = m_buttons.value(key);

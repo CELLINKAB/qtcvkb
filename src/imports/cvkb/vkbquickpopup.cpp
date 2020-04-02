@@ -177,7 +177,7 @@ void VkbQuickPopup::updateButtons()
     for (QQuickAbstractButton *button : qAsConst(oldButtons))
         button->deleteLater();
 
-    m_layout->setLayout(VkbInputLayout(row));
+    m_layout->setInputLayout(VkbInputLayout(row));
     m_layout->setButtons(newButtons);
 }
 

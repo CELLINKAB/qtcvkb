@@ -83,15 +83,15 @@ Qt::LayoutDirection VkbQuickPanel::inputDirection() const
 
 VkbInputLayout VkbQuickPanel::layout() const
 {
-    return m_layout->layout();
+    return m_layout->inputLayout();
 }
 
 void VkbQuickPanel::setLayout(const VkbInputLayout &layout)
 {
-    if (m_layout->layout() == layout)
+    if (m_layout->inputLayout() == layout)
         return;
 
-    m_layout->setLayout(layout);
+    m_layout->setInputLayout(layout);
     updateButtons();
     emit layoutChanged();
 }
@@ -183,7 +183,7 @@ void VkbQuickPanel::updateButtons()
     QHash<VkbInputKey, QQuickAbstractButton *> newButtons;
     QHash<VkbInputKey, QQuickAbstractButton *> oldButtons = m_layout->buttons();
 
-    VkbInputLayout layout = m_layout->layout();
+    VkbInputLayout layout = m_layout->inputLayout();
     for (int r = 0; r < layout.rowCount(); ++r) {
         const QVector<VkbInputKey> row = layout.rowAt(r);
         for (int c = 0; c < row.count(); ++c) {
