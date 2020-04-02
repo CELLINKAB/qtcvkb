@@ -37,25 +37,6 @@ VkbQuickEditor::VkbQuickEditor(QObject *parent) : QObject(parent)
     }
 }
 
-int VkbQuickEditor::cursorPositionAt(const QPointF &pos) const
-{
-    QQuickTextField *textField = qobject_cast<QQuickTextField *>(parent());
-    if (!textField)
-        return -1;
-
-    QQuickTextInputPrivate *d = QQuickTextInputPrivate::get(textField);
-    return d->positionAt(pos);
-}
-
-void VkbQuickEditor::setCursorPosition(int cursorPosition)
-{
-    QQuickTextField *textField = qobject_cast<QQuickTextField *>(parent());
-    if (!textField)
-        return;
-
-    textField->setCursorPosition(cursorPosition);
-}
-
 void VkbQuickEditor::selectWord()
 {
     QQuickTextField *textField = qobject_cast<QQuickTextField *>(parent());

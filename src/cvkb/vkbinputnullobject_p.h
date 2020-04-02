@@ -34,8 +34,6 @@
 class VkbInputNullEditor : public VkbInputEditor
 {
 public:
-    int cursorPositionAt(const QPointF &) const override { return -1; }
-    void setCursorPosition(int) override { }
     void selectWord() override { }
     void pressed(const QPointF &) override { }
     void released(const QPointF &) override { }

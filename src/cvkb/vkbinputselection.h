@@ -85,8 +85,9 @@ private:
     void updateInputAnchor();
     void destroyInputEditor();
 
-    void moveCursor(const QPointF &cursorPos);
-    void moveSelection(const QPointF &cursorPos, const QPointF &anchorPos);
+    void moveCursorPosition(int cursorPosition);
+    void moveCursorAt(const QPointF &cursorPos);
+    void moveSelectionAt(const QPointF &cursorPos, const QPointF &anchorPos);
 
     bool m_enabled = true;
     bool m_visible = false;

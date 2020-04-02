@@ -38,9 +38,6 @@ class VkbWidgetsEditor : public QObject, public VkbInputEditor
 public:
     explicit VkbWidgetsEditor(QObject *parent = nullptr);
 
-    int cursorPositionAt(const QPointF &pos) const override;
-    void setCursorPosition(int cursorPosition) override;
-
     void selectWord() override;
 
 signals:

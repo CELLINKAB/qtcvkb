@@ -37,24 +37,6 @@ VkbWidgetsEditor::VkbWidgetsEditor(QObject *parent)
     parent->installEventFilter(this);
 }
 
-int VkbWidgetsEditor::cursorPositionAt(const QPointF &pos) const
-{
-    QLineEdit *lineEdit = qobject_cast<QLineEdit *>(parent());
-    if (!lineEdit)
-        return -1;
-
-    return lineEdit->cursorPositionAt(pos.toPoint());
-}
-
-void VkbWidgetsEditor::setCursorPosition(int cursorPosition)
-{
-    QLineEdit *lineEdit = qobject_cast<QLineEdit *>(parent());
-    if (!lineEdit)
-        return;
-
-    lineEdit->setCursorPosition(cursorPosition);
-}
-
 void VkbWidgetsEditor::selectWord()
 {
     QLineEdit *lineEdit = qobject_cast<QLineEdit *>(parent());

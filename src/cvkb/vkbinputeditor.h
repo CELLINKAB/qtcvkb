@@ -36,9 +36,6 @@ class Q_CVKB_EXPORT VkbInputEditor
 public:
     virtual ~VkbInputEditor() = default;
 
-    virtual int cursorPositionAt(const QPointF &pos) const = 0;
-    virtual void setCursorPosition(int cursorPosition) = 0;
-
     virtual void selectWord() = 0;
 
 signals:
