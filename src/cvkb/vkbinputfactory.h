@@ -25,11 +25,22 @@
 #ifndef VKBINPUTFACTORY_H
 #define VKBINPUTFACTORY_H
 
-#include <QtCore/qglobal.h>
-#include <functional>
+#include <QtCVkb/vkbinputglobal.h>
+#include <QtCore/qscopedpointer.h>
 
 QT_FORWARD_DECLARE_CLASS(QObject)
 
-typedef std::function<QObject *(QObject *)> VkbInputFactory;
+class VkbInputFactoryPrivate;
+
+class Q_CVKB_EXPORT VkbInputFactory
+{
+public:
+    VkbInputFactory();
+    virtual ~VkbInputFactory();
+
+    static VkbInputFactory *instance();
+
+    virtual QObject *createInputPanel(QObject *parent);
+};
 
 #endif // VKBINPUTFACTORY_H

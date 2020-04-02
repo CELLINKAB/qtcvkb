@@ -14,5 +14,6 @@ SOURCES += \
     $$PWD/vkbinputcontext_p.cpp \
     $$PWD/vkbinputgrid.cpp \
     $$PWD/vkbinputengine.cpp \
+    $$PWD/vkbinputfactory.cpp \
     $$PWD/vkbinputlayout.cpp \
     $$PWD/vkbinputstyle.cpp

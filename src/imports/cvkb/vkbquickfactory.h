@@ -22,36 +22,28 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTCONTEXT_P_H
-#define VKBINPUTCONTEXT_P_H
+#ifndef VKBQUICKFACTORY_H
+#define VKBQUICKFACTORY_H
 
-#include <QtCVkb/vkbinputcontext.h>
-#include <QtCVkb/vkbinputengine.h>
-#include <QtCVkb/vkbinputpanelinterface.h>
-#include <QtCore/qpointer.h>
+#include <QtCore/qobject.h>
+#include <QtCVkb/vkbinputfactory.h>
 
-class VkbInputPanelInterface;
+QT_FORWARD_DECLARE_CLASS(QQmlEngine)
 
-class VkbInputContextPrivate
+class VkbQuickFactory : public VkbInputFactory
 {
-    Q_DECLARE_PUBLIC(VkbInputContext)
-
 public:
-    VkbInputPanelInterface *inputPanel() const;
-    VkbInputPanelInterface *createInputPanel();
+    void init(const QByteArray &uri, int majorVersion, int minorVersion, QQmlEngine *engine);
 
-    bool loadInputLayout();
+    QObject *createInputPanel(QObject *parent) override;
 
-    // ### TODO: mark QPlatformInputContext::emitXxx() as slots
-    void _q_emitInputPanelVisibleChanged();
-    void _q_emitAnimatingChanged();
-    void _q_emitKeyboardRectChanged();
-    void _q_emitLocaleChanged();
-    void _q_emitInputDirectionChanged();
+private:
+    QObject *createInputObject(const QByteArray &typeName, QObject *parent);
 
-    VkbInputContext *q_ptr = nullptr;
-    QPointer<QObject> inputPanelObject;
-    VkbInputEngine inputEngine;
+    int m_majorVersion = 0;
+    int m_minorVersion = 0;
+    QByteArray m_uri;
+    QQmlEngine *m_engine = nullptr;
 };
 
-#endif // VKBINPUTCONTEXT_P_H
+#endif // VKBQUICKFACTORY_H

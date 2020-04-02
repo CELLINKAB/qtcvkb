@@ -23,15 +23,12 @@
  */
 
 #include <QtQml/qqmlextensionplugin.h>
-#include <QtQml/qqmlcomponent.h>
-#include <QtQml/qqmlcontext.h>
-#include <QtQml/qqmlengine.h>
 #include <QtQuickControls2/qquickstyle.h>
 #include <QtQuickControls2/private/qquickstyleselector_p.h>
-#include <QtCVkb/vkbinputcontext.h>
 #include <QtCVkb/vkbinputstyle.h>
 
 #include "vkbquickdelegate.h"
+#include "vkbquickfactory.h"
 #include "vkbquicklayout.h"
 #include "vkbquickpanel.h"
 #include "vkbquickpopup.h"
@@ -52,6 +49,8 @@ private:
     void registerTemplates(const char *uri, int major, int minor);
     void registerRevisions(const char *uri, int major, int minor);
     void registerStyles(const char *uri, int major, int minor);
+
+    VkbQuickFactory m_factory;
 };
 
 void VkbQuickPlugin::registerTypes(const char *uri)
@@ -62,47 +61,9 @@ void VkbQuickPlugin::registerTypes(const char *uri)
     registerStyles(uri, MajorVersion, MinorVersion);
 }
 
-static inline QByteArray formatImport(const char *uri, int majorVersion, int minorVersion)
-{
-    return "import " + QByteArray(uri) + " " + QByteArray::number(majorVersion) + "." + QByteArray::number(minorVersion);
-}
-
-static inline QByteArray formatType(const char *typeName)
-{
-    return QByteArray(typeName) + " {}";
-}
-
 void VkbQuickPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
-    const QByteArray qml = formatImport(uri, MajorVersion, MinorVersion) + ";" + formatType("InputPanel");
-
-    VkbInputContext *inputContext = VkbInputContext::instance();
-    if (!inputContext)
-        return;
-
-    inputContext->setInputPanelFactory([=](QObject *parent) {
-        VkbQuickPanel *inputPanel = nullptr;
-
-        QQmlComponent component(engine);
-        component.setData(qml, QUrl());
-
-        QQmlContext *creationContext = qmlContext(parent);
-        QQmlContext *context = new QQmlContext(creationContext, parent);
-        context->setContextObject(parent);
-
-        QObject *object = component.beginCreate(context);
-        if (Q_UNLIKELY(!object))
-            qWarning() << component.errorString();
-
-        inputPanel = qobject_cast<VkbQuickPanel *>(object);
-        if (Q_UNLIKELY(!inputPanel))
-            qWarning() << "QML InputPanel is not an instance of VkbQuickPanel";
-        else
-            inputPanel->setParent(parent);
-
-        component.completeCreate();
-        return inputPanel;
-    });
+    m_factory.init(uri, MajorVersion, MinorVersion, engine);
 }
 
 void VkbQuickPlugin::registerTemplates(const char *uri, int majorVersion, int minorVersion)

@@ -18,6 +18,7 @@ OTHER_FILES += \
 
 HEADERS += \
     $$PWD/vkbquickdelegate.h \
+    $$PWD/vkbquickfactory.h \
     $$PWD/vkbquicklayout.h \
     $$PWD/vkbquickmodel.h \
     $$PWD/vkbquickpanel.h \
@@ -25,6 +26,7 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/vkbquickdelegate.cpp \
+    $$PWD/vkbquickfactory.cpp \
     $$PWD/vkbquicklayout.cpp \
     $$PWD/vkbquickmodel.cpp \
     $$PWD/vkbquickpanel.cpp \

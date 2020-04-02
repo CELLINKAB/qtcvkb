@@ -49,18 +49,6 @@ VkbInputContext *VkbInputContext::instance()
     return qobject_cast<VkbInputContext *>(QGuiApplicationPrivate::platformIntegration()->inputContext());
 }
 
-VkbInputFactory VkbInputContext::inputPanelFactory() const
-{
-    Q_D(const VkbInputContext);
-    return d->inputPanelFactory;
-}
-
-void VkbInputContext::setInputPanelFactory(VkbInputFactory inputPanelFactory)
-{
-    Q_D(VkbInputContext);
-    d->inputPanelFactory = inputPanelFactory;
-}
-
 bool VkbInputContext::isValid() const
 {
     return true;

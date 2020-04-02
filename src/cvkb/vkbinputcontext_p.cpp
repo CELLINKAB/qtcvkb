@@ -23,6 +23,7 @@
  */
 
 #include "vkbinputcontext_p.h"
+#include "vkbinputfactory.h"
 #include "vkbinputlayout.h"
 
 class VkbNullInputPanel : public VkbInputPanelInterface
@@ -61,8 +62,8 @@ VkbInputPanelInterface *VkbInputContextPrivate::inputPanel() const
 VkbInputPanelInterface *VkbInputContextPrivate::createInputPanel()
 {
     Q_Q(VkbInputContext);
-    if (inputPanelObject.isNull() && inputPanelFactory) {
-        inputPanelObject = inputPanelFactory(QGuiApplication::focusWindow());
+    if (inputPanelObject.isNull()) {
+        inputPanelObject = VkbInputFactory::instance()->createInputPanel(QGuiApplication::focusWindow());
         if (inputPanelObject) {
             QObject::connect(inputPanelObject, SIGNAL(keyPressed(VkbInputKey)), &inputEngine, SLOT(handleKeyPress(VkbInputKey)));
             QObject::connect(inputPanelObject, SIGNAL(keyReleased(VkbInputKey)), &inputEngine, SLOT(handleKeyRelease(VkbInputKey)));
