@@ -1,2 +1,2 @@
 # qtcvkb
-Experimental VKB for Qt Quick
+Experimental VKB for Qt

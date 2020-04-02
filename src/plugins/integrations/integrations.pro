@@ -1,3 +1,4 @@
 TEMPLATE = subdirs
 SUBDIRS += \
-    quick
+    quick \
+    widgets
