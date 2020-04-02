@@ -1,4 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS += \
-    quick \
-    widgets
+qtHaveModule(quick): SUBDIRS += quick
+qtHaveModule(widgets): SUBDIRS += widgets

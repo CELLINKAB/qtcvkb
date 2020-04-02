@@ -1,8 +1,9 @@
 TEMPLATE = subdirs
 SUBDIRS += \
     cvkb \
-    imports \
     plugins
+
+qtHaveModule(quick): SUBDIRS += imports
 
 imports.depends = cvkb
 plugins.depends = cvkb
