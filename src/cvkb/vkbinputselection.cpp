@@ -27,37 +27,13 @@
 #include "vkbinputeditor.h"
 #include "vkbinputfactory.h"
 #include "vkbinputhandle.h"
+#include "vkbinputnullobject_p.h"
 
 #include <QtGui/qguiapplication.h>
 #include <QtGui/qinputmethod.h>
 #include <QtGui/qwindow.h>
 
 static const int Timeout = 5000;
-
-class VkbNullInputHandle : public VkbInputHandle
-{
-public:
-    void show() override { }
-    void hide() override { }
-    QPointF pos() const override { return QPointF(); }
-    QSizeF size() const override { return QSizeF(); }
-    void move(const QPointF &) override { }
-    void pressed(const QPointF &) override { }
-    void released(const QPointF &) override { }
-    void moved(const QPointF &) override { }
-    void canceled() override { }
-};
-
-class VkbNullInputEditor : public VkbInputEditor
-{
-public:
-    int cursorPositionAt(const QPointF &) const override { return -1; }
-    void setCursorPosition(int) override { }
-    void selectWord() override { }
-    void pressed(const QPointF &) override { }
-    void released(const QPointF &) override { }
-    void pressAndHold(const QPointF &) override { }
-};
 
 VkbInputSelection::VkbInputSelection(QObject *parent) : QObject(parent)
 {
@@ -182,8 +158,8 @@ VkbInputEditor *VkbInputSelection::inputEditor() const
 {
     VkbInputEditor *inputEditor = qobject_cast<VkbInputEditor *>(m_inputEditorObject);
     if (!inputEditor) {
-        static VkbNullInputEditor nullInputEditor;
-        return &nullInputEditor;
+        static VkbInputNullEditor nullEditor;
+        return &nullEditor;
     }
     return inputEditor;
 }
@@ -192,8 +168,8 @@ VkbInputHandle *VkbInputSelection::inputCursor() const
 {
     VkbInputHandle *inputCursor = qobject_cast<VkbInputHandle *>(m_inputCursorObject);
     if (!inputCursor) {
-        static VkbNullInputHandle nullInputHandle;
-        return &nullInputHandle;
+        static VkbInputNullHandle nullCursor;
+        return &nullCursor;
     }
     return inputCursor;
 }
@@ -202,8 +178,8 @@ VkbInputHandle *VkbInputSelection::inputAnchor() const
 {
     VkbInputHandle *inputAnchor = qobject_cast<VkbInputHandle *>(m_inputAnchorObject);
     if (!inputAnchor) {
-        static VkbNullInputHandle nullInputHandle;
-        return &nullInputHandle;
+        static VkbInputNullHandle nullAnchor;
+        return &nullAnchor;
     }
     return inputAnchor;
 }

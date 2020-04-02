@@ -17,6 +17,7 @@ HEADERS += \
     $$PWD/vkbinputhandle.h \
     $$PWD/vkbinputkey.h \
     $$PWD/vkbinputlayout.h \
+    $$PWD/vkbinputnullobject_p.h \
     $$PWD/vkbinputpanel.h \
     $$PWD/vkbinputselection.h \
     $$PWD/vkbinputstyle.h

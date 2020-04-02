@@ -25,36 +25,14 @@
 #include "vkbinputcontext_p.h"
 #include "vkbinputfactory.h"
 #include "vkbinputlayout.h"
-
-class VkbNullInputPanel : public VkbInputPanel
-{
-public:
-    bool isVisible() const override { return false; }
-    void setVisible(bool) override { }
-    bool isAnimating() const override { return false; }
-    QRectF rect() const override { return QRectF(); }
-    QLocale locale() const override { return QLocale(); }
-    Qt::LayoutDirection inputDirection() const override { return Qt::LeftToRight; }
-    VkbInputLayout layout() const override { return VkbInputLayout(); }
-    void setLayout(const VkbInputLayout &) override { }
-    void visibleChanged() override { }
-    void animatingChanged() override { }
-    void rectChanged() override { }
-    void localeChanged() override { }
-    void inputDirectionChanged() override { }
-    void layoutChanged() override { }
-    void keyPressed(const VkbInputKey &) override { }
-    void keyReleased(const VkbInputKey &) override { }
-    void keyCanceled(const VkbInputKey &) override { }
-    void keyPressAndHold(const VkbInputKey &) override { }
-};
+#include "vkbinputnullobject_p.h"
 
 VkbInputPanel *VkbInputContextPrivate::inputPanel() const
 {
     VkbInputPanel *inputPanel = qobject_cast<VkbInputPanel *>(inputPanelObject);
     if (!inputPanel) {
-        static VkbNullInputPanel nullInputPanel;
-        return &nullInputPanel;
+        static VkbInputNullPanel nullPanel;
+        return &nullPanel;
     }
     return inputPanel;
 }
@@ -62,7 +40,7 @@ VkbInputPanel *VkbInputContextPrivate::inputPanel() const
 VkbInputPanel *VkbInputContextPrivate::createInputPanel()
 {
     Q_Q(VkbInputContext);
-    if (inputPanelObject.isNull()) {
+    if (!inputPanelObject) {
         inputPanelObject = VkbInputFactory::instance()->createInputPanel(QGuiApplication::focusWindow());
         if (inputPanelObject) {
             QObject::connect(inputPanelObject, SIGNAL(keyPressed(VkbInputKey)), &inputEngine, SLOT(handleKeyPress(VkbInputKey)));
