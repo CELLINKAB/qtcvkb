@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     engine.addImportPath(IMPORT_PATH);
-    engine.load(QUrl("qrc:/testapp.qml"));
+    engine.load(QUrl("qrc:/quicktestapp.qml"));
     if (engine.rootObjects().isEmpty())
         return -1;
 

@@ -1,12 +1,12 @@
 TEMPLATE = app
-TARGET = testapp
+TARGET = quicktestapp
 QT += quick cvkb
 
 SOURCES += \
-    testapp.cpp
+    quicktestapp.cpp
 
 RESOURCES += \
-    testapp.qml
+    quicktestapp.qml
 
 load(qt_build_paths)
 
