@@ -22,28 +22,35 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTFACTORY_H
-#define VKBINPUTFACTORY_H
+import QtQuick 2.14
+import QtQuick.Controls 2.14
+import QtCellink.Vkb 0.1
+import QtCellink.Vkb.Templates 0.1 as T
 
-#include <QtCVkb/vkbinputglobal.h>
-#include <QtCore/qscopedpointer.h>
+T.InputHandle {
+    id: control
 
-QT_FORWARD_DECLARE_CLASS(QObject)
+    implicitWidth: contentWidth + leftPadding + rightPadding
+    implicitHeight: contentHeight + topPadding + bottomPadding
 
-class VkbInputFactoryPrivate;
+    leftPadding: 10
+    rightPadding: 10
+    bottomPadding: 10
 
-class Q_CVKB_EXPORT VkbInputFactory
-{
-public:
-    VkbInputFactory();
-    virtual ~VkbInputFactory();
+    scale: 0
+    transformOrigin: Popup.Top
 
-    static VkbInputFactory *instance();
+    enter: Transition {
+        NumberAnimation { property: "scale"; to: 1; duration: 125 }
+    }
 
-    virtual QObject *createInputPanel(QObject *parent);
-    virtual QObject *createInputEditor(QObject *parent);
-    virtual QObject *createInputCursor(QObject *parent);
-    virtual QObject *createInputAnchor(QObject *parent);
-};
+    exit: Transition {
+        NumberAnimation { property: "scale"; to: 0; duration: 125 }
+    }
 
-#endif // VKBINPUTFACTORY_H
+    contentItem: Label {
+        text: "\u26ca"
+        rotation: 180
+        font.pixelSize: Qt.application.font.pixelSize * 1.5
+    }
+}

@@ -36,6 +36,9 @@ public:
     void init(const QByteArray &uri, int majorVersion, int minorVersion, QQmlEngine *engine);
 
     QObject *createInputPanel(QObject *parent) override;
+    QObject *createInputEditor(QObject *parent) override;
+    QObject *createInputCursor(QObject *parent) override;
+    QObject *createInputAnchor(QObject *parent) override;
 
 private:
     QObject *createInputObject(const QByteArray &typeName, QObject *parent);

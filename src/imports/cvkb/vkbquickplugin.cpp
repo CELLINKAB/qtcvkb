@@ -28,7 +28,9 @@
 #include <QtCVkb/vkbinputstyle.h>
 
 #include "vkbquickdelegate.h"
+#include "vkbquickeditor.h"
 #include "vkbquickfactory.h"
+#include "vkbquickhandle.h"
 #include "vkbquicklayout.h"
 #include "vkbquickpanel.h"
 #include "vkbquickpopup.h"
@@ -69,6 +71,7 @@ void VkbQuickPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 void VkbQuickPlugin::registerTemplates(const char *uri, int majorVersion, int minorVersion)
 {
     qmlRegisterType<VkbQuickDelegate>(uri, majorVersion, minorVersion, "InputDelegate");
+    qmlRegisterType<VkbQuickHandle>(uri, majorVersion, minorVersion, "InputHandle");
     qmlRegisterAnonymousType<VkbQuickLayoutAttached>(uri, majorVersion);
     qmlRegisterUncreatableType<VkbQuickLayout>(uri, majorVersion, minorVersion, "InputLayout", QStringLiteral("InputLayout is an attached property"));
     qmlRegisterType<VkbQuickPanel>(uri, majorVersion, minorVersion, "InputPanel");
@@ -94,7 +97,9 @@ void VkbQuickPlugin::registerStyles(const char *uri, int majorVersion, int minor
         selector.addSelector(style);
     selector.setPaths(QQuickStyle::stylePathList() << importPath(uri));
 
+    qmlRegisterType(selector.select(QStringLiteral("InputAnchor.qml")), uri, majorVersion, minorVersion, "InputAnchor");
     qmlRegisterType(selector.select(QStringLiteral("InputButton.qml")), uri, majorVersion, minorVersion, "InputButton");
+    qmlRegisterType(selector.select(QStringLiteral("InputCursor.qml")), uri, majorVersion, minorVersion, "InputCursor");
     qmlRegisterType<VkbQuickDelegate>(uri, majorVersion, minorVersion, "InputDelegate");
     qmlRegisterAnonymousType<VkbQuickLayoutAttached>(uri, majorVersion);
     qmlRegisterUncreatableType<VkbQuickLayout>(uri, majorVersion, minorVersion, "InputLayout", QStringLiteral("InputLayout is an attached property"));

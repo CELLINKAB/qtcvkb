@@ -22,28 +22,35 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTFACTORY_H
-#define VKBINPUTFACTORY_H
+#ifndef VKBINPUTHANDLE_H
+#define VKBINPUTHANDLE_H
 
 #include <QtCVkb/vkbinputglobal.h>
-#include <QtCore/qscopedpointer.h>
+#include <QtCore/qobject.h>
 
-QT_FORWARD_DECLARE_CLASS(QObject)
+QT_FORWARD_DECLARE_CLASS(QPointF)
+QT_FORWARD_DECLARE_CLASS(QSizeF)
 
-class VkbInputFactoryPrivate;
-
-class Q_CVKB_EXPORT VkbInputFactory
+class Q_CVKB_EXPORT VkbInputHandle
 {
 public:
-    VkbInputFactory();
-    virtual ~VkbInputFactory();
+    virtual ~VkbInputHandle() = default;
 
-    static VkbInputFactory *instance();
+    virtual void show() = 0;
+    virtual void hide() = 0;
 
-    virtual QObject *createInputPanel(QObject *parent);
-    virtual QObject *createInputEditor(QObject *parent);
-    virtual QObject *createInputCursor(QObject *parent);
-    virtual QObject *createInputAnchor(QObject *parent);
+    virtual QPointF pos() const = 0;
+    virtual QSizeF size() const = 0;
+    virtual void move(const QPointF &pos) = 0;
+
+signals:
+    virtual void pressed(const QPointF &pos) = 0;
+    virtual void released(const QPointF &pos) = 0;
+    virtual void moved(const QPointF &pos) = 0;
+    virtual void canceled() = 0;
 };
 
-#endif // VKBINPUTFACTORY_H
+#define VkbInputHandle_iid "VkbInputHandle/0.1"
+Q_DECLARE_INTERFACE(VkbInputHandle, VkbInputHandle_iid)
+
+#endif // VKBINPUTHANDLE_H

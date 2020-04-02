@@ -22,28 +22,32 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTFACTORY_H
-#define VKBINPUTFACTORY_H
+#ifndef VKBINPUTEDITOR_H
+#define VKBINPUTEDITOR_H
 
 #include <QtCVkb/vkbinputglobal.h>
-#include <QtCore/qscopedpointer.h>
+#include <QtCore/qobject.h>
 
-QT_FORWARD_DECLARE_CLASS(QObject)
+QT_FORWARD_DECLARE_CLASS(QPointF)
+QT_FORWARD_DECLARE_CLASS(QSizeF)
 
-class VkbInputFactoryPrivate;
-
-class Q_CVKB_EXPORT VkbInputFactory
+class Q_CVKB_EXPORT VkbInputEditor
 {
 public:
-    VkbInputFactory();
-    virtual ~VkbInputFactory();
+    virtual ~VkbInputEditor() = default;
 
-    static VkbInputFactory *instance();
+    virtual int cursorPositionAt(const QPointF &pos) const = 0;
+    virtual void setCursorPosition(int cursorPosition) = 0;
 
-    virtual QObject *createInputPanel(QObject *parent);
-    virtual QObject *createInputEditor(QObject *parent);
-    virtual QObject *createInputCursor(QObject *parent);
-    virtual QObject *createInputAnchor(QObject *parent);
+    virtual void selectWord() = 0;
+
+signals:
+    virtual void pressed(const QPointF &pos) = 0;
+    virtual void released(const QPointF &pos) = 0;
+    virtual void pressAndHold(const QPointF &pos) = 0;
 };
 
-#endif // VKBINPUTFACTORY_H
+#define VkbInputEditor_iid "VkbInputEditor/0.1"
+Q_DECLARE_INTERFACE(VkbInputEditor, VkbInputEditor_iid)
+
+#endif // VKBINPUTEDITOR_H

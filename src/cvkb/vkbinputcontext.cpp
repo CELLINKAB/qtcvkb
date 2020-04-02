@@ -82,8 +82,10 @@ void VkbInputContext::invokeAction(QInputMethod::Action action, int cursorPositi
 bool VkbInputContext::filterEvent(const QEvent *event)
 {
     Q_D(VkbInputContext);
-    if (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease)
+    if (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease) {
         d->inputEngine.setKeyboardModifiers(static_cast<const QKeyEvent *>(event)->modifiers());
+        d->inputSelection.hide();
+    }
 
     return QPlatformInputContext::filterEvent(event);
 }
@@ -133,17 +135,21 @@ Qt::LayoutDirection VkbInputContext::inputDirection() const
 void VkbInputContext::setFocusObject(QObject *focusObject)
 {
     Q_D(VkbInputContext);
+    bool enabled = false;
+    Qt::InputMethodHints inputMethodHints = Qt::ImhNone;
     if (focusObject) {
         QInputMethodQueryEvent event(Qt::ImEnabled | Qt::ImHints);
         QCoreApplication::sendEvent(focusObject, &event);
-        if (!event.value(Qt::ImEnabled).toBool())
-            hideInputPanel();
-
-        Qt::InputMethodHints inputMethodHints = static_cast<Qt::InputMethodHints>(event.value(Qt::ImHints).toUInt());
-        d->inputEngine.setInputMethodHints(inputMethodHints);
-    } else {
-        hideInputPanel();
+        enabled = event.value(Qt::ImEnabled).toBool();
+        inputMethodHints = static_cast<Qt::InputMethodHints>(event.value(Qt::ImHints).toUInt());
     }
+
+    if (!enabled)
+        hideInputPanel();
+
+    d->inputEngine.setInputMethodHints(inputMethodHints);
+    d->inputSelection.setEnabled(enabled && !inputMethodHints.testFlag(Qt::ImhNoTextHandles));
+    d->inputSelection.setFocusObject(focusObject);
 }
 
 #include "moc_vkbinputcontext.cpp"

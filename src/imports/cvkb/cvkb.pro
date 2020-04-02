@@ -8,7 +8,9 @@ QT_PRIVATE += core-private gui-private qml-private quick-private quicktemplates2
 DEFINES += QT_NO_CAST_TO_ASCII QT_NO_CAST_FROM_ASCII
 
 QML_FILES += \
+    $$PWD/InputAnchor.qml \
     $$PWD/InputButton.qml \
+    $$PWD/InputCursor.qml \
     $$PWD/InputPanel.qml \
     $$PWD/InputPopup.qml \
     $$PWD/InputStyle.qml
@@ -18,7 +20,9 @@ OTHER_FILES += \
 
 HEADERS += \
     $$PWD/vkbquickdelegate.h \
+    $$PWD/vkbquickeditor.h \
     $$PWD/vkbquickfactory.h \
+    $$PWD/vkbquickhandle.h \
     $$PWD/vkbquicklayout.h \
     $$PWD/vkbquickmodel.h \
     $$PWD/vkbquickpanel.h \
@@ -26,7 +30,9 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/vkbquickdelegate.cpp \
+    $$PWD/vkbquickeditor.cpp \
     $$PWD/vkbquickfactory.cpp \
+    $$PWD/vkbquickhandle.cpp \
     $$PWD/vkbquicklayout.cpp \
     $$PWD/vkbquickmodel.cpp \
     $$PWD/vkbquickpanel.cpp \

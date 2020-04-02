@@ -49,3 +49,21 @@ QObject *VkbInputFactory::createInputPanel(QObject *parent)
     Q_UNUSED(parent)
     return nullptr;
 }
+
+QObject *VkbInputFactory::createInputEditor(QObject *parent)
+{
+    Q_UNUSED(parent)
+    return nullptr;
+}
+
+QObject *VkbInputFactory::createInputCursor(QObject *parent)
+{
+    Q_UNUSED(parent)
+    return nullptr;
+}
+
+QObject *VkbInputFactory::createInputAnchor(QObject *parent)
+{
+    Q_UNUSED(parent)
+    return nullptr;
+}

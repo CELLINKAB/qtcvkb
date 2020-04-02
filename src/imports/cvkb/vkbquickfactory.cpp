@@ -23,6 +23,7 @@
  */
 
 #include "vkbquickfactory.h"
+#include "vkbquickeditor.h"
 
 #include <QtCore/qdebug.h>
 #include <QtQml/qqmlcomponent.h>
@@ -40,6 +41,21 @@ void VkbQuickFactory::init(const QByteArray &uri, int majorVersion, int minorVer
 QObject *VkbQuickFactory::createInputPanel(QObject *parent)
 {
     return createInputObject("InputPanel", parent);
+}
+
+QObject *VkbQuickFactory::createInputEditor(QObject *parent)
+{
+    return new VkbQuickEditor(parent);
+}
+
+QObject *VkbQuickFactory::createInputCursor(QObject *parent)
+{
+    return createInputObject("InputCursor", parent);
+}
+
+QObject *VkbQuickFactory::createInputAnchor(QObject *parent)
+{
+    return createInputObject("InputAnchor", parent);
 }
 
 static QByteArray formatQml(const QByteArray &uri, int majorVersion, int minorVersion, const QByteArray &typeName)

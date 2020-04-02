@@ -22,28 +22,41 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTFACTORY_H
-#define VKBINPUTFACTORY_H
+#ifndef VKBQUICKHANDLE_H
+#define VKBQUICKHANDLE_H
 
-#include <QtCVkb/vkbinputglobal.h>
-#include <QtCore/qscopedpointer.h>
+#include <QtQuickTemplates2/private/qquickpopup_p.h>
+#include <QtCVkb/vkbinputhandle.h>
 
-QT_FORWARD_DECLARE_CLASS(QObject)
-
-class VkbInputFactoryPrivate;
-
-class Q_CVKB_EXPORT VkbInputFactory
+class VkbQuickHandle : public QQuickPopup, public VkbInputHandle
 {
+    Q_OBJECT
+    Q_INTERFACES(VkbInputHandle)
+
 public:
-    VkbInputFactory();
-    virtual ~VkbInputFactory();
+    explicit VkbQuickHandle(QObject *parent = nullptr);
 
-    static VkbInputFactory *instance();
+    void show() override;
+    void hide() override;
 
-    virtual QObject *createInputPanel(QObject *parent);
-    virtual QObject *createInputEditor(QObject *parent);
-    virtual QObject *createInputCursor(QObject *parent);
-    virtual QObject *createInputAnchor(QObject *parent);
+    QPointF pos() const override;
+    QSizeF size() const override;
+    void move(const QPointF &pos) override;
+
+signals:
+    void pressed(const QPointF &pos) override;
+    void released(const QPointF &pos) override;
+    void moved(const QPointF &pos) override;
+    void canceled() override;
+
+protected:
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseUngrabEvent() override;
+
+private:
+    bool m_pressed = false;
 };
 
-#endif // VKBINPUTFACTORY_H
+#endif // VKBQUICKHANDLE_H

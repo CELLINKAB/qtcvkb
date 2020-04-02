@@ -22,28 +22,39 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTFACTORY_H
-#define VKBINPUTFACTORY_H
+#ifndef VKBQUICKEDITOR_H
+#define VKBQUICKEDITOR_H
 
-#include <QtCVkb/vkbinputglobal.h>
-#include <QtCore/qscopedpointer.h>
+#include <QtQuickTemplates2/private/qquickpopup_p.h>
+#include <QtCVkb/vkbinputeditor.h>
 
-QT_FORWARD_DECLARE_CLASS(QObject)
+QT_FORWARD_DECLARE_CLASS(QQuickMouseEvent)
 
-class VkbInputFactoryPrivate;
-
-class Q_CVKB_EXPORT VkbInputFactory
+class VkbQuickEditor : public QObject, public VkbInputEditor
 {
+    Q_OBJECT
+    Q_INTERFACES(VkbInputEditor)
+
 public:
-    VkbInputFactory();
-    virtual ~VkbInputFactory();
+    explicit VkbQuickEditor(QObject *parent = nullptr);
 
-    static VkbInputFactory *instance();
+    int cursorPositionAt(const QPointF &pos) const override;
+    void setCursorPosition(int cursorPosition) override;
 
-    virtual QObject *createInputPanel(QObject *parent);
-    virtual QObject *createInputEditor(QObject *parent);
-    virtual QObject *createInputCursor(QObject *parent);
-    virtual QObject *createInputAnchor(QObject *parent);
+    void selectWord() override;
+
+signals:
+    void pressed(const QPointF &pos) override;
+    void released(const QPointF &pos) override;
+    void pressAndHold(const QPointF &pos) override;
+
+private slots:
+    void handlePress(QQuickMouseEvent *event);
+    void handleRelease(QQuickMouseEvent *event);
+    void handlePressAndHold(QQuickMouseEvent *event);
+
+private:
+    QQmlEngine *m_engine = nullptr;
 };
 
-#endif // VKBINPUTFACTORY_H
+#endif // VKBQUICKEDITOR_H

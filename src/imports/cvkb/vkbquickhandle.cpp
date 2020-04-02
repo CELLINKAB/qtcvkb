@@ -22,28 +22,62 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTFACTORY_H
-#define VKBINPUTFACTORY_H
+#include "vkbquickhandle.h"
 
-#include <QtCVkb/vkbinputglobal.h>
-#include <QtCore/qscopedpointer.h>
-
-QT_FORWARD_DECLARE_CLASS(QObject)
-
-class VkbInputFactoryPrivate;
-
-class Q_CVKB_EXPORT VkbInputFactory
+VkbQuickHandle::VkbQuickHandle(QObject *parent)
+    : QQuickPopup(parent)
 {
-public:
-    VkbInputFactory();
-    virtual ~VkbInputFactory();
+    setClosePolicy(NoAutoClose);
+    QObject::connect(this, &QQuickPopup::closed, this, &QObject::deleteLater);
+}
 
-    static VkbInputFactory *instance();
+void VkbQuickHandle::show()
+{
+    setVisible(true);
+}
 
-    virtual QObject *createInputPanel(QObject *parent);
-    virtual QObject *createInputEditor(QObject *parent);
-    virtual QObject *createInputCursor(QObject *parent);
-    virtual QObject *createInputAnchor(QObject *parent);
-};
+void VkbQuickHandle::hide()
+{
+    setVisible(false);
+}
 
-#endif // VKBINPUTFACTORY_H
+QPointF VkbQuickHandle::pos() const
+{
+    return position();
+}
+
+QSizeF VkbQuickHandle::size() const
+{
+    return QSizeF(width(), height());
+}
+
+void VkbQuickHandle::move(const QPointF &pos)
+{
+    setPosition(pos);
+}
+
+void VkbQuickHandle::mousePressEvent(QMouseEvent *event)
+{
+    QQuickPopup::mousePressEvent(event);
+    m_pressed = true;
+    emit pressed(event->pos());
+}
+
+void VkbQuickHandle::mouseMoveEvent(QMouseEvent *event)
+{
+    QQuickPopup::mouseMoveEvent(event);
+    emit moved(event->pos());
+}
+
+void VkbQuickHandle::mouseReleaseEvent(QMouseEvent *event)
+{
+    QQuickPopup::mouseReleaseEvent(event);
+    m_pressed = false;
+    emit released(event->pos());
+}
+
+void VkbQuickHandle::mouseUngrabEvent()
+{
+    m_pressed = false;
+    emit canceled();
+}

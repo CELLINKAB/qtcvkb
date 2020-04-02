@@ -28,6 +28,7 @@
 #include <QtCVkb/vkbinputcontext.h>
 #include <QtCVkb/vkbinputengine.h>
 #include <QtCVkb/vkbinputpanel.h>
+#include <QtCVkb/vkbinputselection.h>
 #include <QtCore/qpointer.h>
 
 class VkbInputPanel;
@@ -52,6 +53,7 @@ public:
     VkbInputContext *q_ptr = nullptr;
     QPointer<QObject> inputPanelObject;
     VkbInputEngine inputEngine;
+    VkbInputSelection inputSelection;
 };
 
 #endif // VKBINPUTCONTEXT_P_H
