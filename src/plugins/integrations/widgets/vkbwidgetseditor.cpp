@@ -45,6 +45,7 @@ bool VkbWidgetsEditor::eventFilter(QObject *object, QEvent *event)
             handlePress(static_cast<QMouseEvent *>(event)->pos());
             break;
         case QEvent::MouseMove:
+            m_pressAndHoldTimer.stop();
             break;
         case QEvent::MouseButtonRelease:
             emit handleRelease(static_cast<QMouseEvent *>(event)->pos());
