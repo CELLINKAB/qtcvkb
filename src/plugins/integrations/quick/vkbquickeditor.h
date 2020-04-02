@@ -25,7 +25,7 @@
 #ifndef VKBQUICKEDITOR_H
 #define VKBQUICKEDITOR_H
 
-#include <QtQuickTemplates2/private/qquickpopup_p.h>
+#include <QtCore/qobject.h>
 #include <QtCVkb/vkbinputeditor.h>
 
 QT_FORWARD_DECLARE_CLASS(QQuickMouseEvent)
@@ -52,9 +52,6 @@ private slots:
     void handlePress(QQuickMouseEvent *event);
     void handleRelease(QQuickMouseEvent *event);
     void handlePressAndHold(QQuickMouseEvent *event);
-
-private:
-    QQmlEngine *m_engine = nullptr;
 };
 
 #endif // VKBQUICKEDITOR_H
