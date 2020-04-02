@@ -111,19 +111,19 @@ void VkbInputContextPrivate::_q_emitInputPanelVisibleChanged()
 void VkbInputContextPrivate::_q_emitAnimatingChanged()
 {
     Q_Q(VkbInputContext);
-    q->emitInputPanelVisibleChanged();
+    q->emitAnimatingChanged();
 }
 
 void VkbInputContextPrivate::_q_emitKeyboardRectChanged()
 {
     Q_Q(VkbInputContext);
-    q->emitInputPanelVisibleChanged();
+    q->emitKeyboardRectChanged();
 }
 
 void VkbInputContextPrivate::_q_emitLocaleChanged()
 {
     Q_Q(VkbInputContext);
-    q->emitInputPanelVisibleChanged();
+    q->emitLocaleChanged();
 }
 
 void VkbInputContextPrivate::_q_emitInputDirectionChanged()
