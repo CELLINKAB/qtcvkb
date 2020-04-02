@@ -22,41 +22,18 @@
  * SOFTWARE.
  */
 
-#include "vkbquickfactory.h"
+#include "vkbquickintegration.h"
 #include "vkbquickeditor.h"
 
 #include <QtCore/qdebug.h>
 #include <QtQml/qqmlcomponent.h>
 #include <QtQml/qqmlcontext.h>
 #include <QtQml/qqmlengine.h>
+#include <QtCVkb/qtcvkbversion.h>
 
-void VkbQuickFactory::init(const QByteArray &uri, int majorVersion, int minorVersion, QQmlEngine *engine)
-{
-    m_uri = uri;
-    m_majorVersion = majorVersion;
-    m_minorVersion = minorVersion;
-    m_engine = engine;
-}
-
-QObject *VkbQuickFactory::createInputPanel(QObject *parent)
-{
-    return createInputObject("InputPanel", parent);
-}
-
-QObject *VkbQuickFactory::createInputEditor(QObject *parent)
-{
-    return new VkbQuickEditor(parent);
-}
-
-QObject *VkbQuickFactory::createInputCursor(QObject *parent)
-{
-    return createInputObject("InputCursor", parent);
-}
-
-QObject *VkbQuickFactory::createInputAnchor(QObject *parent)
-{
-    return createInputObject("InputAnchor", parent);
-}
+static const QByteArray Uri = "QtCellink.Vkb"; // ### TODO
+static const int MajorVersion = (QTCVKB_VERSION & 0xff0000) >> 16;
+static const int MinorVersion = (QTCVKB_VERSION & 0x00ff00) >> 8;
 
 static QByteArray formatQml(const QByteArray &uri, int majorVersion, int minorVersion, const QByteArray &typeName)
 {
@@ -64,13 +41,17 @@ static QByteArray formatQml(const QByteArray &uri, int majorVersion, int minorVe
     return qml.arg(QString::fromLatin1(uri)).arg(majorVersion).arg(minorVersion).arg(QString::fromLatin1(typeName)).toLatin1();
 }
 
-QObject *VkbQuickFactory::createInputObject(const QByteArray &typeName, QObject *parent)
+static QObject *createInputObject(const QByteArray &typeName, QObject *parent)
 {
-    if (!m_engine || m_uri.isEmpty())
+    if (!parent)
         return nullptr;
 
-    QQmlComponent component(m_engine);
-    component.setData(formatQml(m_uri, m_majorVersion, m_minorVersion, typeName), QUrl());
+    QQmlEngine *engine = qmlEngine(parent);
+    if (!engine)
+        return nullptr;
+
+    QQmlComponent component(engine);
+    component.setData(formatQml(Uri, MajorVersion, MinorVersion, typeName), QUrl());
 
     QQmlContext *creationContext = qmlContext(parent);
     QQmlContext *context = new QQmlContext(creationContext, parent);
@@ -84,4 +65,29 @@ QObject *VkbQuickFactory::createInputObject(const QByteArray &typeName, QObject 
 
     component.completeCreate();
     return object;
+}
+
+VkbQuickIntegration::VkbQuickIntegration(const QStringList &params)
+{
+    Q_UNUSED(params)
+}
+
+QObject *VkbQuickIntegration::createInputPanel(QObject *parent)
+{
+    return createInputObject("InputPanel", parent);
+}
+
+QObject *VkbQuickIntegration::createInputEditor(QObject *parent)
+{
+    return new VkbQuickEditor(parent);
+}
+
+QObject *VkbQuickIntegration::createInputCursor(QObject *parent)
+{
+    return createInputObject("InputCursor", parent);
+}
+
+QObject *VkbQuickIntegration::createInputAnchor(QObject *parent)
+{
+    return createInputObject("InputAnchor", parent);
 }

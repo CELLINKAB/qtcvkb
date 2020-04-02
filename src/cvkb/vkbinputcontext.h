@@ -36,7 +36,7 @@ class Q_CVKB_EXPORT VkbInputContext : public QPlatformInputContext
     Q_OBJECT
 
 public:
-    explicit VkbInputContext(const QStringList &params = QStringList());
+    explicit VkbInputContext(const QStringList &params);
     ~VkbInputContext();
 
     static VkbInputContext *instance();

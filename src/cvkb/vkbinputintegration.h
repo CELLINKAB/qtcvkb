@@ -22,48 +22,21 @@
  * SOFTWARE.
  */
 
-#include "vkbinputfactory.h"
+#ifndef VKBINPUTINTEGRATION_H
+#define VKBINPUTINTEGRATION_H
 
-static VkbInputFactory nullFactory;
-static VkbInputFactory *vkb_input_factory = &nullFactory;
+#include <QtCVkb/vkbinputglobal.h>
+#include <QtCore/qobject.h>
 
-#define vkbFactory VkbInputFactoryPrivate::instance
-
-VkbInputFactory::VkbInputFactory()
+class Q_CVKB_EXPORT VkbInputIntegration : public QObject
 {
-    vkb_input_factory = this;
-}
+    Q_OBJECT
 
-VkbInputFactory::~VkbInputFactory()
-{
-    vkb_input_factory = &nullFactory;
-}
+public:
+    virtual QObject *createInputPanel(QObject *parent);
+    virtual QObject *createInputEditor(QObject *parent);
+    virtual QObject *createInputCursor(QObject *parent);
+    virtual QObject *createInputAnchor(QObject *parent);
+};
 
-VkbInputFactory *VkbInputFactory::instance()
-{
-    return vkb_input_factory;
-}
-
-QObject *VkbInputFactory::createInputPanel(QObject *parent)
-{
-    Q_UNUSED(parent)
-    return nullptr;
-}
-
-QObject *VkbInputFactory::createInputEditor(QObject *parent)
-{
-    Q_UNUSED(parent)
-    return nullptr;
-}
-
-QObject *VkbInputFactory::createInputCursor(QObject *parent)
-{
-    Q_UNUSED(parent)
-    return nullptr;
-}
-
-QObject *VkbInputFactory::createInputAnchor(QObject *parent)
-{
-    Q_UNUSED(parent)
-    return nullptr;
-}
+#endif // VKBINPUTINTEGRATION_H

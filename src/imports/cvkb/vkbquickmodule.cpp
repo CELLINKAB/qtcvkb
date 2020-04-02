@@ -28,8 +28,6 @@
 #include <QtCVkb/vkbinputstyle.h>
 
 #include "vkbquickdelegate.h"
-#include "vkbquickeditor.h"
-#include "vkbquickfactory.h"
 #include "vkbquickhandle.h"
 #include "vkbquicklayout.h"
 #include "vkbquickpanel.h"
@@ -45,14 +43,11 @@ class VkbQuickModule : public QQmlExtensionPlugin
 
 public:
     void registerTypes(const char *uri) override;
-    void initializeEngine(QQmlEngine *engine, const char *uri) override;
 
 private:
     void registerTemplates(const char *uri, int major, int minor);
     void registerRevisions(const char *uri, int major, int minor);
     void registerStyles(const char *uri, int major, int minor);
-
-    VkbQuickFactory m_factory;
 };
 
 void VkbQuickModule::registerTypes(const char *uri)
@@ -61,11 +56,6 @@ void VkbQuickModule::registerTypes(const char *uri)
     registerTemplates(tmpl, MajorVersion, MinorVersion);
     registerRevisions(tmpl, MajorVersion, MinorVersion);
     registerStyles(uri, MajorVersion, MinorVersion);
-}
-
-void VkbQuickModule::initializeEngine(QQmlEngine *engine, const char *uri)
-{
-    m_factory.init(uri, MajorVersion, MinorVersion, engine);
 }
 
 void VkbQuickModule::registerTemplates(const char *uri, int majorVersion, int minorVersion)

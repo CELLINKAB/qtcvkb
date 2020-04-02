@@ -31,11 +31,13 @@
 #include <QtGui/private/qguiapplication_p.h>
 #include <QtGui/qpa/qplatformintegration.h>
 
-VkbInputContext::VkbInputContext(const QStringList &)
+VkbInputContext::VkbInputContext(const QStringList &params)
     : d_ptr(new VkbInputContextPrivate)
 {
     Q_D(VkbInputContext);
     d->q_ptr = this;
+
+    d->loadIntegration(params);
 
     connect(&d->inputEngine, &VkbInputEngine::inputModeChanged, [=]() { d->loadInputLayout(); });
 }

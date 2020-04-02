@@ -1,5 +1,6 @@
 TARGET = QtCVkb
 MODULE = cvkb
+MODULE_PLUGIN_TYPES += cvkbintegrations
 
 QT += quick
 QT_PRIVATE += core-private gui-private qml-private quick-private
@@ -12,9 +13,10 @@ HEADERS += \
     $$PWD/vkbinputgrid.h \
     $$PWD/vkbinputeditor.h \
     $$PWD/vkbinputengine.h \
-    $$PWD/vkbinputfactory.h \
     $$PWD/vkbinputglobal.h \
     $$PWD/vkbinputhandle.h \
+    $$PWD/vkbinputintegration.h \
+    $$PWD/vkbinputintegrationplugin.h \
     $$PWD/vkbinputkey.h \
     $$PWD/vkbinputlayout.h \
     $$PWD/vkbinputnullobject_p.h \
@@ -27,7 +29,7 @@ SOURCES += \
     $$PWD/vkbinputcontext_p.cpp \
     $$PWD/vkbinputgrid.cpp \
     $$PWD/vkbinputengine.cpp \
-    $$PWD/vkbinputfactory.cpp \
+    $$PWD/vkbinputintegration.cpp \
     $$PWD/vkbinputlayout.cpp \
     $$PWD/vkbinputselection.cpp \
     $$PWD/vkbinputstyle.cpp

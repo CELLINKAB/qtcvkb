@@ -22,31 +22,23 @@
  * SOFTWARE.
  */
 
-#ifndef VKBQUICKFACTORY_H
-#define VKBQUICKFACTORY_H
+#ifndef VKBINPUTINTEGRATIONPLUGIN_H
+#define VKBINPUTINTEGRATIONPLUGIN_H
 
+#include <QtCVkb/vkbinputglobal.h>
 #include <QtCore/qobject.h>
-#include <QtCVkb/vkbinputfactory.h>
 
-QT_FORWARD_DECLARE_CLASS(QQmlEngine)
+class VkbInputIntegration;
 
-class VkbQuickFactory : public VkbInputFactory
+class Q_CVKB_EXPORT VkbInputIntegrationPlugin : public QObject
 {
+    Q_OBJECT
+
 public:
-    void init(const QByteArray &uri, int majorVersion, int minorVersion, QQmlEngine *engine);
-
-    QObject *createInputPanel(QObject *parent) override;
-    QObject *createInputEditor(QObject *parent) override;
-    QObject *createInputCursor(QObject *parent) override;
-    QObject *createInputAnchor(QObject *parent) override;
-
-private:
-    QObject *createInputObject(const QByteArray &typeName, QObject *parent);
-
-    int m_majorVersion = 0;
-    int m_minorVersion = 0;
-    QByteArray m_uri;
-    QQmlEngine *m_engine = nullptr;
+    virtual VkbInputIntegration *create(const QString &key, const QStringList &params) = 0;
 };
 
-#endif // VKBQUICKFACTORY_H
+#define VkbInputIntegrationPlugin_iid "VkbInputIntegrationPlugin/0.1"
+Q_DECLARE_INTERFACE(VkbInputIntegrationPlugin, VkbInputIntegrationPlugin_iid)
+
+#endif // VKBINPUTINTEGRATIONPLUGIN_H

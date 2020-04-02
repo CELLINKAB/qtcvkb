@@ -22,28 +22,21 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTFACTORY_H
-#define VKBINPUTFACTORY_H
+#ifndef VKBQUICKINTEGRATION_H
+#define VKBQUICKINTEGRATION_H
 
-#include <QtCVkb/vkbinputglobal.h>
-#include <QtCore/qscopedpointer.h>
+#include <QtCore/qobject.h>
+#include <QtCVkb/vkbinputintegration.h>
 
-QT_FORWARD_DECLARE_CLASS(QObject)
-
-class VkbInputFactoryPrivate;
-
-class Q_CVKB_EXPORT VkbInputFactory
+class VkbQuickIntegration : public VkbInputIntegration
 {
 public:
-    VkbInputFactory();
-    virtual ~VkbInputFactory();
+    explicit VkbQuickIntegration(const QStringList &params);
 
-    static VkbInputFactory *instance();
-
-    virtual QObject *createInputPanel(QObject *parent);
-    virtual QObject *createInputEditor(QObject *parent);
-    virtual QObject *createInputCursor(QObject *parent);
-    virtual QObject *createInputAnchor(QObject *parent);
+    QObject *createInputPanel(QObject *parent) override;
+    QObject *createInputEditor(QObject *parent) override;
+    QObject *createInputCursor(QObject *parent) override;
+    QObject *createInputAnchor(QObject *parent) override;
 };
 
-#endif // VKBINPUTFACTORY_H
+#endif // VKBQUICKINTEGRATION_H

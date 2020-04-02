@@ -22,48 +22,23 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTCONTEXT_P_H
-#define VKBINPUTCONTEXT_P_H
+#include <QtCVkb/vkbinputintegrationplugin.h>
+#include "vkbquickintegration.h"
 
-#include <QtCVkb/vkbinputcontext.h>
-#include <QtCVkb/vkbinputengine.h>
-#include <QtCVkb/vkbinputpanel.h>
-#include <QtCVkb/vkbinputselection.h>
-#include <QtCore/qpointer.h>
-
-class VkbInputPanel;
-class VkbInputIntegration;
-
-class VkbInputContextPrivate
+class VkbQuickIntegrationPlugin : public VkbInputIntegrationPlugin
 {
-    Q_DECLARE_PUBLIC(VkbInputContext)
+    Q_OBJECT
+    Q_INTERFACES(VkbInputIntegrationPlugin)
+    Q_PLUGIN_METADATA(IID VkbInputIntegrationPlugin_iid FILE "quick.json")
 
 public:
-    static VkbInputIntegration *getInputIntegration()
+    VkbInputIntegration *create(const QString &key, const QStringList &params) override
     {
-        VkbInputContext *inputContext = VkbInputContext::instance();
-        return inputContext->d_func()->inputIntegration;
+        if (key != "quick")
+            return nullptr;
+
+        return new VkbQuickIntegration(params);
     }
-
-    void loadIntegration(const QStringList &params);
-
-    VkbInputPanel *inputPanel() const;
-    VkbInputPanel *createInputPanel();
-
-    bool loadInputLayout();
-
-    // ### TODO: mark QPlatformInputContext::emitXxx() as slots
-    void _q_emitInputPanelVisibleChanged();
-    void _q_emitAnimatingChanged();
-    void _q_emitKeyboardRectChanged();
-    void _q_emitLocaleChanged();
-    void _q_emitInputDirectionChanged();
-
-    VkbInputContext *q_ptr = nullptr;
-    QPointer<QObject> inputPanelObject;
-    VkbInputEngine inputEngine;
-    VkbInputSelection inputSelection;
-    VkbInputIntegration *inputIntegration = nullptr;
 };
 
-#endif // VKBINPUTCONTEXT_P_H
+#include "vkbquickintegrationplugin.moc"
