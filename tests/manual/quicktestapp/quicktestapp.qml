@@ -23,22 +23,120 @@
  */
 
 import QtQuick 2.14
+import QtQuick.Layouts 1.14
 import QtQuick.Controls 2.14
 import QtCellink.Vkb 0.1
 
 ApplicationWindow {
     id: window
-    width: 640
-    height: 420
+    width: 960
+    height: 540
     visible: true
 
-    Pane {
+    SplitView {
         anchors.fill: parent
-        focusPolicy: Qt.ClickFocus
 
-        TextField {
-            anchors.centerIn: parent
-            anchors.verticalCenterOffset: -height
+        Pane {
+            padding: 0
+            height: parent.height
+            focusPolicy: Qt.ClickFocus
+
+            SplitView.fillWidth: true
+
+            TextField {
+                id: textField
+                width: parent.width / 2
+                anchors.centerIn: parent
+                anchors.verticalCenterOffset: -height
+            }
+        }
+
+        Pane {
+            padding: 0
+            height: parent.height
+            palette.window: window.palette.base
+
+            SplitView.minimumWidth: window.width / 6
+            SplitView.preferredWidth: window.width / 3
+            SplitView.maximumWidth: window.width / 2
+
+            ListView {
+                anchors.fill: parent
+                anchors.bottomMargin: Qt.inputMethod.visible ? window.height - Qt.inputMethod.keyboardRectangle.y : 0
+
+                header: ColumnLayout {
+                    spacing: 0
+                    width: parent.width
+
+                    Label {
+                        text: "Echo:"
+                        font.bold: true
+                        padding: textField.padding
+                        background: Rectangle {
+                            color: palette.window
+                        }
+                        Layout.fillWidth: true
+                    }
+
+                    ComboBox {
+                        currentIndex: textField.echoMode
+                        model: [
+                            "Normal",
+                            "Password",
+                            "NoEcho",
+                            "PasswordEchoOnEdit"
+                        ]
+                        Layout.fillWidth: true
+                        onActivated: textField.echoMode = currentIndex
+                    }
+                }
+
+                model: ListModel {
+                    ListElement { hint: "ImhDigitsOnly"; section: "Restrict:" }
+                    ListElement { hint: "ImhFormattedNumbersOnly"; section: "Restrict:" }
+                    ListElement { hint: "ImhUppercaseOnly"; section: "Restrict:" }
+                    ListElement { hint: "ImhLowercaseOnly"; section: "Restrict:" }
+                    ListElement { hint: "ImhDialableCharactersOnly"; section: "Restrict:" }
+                    ListElement { hint: "ImhEmailCharactersOnly"; section: "Restrict:" }
+                    ListElement { hint: "ImhUrlCharactersOnly"; section: "Restrict:" }
+                    ListElement { hint: "ImhLatinOnly"; section: "Restrict:" }
+                    ListElement { hint: "ImhHiddenText"; section: "Behavior:" }
+                    ListElement { hint: "ImhSensitiveData"; section: "Behavior:" }
+                    ListElement { hint: "ImhNoAutoUppercase"; section: "Behavior:" }
+                    ListElement { hint: "ImhPreferNumbers"; section: "Behavior:" }
+                    ListElement { hint: "ImhPreferUppercase"; section: "Behavior:" }
+                    ListElement { hint: "ImhPreferLowercase"; section: "Behavior:" }
+                    ListElement { hint: "ImhNoPredictiveText"; section: "Behavior:" }
+                    ListElement { hint: "ImhDate"; section: "Behavior:" }
+                    ListElement { hint: "ImhTime"; section: "Behavior:" }
+                    ListElement { hint: "ImhPreferLatin"; section: "Behavior:" }
+                    ListElement { hint: "ImhMultiLine"; section: "Behavior:" }
+                    ListElement { hint: "ImhNoEditMenu"; section: "Behavior:" }
+                    ListElement { hint: "ImhNoTextHandles"; section: "Behavior:" }
+                }
+
+                delegate: CheckDelegate {
+                    text: model.hint
+                    width: parent.width
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    checked: textField.inputMethodHints & Qt[model.hint]
+                    onToggled: textField.inputMethodHints ^= Qt[model.hint]
+                }
+
+                section.property: "section"
+                section.delegate: Label {
+                    text: section
+                    font.bold: true
+                    width: parent.width
+                    padding: textField.padding
+                    background: Rectangle {
+                        color: window.palette.window
+                    }
+                }
+
+                ScrollBar.vertical: ScrollBar { id: scrollBar }
+            }
         }
     }
 }
