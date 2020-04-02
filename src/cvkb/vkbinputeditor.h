@@ -36,8 +36,6 @@ class Q_CVKB_EXPORT VkbInputEditor
 public:
     virtual ~VkbInputEditor() = default;
 
-    virtual void selectWord() = 0;
-
 signals:
     virtual void pressed(const QPointF &pos) = 0;
     virtual void released(const QPointF &pos) = 0;

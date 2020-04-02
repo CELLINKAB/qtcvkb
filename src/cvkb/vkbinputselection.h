@@ -85,7 +85,9 @@ private:
     void updateInputAnchor();
     void destroyInputEditor();
 
-    void moveCursorPosition(int cursorPosition);
+    int cursorPositionAt(const QPointF &pos) const;
+    void selectWordAt(const QPointF &pos);
+    void moveCursorPosition(int cursorPosition, int length = 0);
     void moveCursorAt(const QPointF &cursorPos);
     void moveSelectionAt(const QPointF &cursorPos, const QPointF &anchorPos);
 

@@ -29,6 +29,7 @@
 #include "vkbinputintegration.h"
 #include "vkbinputnullobject_p.h"
 
+#include <QtCore/qtextboundaryfinder.h>
 #include <QtGui/qguiapplication.h>
 #include <QtGui/qinputmethod.h>
 #include <QtGui/qwindow.h>
@@ -119,16 +120,7 @@ void VkbInputSelection::handleRelease(const QPointF &pos)
 
 void VkbInputSelection::handlePressAndHold(const QPointF &pos)
 {
-    VkbInputEditor *inputEditor = createInputEditor();
-
-    bool ok = false;
-    int cursorPosition = QInputMethod::queryFocusObject(Qt::ImCursorPosition, pos).toInt(&ok);
-    if (!ok)
-        return;
-
-    moveCursorPosition(cursorPosition);
-    inputEditor->selectWord();
-
+    selectWordAt(pos);
     show();
 }
 
@@ -332,22 +324,58 @@ void VkbInputSelection::destroyInputEditor()
     m_inputEditorObject.clear();
 }
 
-void VkbInputSelection::moveCursorPosition(int cursorPosition)
+int VkbInputSelection::cursorPositionAt(const QPointF &pos) const
+{
+    bool ok = false;
+    int cursorPosition = QInputMethod::queryFocusObject(Qt::ImCursorPosition, pos).toInt(&ok);
+    if (!ok)
+        return -1;
+    return cursorPosition;
+}
+
+void VkbInputSelection::selectWordAt(const QPointF &pos)
+{
+    int cursorPosition = cursorPositionAt(pos);
+    if (cursorPosition == -1)
+        return;
+
+    moveCursorPosition(cursorPosition);
+
+    QString text = QInputMethod::queryFocusObject(Qt::ImSurroundingText, QVariant()).toString();
+    if (text.isEmpty())
+        return;
+
+    QTextBoundaryFinder finder(QTextBoundaryFinder::Word, text);
+    finder.setPosition(cursorPosition);
+
+    if (cursorPosition > 0 && !finder.boundaryReasons().testFlag(QTextBoundaryFinder::StartOfItem))
+        finder.toPreviousBoundary();
+    if (!finder.boundaryReasons().testFlag(QTextBoundaryFinder::StartOfItem))
+        return;
+
+    int start = finder.position();
+    int end = finder.toNextBoundary();
+    if (!finder.boundaryReasons().testFlag(QTextBoundaryFinder::EndOfItem))
+        return;
+
+    moveCursorPosition(start, end - start);
+}
+
+void VkbInputSelection::moveCursorPosition(int cursorPosition, int length)
 {
     if (!m_focusObject)
         return;
 
-    QInputMethodEvent::Attribute attribute(QInputMethodEvent::Selection, cursorPosition, 0);
+    QInputMethodEvent::Attribute attribute(QInputMethodEvent::Selection, cursorPosition, length);
     QInputMethodEvent event(QString(), {attribute});
     QGuiApplication::sendEvent(m_focusObject, &event);
 }
 
 void VkbInputSelection::moveCursorAt(const QPointF &cursorPos)
 {
-    bool ok = false;
     const QPointF localPos = QGuiApplication::inputMethod()->inputItemTransform().inverted().map(cursorPos);
-    int cursorPosition = QInputMethod::queryFocusObject(Qt::ImCursorPosition, localPos).toInt(&ok);
-    if (ok)
+    int cursorPosition = cursorPositionAt(localPos);
+    if (cursorPosition != -1)
         moveCursorPosition(cursorPosition);
 }
 

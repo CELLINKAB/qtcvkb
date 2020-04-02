@@ -34,7 +34,6 @@
 class VkbInputNullEditor : public VkbInputEditor
 {
 public:
-    void selectWord() override { }
     void pressed(const QPointF &) override { }
     void released(const QPointF &) override { }
     void pressAndHold(const QPointF &) override { }

@@ -38,8 +38,6 @@ class VkbWidgetsEditor : public QObject, public VkbInputEditor
 public:
     explicit VkbWidgetsEditor(QObject *parent = nullptr);
 
-    void selectWord() override;
-
 signals:
     void pressed(const QPointF &pos) override;
     void released(const QPointF &pos) override;

@@ -28,22 +28,12 @@
 #include <QtGui/qguiapplication.h>
 #include <QtGui/qstylehints.h>
 #include <QtWidgets/qwidget.h>
-#include <QtWidgets/qlineedit.h>
 
 VkbWidgetsEditor::VkbWidgetsEditor(QObject *parent)
     : QObject(parent),
       m_pressAndHoldInterval(QGuiApplication::styleHints()->mousePressAndHoldInterval())
 {
     parent->installEventFilter(this);
-}
-
-void VkbWidgetsEditor::selectWord()
-{
-    QLineEdit *lineEdit = qobject_cast<QLineEdit *>(parent());
-    if (!lineEdit)
-        return;
-
-    // ### TODO
 }
 
 bool VkbWidgetsEditor::eventFilter(QObject *object, QEvent *event)

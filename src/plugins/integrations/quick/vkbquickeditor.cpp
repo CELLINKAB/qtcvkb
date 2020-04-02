@@ -37,15 +37,6 @@ VkbQuickEditor::VkbQuickEditor(QObject *parent) : QObject(parent)
     }
 }
 
-void VkbQuickEditor::selectWord()
-{
-    QQuickTextField *textField = qobject_cast<QQuickTextField *>(parent());
-    if (!textField)
-        return;
-
-    textField->selectWord();
-}
-
 void VkbQuickEditor::handlePress(QQuickMouseEvent *event)
 {
     emit pressed(QPointF(event->x(), event->y()));

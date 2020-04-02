@@ -38,8 +38,6 @@ class VkbQuickEditor : public QObject, public VkbInputEditor
 public:
     explicit VkbQuickEditor(QObject *parent = nullptr);
 
-    void selectWord() override;
-
 signals:
     void pressed(const QPointF &pos) override;
     void released(const QPointF &pos) override;
