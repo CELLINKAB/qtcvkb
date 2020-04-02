@@ -24,7 +24,6 @@
 
 #include "vkbinputselection.h"
 #include "vkbinputcontext_p.h"
-#include "vkbinputeditor.h"
 #include "vkbinputhandle.h"
 #include "vkbinputintegration.h"
 #include "vkbinputnullobject_p.h"
@@ -32,11 +31,14 @@
 #include <QtCore/qtextboundaryfinder.h>
 #include <QtGui/qguiapplication.h>
 #include <QtGui/qinputmethod.h>
+#include <QtGui/qstylehints.h>
 #include <QtGui/qwindow.h>
 
 static const int Timeout = 5000;
 
-VkbInputSelection::VkbInputSelection(QObject *parent) : QObject(parent)
+VkbInputSelection::VkbInputSelection(QObject *parent)
+    : QObject(parent),
+       m_pressAndHoldInterval(QGuiApplication::styleHints()->mousePressAndHoldInterval())
 {
     QInputMethod *inputMethod = QGuiApplication::inputMethod();
     connect(inputMethod, &QInputMethod::cursorRectangleChanged, this, &VkbInputSelection::updateInputCursor);
@@ -90,28 +92,66 @@ void VkbInputSelection::setFocusObject(QObject *focusObject)
     if (m_focusObject == focusObject)
         return;
 
-    destroyInputEditor();
+    if (m_focusObject)
+        m_focusObject->removeEventFilter(this);
+
+    if (focusObject)
+        focusObject->installEventFilter(this);
+
     m_focusObject = focusObject;
-    updateInputEditor();
+}
+
+bool VkbInputSelection::eventFilter(QObject *object, QEvent *event)
+{
+    bool filter = QObject::eventFilter(object, event);
+    if (!filter) {
+        switch (event->type()) {
+        case QEvent::MouseButtonPress:
+            handlePress(static_cast<QMouseEvent *>(event)->pos());
+            break;
+        case QEvent::MouseMove:
+            m_pressAndHoldTimer.stop();
+            break;
+        case QEvent::MouseButtonRelease:
+            emit handleRelease(static_cast<QMouseEvent *>(event)->pos());
+            break;
+        default:
+            break;
+        }
+    }
+    return filter;
 }
 
 void VkbInputSelection::timerEvent(QTimerEvent *event)
 {
     QObject::timerEvent(event);
-    if (event->timerId() == m_idleTimer.timerId())
+    if (event->timerId() == m_idleTimer.timerId()) {
         hide();
+    } else if (event->timerId() == m_pressAndHoldTimer.timerId()) {
+        m_pressAndHoldTimer.stop();
+        handlePressAndHold(m_pressPoint);
+    }
 }
 
 void VkbInputSelection::handlePress(const QPointF &pos)
 {
     Q_UNUSED(pos);
     startIdleTimer();
+    m_pressPoint = pos;
     m_pressTimer.start();
+    m_pressAndHoldTimer.start(m_pressAndHoldInterval, this);
+}
+
+void VkbInputSelection::handleMove(const QPointF &pos)
+{
+    Q_UNUSED(pos);
+    m_pressAndHoldTimer.stop();
 }
 
 void VkbInputSelection::handleRelease(const QPointF &pos)
 {
     Q_UNUSED(pos);
+    m_pressAndHoldTimer.stop();
     if (m_pressTimer.elapsed() >= QGuiApplication::styleHints()->mousePressAndHoldInterval())
         return;
 
@@ -151,16 +191,6 @@ void VkbInputSelection::stopIdleTimer()
     m_idleTimer.stop();
 }
 
-VkbInputEditor *VkbInputSelection::inputEditor() const
-{
-    VkbInputEditor *inputEditor = qobject_cast<VkbInputEditor *>(m_inputEditorObject);
-    if (!inputEditor) {
-        static VkbInputNullEditor nullEditor;
-        return &nullEditor;
-    }
-    return inputEditor;
-}
-
 VkbInputHandle *VkbInputSelection::inputCursor() const
 {
     VkbInputHandle *inputCursor = qobject_cast<VkbInputHandle *>(m_inputCursorObject);
@@ -179,22 +209,6 @@ VkbInputHandle *VkbInputSelection::inputAnchor() const
         return &nullAnchor;
     }
     return inputAnchor;
-}
-
-VkbInputEditor *VkbInputSelection::createInputEditor()
-{
-    if (!m_inputEditorObject && m_focusObject) {
-        VkbInputIntegration *inputIntegration = VkbInputContextPrivate::getInputIntegration();
-        if (inputIntegration) {
-            m_inputEditorObject = inputIntegration->createInputEditor(m_focusObject);
-            if (m_inputEditorObject) {
-                QObject::connect(m_inputEditorObject, SIGNAL(pressed(QPointF)), this, SLOT(handlePress(QPointF)));
-                QObject::connect(m_inputEditorObject, SIGNAL(released(QPointF)), this, SLOT(handleRelease(QPointF)));
-                QObject::connect(m_inputEditorObject, SIGNAL(pressAndHold(QPointF)), this, SLOT(handlePressAndHold(QPointF)));
-            }
-        }
-    }
-    return inputEditor();
 }
 
 VkbInputHandle *VkbInputSelection::createInputCursor()
@@ -237,14 +251,6 @@ QRectF VkbInputSelection::cursorRectangle()
 QRectF VkbInputSelection::anchorRectangle()
 {
     return QGuiApplication::inputMethod()->anchorRectangle();
-}
-
-bool VkbInputSelection::isInputEditorNeeded() const
-{
-    if (!m_enabled)
-        return false;
-
-    return m_focusObject;
 }
 
 bool VkbInputSelection::isInputCursorNeeded() const
@@ -291,14 +297,6 @@ void VkbInputSelection::hideInputAnchor()
     inputAnchor()->hide();
 }
 
-void VkbInputSelection::updateInputEditor()
-{
-    if (isInputEditorNeeded())
-        createInputEditor();
-    else
-        destroyInputEditor();
-}
-
 void VkbInputSelection::updateInputCursor()
 {
     if (isInputCursorNeeded())
@@ -313,15 +311,6 @@ void VkbInputSelection::updateInputAnchor()
         showInputAnchor();
     else
         hideInputAnchor();
-}
-
-void VkbInputSelection::destroyInputEditor()
-{
-    if (!m_inputEditorObject)
-        return;
-
-    m_inputEditorObject->deleteLater();
-    m_inputEditorObject.clear();
 }
 
 int VkbInputSelection::cursorPositionAt(const QPointF &pos) const

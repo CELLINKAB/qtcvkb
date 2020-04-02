@@ -34,7 +34,6 @@ public:
     explicit VkbQuickIntegration(const QStringList &params);
 
     QObject *createInputPanel(QObject *parent) override;
-    QObject *createInputEditor(QObject *parent) override;
     QObject *createInputCursor(QObject *parent) override;
     QObject *createInputAnchor(QObject *parent) override;
 };

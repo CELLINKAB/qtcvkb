@@ -23,7 +23,6 @@
  */
 
 #include "vkbwidgetsintegration.h"
-#include "vkbwidgetseditor.h"
 #include "vkbwidgetspanel.h"
 
 VkbWidgetsIntegration::VkbWidgetsIntegration(const QStringList &params)
@@ -34,21 +33,4 @@ VkbWidgetsIntegration::VkbWidgetsIntegration(const QStringList &params)
 QObject *VkbWidgetsIntegration::createInputPanel(QObject *parent)
 {
     return new VkbWidgetsPanel(parent);
-}
-
-QObject *VkbWidgetsIntegration::createInputEditor(QObject *parent)
-{
-    return new VkbWidgetsEditor(parent);
-}
-
-QObject *VkbWidgetsIntegration::createInputCursor(QObject *parent)
-{
-    Q_UNUSED(parent)
-    return nullptr;
-}
-
-QObject *VkbWidgetsIntegration::createInputAnchor(QObject *parent)
-{
-    Q_UNUSED(parent)
-    return nullptr;
 }

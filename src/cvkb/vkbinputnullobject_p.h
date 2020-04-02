@@ -26,18 +26,9 @@
 #define VKBINPUTNULLOBJECT_P_H
 
 #include <QtCVkb/vkbinputglobal.h>
-#include <QtCVkb/vkbinputeditor.h>
 #include <QtCVkb/vkbinputhandle.h>
 #include <QtCVkb/vkbinputlayout.h>
 #include <QtCVkb/vkbinputpanel.h>
-
-class VkbInputNullEditor : public VkbInputEditor
-{
-public:
-    void pressed(const QPointF &) override { }
-    void released(const QPointF &) override { }
-    void pressAndHold(const QPointF &) override { }
-};
 
 class VkbInputNullHandle : public VkbInputHandle
 {

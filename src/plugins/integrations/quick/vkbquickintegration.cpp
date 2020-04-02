@@ -23,7 +23,6 @@
  */
 
 #include "vkbquickintegration.h"
-#include "vkbquickeditor.h"
 
 #include <QtCore/qdebug.h>
 #include <QtQml/qqmlcomponent.h>
@@ -75,11 +74,6 @@ VkbQuickIntegration::VkbQuickIntegration(const QStringList &params)
 QObject *VkbQuickIntegration::createInputPanel(QObject *parent)
 {
     return createInputObject("InputPanel", parent);
-}
-
-QObject *VkbQuickIntegration::createInputEditor(QObject *parent)
-{
-    return new VkbQuickEditor(parent);
 }
 
 QObject *VkbQuickIntegration::createInputCursor(QObject *parent)

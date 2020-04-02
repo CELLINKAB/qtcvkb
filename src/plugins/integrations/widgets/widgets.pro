@@ -3,12 +3,10 @@ TARGET = cvkbwidgetsintegrationplugin
 QT += cvkb widgets
 
 HEADERS += \
-    $$PWD/vkbwidgetseditor.h \
     $$PWD/vkbwidgetsintegration.h \
     $$PWD/vkbwidgetspanel.h
 
 SOURCES += \
-    $$PWD/vkbwidgetseditor.cpp \
     $$PWD/vkbwidgetsintegration.cpp \
     $$PWD/vkbwidgetsintegrationplugin.cpp \
     $$PWD/vkbwidgetspanel.cpp

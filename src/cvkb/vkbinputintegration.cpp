@@ -30,12 +30,6 @@ QObject *VkbInputIntegration::createInputPanel(QObject *parent)
     return nullptr;
 }
 
-QObject *VkbInputIntegration::createInputEditor(QObject *parent)
-{
-    Q_UNUSED(parent)
-    return nullptr;
-}
-
 QObject *VkbInputIntegration::createInputCursor(QObject *parent)
 {
     Q_UNUSED(parent)
