@@ -38,7 +38,7 @@
 static const int MajorVersion = 0;
 static const int MinorVersion = 1;
 
-class VkbQuickPlugin : public QQmlExtensionPlugin
+class VkbQuickModule : public QQmlExtensionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
@@ -55,7 +55,7 @@ private:
     VkbQuickFactory m_factory;
 };
 
-void VkbQuickPlugin::registerTypes(const char *uri)
+void VkbQuickModule::registerTypes(const char *uri)
 {
     const QByteArray tmpl = QByteArray(uri) + ".Templates";
     registerTemplates(tmpl, MajorVersion, MinorVersion);
@@ -63,12 +63,12 @@ void VkbQuickPlugin::registerTypes(const char *uri)
     registerStyles(uri, MajorVersion, MinorVersion);
 }
 
-void VkbQuickPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
+void VkbQuickModule::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     m_factory.init(uri, MajorVersion, MinorVersion, engine);
 }
 
-void VkbQuickPlugin::registerTemplates(const char *uri, int majorVersion, int minorVersion)
+void VkbQuickModule::registerTemplates(const char *uri, int majorVersion, int minorVersion)
 {
     qmlRegisterType<VkbQuickDelegate>(uri, majorVersion, minorVersion, "InputDelegate");
     qmlRegisterType<VkbQuickHandle>(uri, majorVersion, minorVersion, "InputHandle");
@@ -79,7 +79,7 @@ void VkbQuickPlugin::registerTemplates(const char *uri, int majorVersion, int mi
     qmlRegisterType<VkbInputStyle>(uri, majorVersion, minorVersion, "InputStyle");
 }
 
-void VkbQuickPlugin::registerRevisions(const char *uri, int majorVersion, int minorVersion)
+void VkbQuickModule::registerRevisions(const char *uri, int majorVersion, int minorVersion)
 {
     qmlRegisterRevision<QQuickPopup, QT_VERSION_MINOR>(uri, majorVersion, minorVersion);
 }
@@ -89,7 +89,7 @@ static const QString importPath(const char *uri)
     return QStringLiteral(":/qt-project.org/imports/%1").arg(QString::fromLatin1(uri).replace(QLatin1Char('.'), QLatin1Char('/')));
 }
 
-void VkbQuickPlugin::registerStyles(const char *uri, int majorVersion, int minorVersion)
+void VkbQuickModule::registerStyles(const char *uri, int majorVersion, int minorVersion)
 {
     QQuickStyleSelector selector;
     const QString style = QQuickStyle::name();
@@ -108,4 +108,4 @@ void VkbQuickPlugin::registerStyles(const char *uri, int majorVersion, int minor
     qmlRegisterSingletonType(selector.select(QStringLiteral("InputStyle.qml")), uri, majorVersion, minorVersion, "InputStyle");
 }
 
-#include "vkbquickplugin.moc"
+#include "vkbquickmodule.moc"
