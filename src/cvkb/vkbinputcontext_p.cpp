@@ -24,32 +24,8 @@
 
 #include "vkbinputcontext_p.h"
 #include "vkbinputintegration.h"
-#include "vkbinputintegrationplugin.h"
 #include "vkbinputlayout.h"
 #include "vkbinputnullobject_p.h"
-
-#include <QtCore/private/qfactoryloader_p.h>
-#include <QtGui/qguiapplication.h>
-
-Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader, (VkbInputIntegrationPlugin_iid, QLatin1String("/cvkbintegrations"), Qt::CaseInsensitive))
-
-static QString resolveIntegration(const QString &name)
-{
-    if (!name.isEmpty())
-        return name;
-
-    const QCoreApplication *app = QCoreApplication::instance();
-    if (app && app->inherits("QApplication"))
-        return QStringLiteral("widgets");
-
-    return QStringLiteral("quick");
-}
-
-void VkbInputContextPrivate::loadIntegration(const QStringList &params)
-{
-    const QString name = resolveIntegration(params.value(0));
-    inputIntegration = qLoadPlugin<VkbInputIntegration, VkbInputIntegrationPlugin>(loader(), name, params.mid(1));
-}
 
 VkbInputPanel *VkbInputContextPrivate::inputPanel() const
 {

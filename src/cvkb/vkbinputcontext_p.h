@@ -46,8 +46,6 @@ public:
         return inputContext->d_func()->inputIntegration;
     }
 
-    void loadIntegration(const QStringList &params);
-
     VkbInputPanel *inputPanel() const;
     VkbInputPanel *createInputPanel();
     VkbInputPopup *createInputPopup(const VkbInputKey &key);
