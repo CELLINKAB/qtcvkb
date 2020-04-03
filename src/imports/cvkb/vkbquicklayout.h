@@ -47,6 +47,7 @@ public:
     VkbInputLayout inputLayout() const;
     void setInputLayout(const VkbInputLayout &inputLayout);
 
+    QQuickAbstractButton *button(const VkbInputKey &key) const;
     QHash<VkbInputKey, QQuickAbstractButton *> buttons() const;
     void setButtons(const QHash<VkbInputKey, QQuickAbstractButton *> &buttons);
 

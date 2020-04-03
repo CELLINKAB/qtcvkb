@@ -76,6 +76,11 @@ QObject *VkbQuickIntegration::createInputPanel(QObject *parent)
     return createInputObject("InputPanel", parent);
 }
 
+QObject *VkbQuickIntegration::createInputPopup(QObject *parent)
+{
+    return createInputObject("InputPopup", parent);
+}
+
 QObject *VkbQuickIntegration::createInputCursor(QObject *parent)
 {
     return createInputObject("InputCursor", parent);

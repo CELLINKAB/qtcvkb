@@ -30,6 +30,12 @@ QObject *VkbInputIntegration::createInputPanel(QObject *parent)
     return nullptr;
 }
 
+QObject *VkbInputIntegration::createInputPopup(QObject *parent)
+{
+    Q_UNUSED(parent)
+    return nullptr;
+}
+
 QObject *VkbInputIntegration::createInputCursor(QObject *parent)
 {
     Q_UNUSED(parent)

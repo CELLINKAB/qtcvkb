@@ -27,6 +27,7 @@
 
 #include <QtQuickTemplates2/private/qquickpopup_p.h>
 #include <QtQml/qqmllist.h>
+#include <QtCVkb/vkbinputpopup.h>
 
 class VkbInputKey;
 class VkbQuickModel;
@@ -35,27 +36,29 @@ class VkbQuickLayout;
 
 QT_FORWARD_DECLARE_CLASS(QQuickAbstractButton)
 
-class VkbQuickPopup : public QQuickPopup
+class VkbQuickPopup : public QQuickPopup, public VkbInputPopup
 {
     Q_OBJECT
     Q_PROPERTY(QStringList alt READ alt WRITE setAlt NOTIFY altChanged)
     Q_PROPERTY(QQmlListProperty<VkbQuickDelegate> delegates READ delegates)
+    Q_INTERFACES(VkbInputPopup)
 
 public:
     explicit VkbQuickPopup(QObject *parent = nullptr);
 
     QStringList alt() const;
-    void setAlt(const QStringList &alt);
+    void setAlt(const QStringList &alt) override;
 
     QQmlListProperty<VkbQuickDelegate> delegates();
 
-    void setVisible(bool visible) override;
+    void show() override;
+    void hide() override;
 
 signals:
     void altChanged();
-    void keyPressed(const VkbInputKey &key);
-    void keyReleased(const VkbInputKey &key);
-    void keyCanceled(const VkbInputKey &key);
+    void keyPressed(const VkbInputKey &key) override;
+    void keyReleased(const VkbInputKey &key) override;
+    void keyCanceled(const VkbInputKey &key) override;
 
 protected:
     void componentComplete() override;

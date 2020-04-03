@@ -66,6 +66,11 @@ private:
     Q_DECLARE_PRIVATE(VkbInputContext)
     QScopedPointer<VkbInputContextPrivate> d_ptr;
 
+    Q_PRIVATE_SLOT(d_func(), void _q_handleKeyPress(const VkbInputKey &key))
+    Q_PRIVATE_SLOT(d_func(), void _q_handleKeyRelease(const VkbInputKey &key))
+    Q_PRIVATE_SLOT(d_func(), void _q_handleKeyCancel(const VkbInputKey &key))
+    Q_PRIVATE_SLOT(d_func(), void _q_handleKeyPressAndHold(const VkbInputKey &key))
+
     // ### TODO: mark QPlatformInputContext::emitXxx() as slots
     Q_PRIVATE_SLOT(d_func(), void _q_emitInputPanelVisibleChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_emitAnimatingChanged())

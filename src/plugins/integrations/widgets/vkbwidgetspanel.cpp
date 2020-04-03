@@ -75,6 +75,11 @@ Qt::LayoutDirection VkbWidgetsPanel::inputDirection() const
     return Qt::LeftToRight;
 }
 
+QObject *VkbWidgetsPanel::button(const VkbInputKey &key) const
+{
+    return m_buttons.value(key);
+}
+
 void VkbWidgetsPanel::setLayout(const VkbInputLayout &layout)
 {
     if (m_layout == layout)

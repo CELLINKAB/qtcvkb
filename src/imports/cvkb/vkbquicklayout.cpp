@@ -61,6 +61,11 @@ void VkbQuickLayout::setInputLayout(const VkbInputLayout &inputLayout)
     updateImplicitSize();
 }
 
+QQuickAbstractButton *VkbQuickLayout::button(const VkbInputKey &key) const
+{
+    return m_buttons.value(key);
+}
+
 QHash<VkbInputKey, QQuickAbstractButton *> VkbQuickLayout::buttons() const
 {
     return m_buttons;

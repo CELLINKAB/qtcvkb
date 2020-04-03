@@ -81,6 +81,11 @@ Qt::LayoutDirection VkbQuickPanel::inputDirection() const
     return Qt::LeftToRight;
 }
 
+QObject *VkbQuickPanel::button(const VkbInputKey &key) const
+{
+    return m_layout->button(key);
+}
+
 void VkbQuickPanel::setLayout(const VkbInputLayout &layout)
 {
     if (m_layout->inputLayout() == layout)
@@ -128,17 +133,6 @@ void VkbQuickPanel::handleKeyPressAndHold()
     VkbQuickLayoutAttached *attached = VkbQuickLayout::qmlAttachedPropertiesObject(button);
     if (!attached)
         return;
-
-    if (!attached->alt().isEmpty()) {
-        VkbQuickPopup *popup = m_model->createPopup(attached->inputKey(), button);
-        if (!popup)
-            return;
-
-        popup->open();
-        connect(popup, &VkbQuickPopup::keyPressed, this, &VkbQuickPanel::keyPressed);
-        connect(popup, &VkbQuickPopup::keyReleased, this, &VkbQuickPanel::keyReleased);
-        connect(popup, &VkbQuickPopup::keyCanceled, this, &VkbQuickPanel::keyCanceled);
-    }
 
     emit keyPressAndHold(attached->inputKey());
 }

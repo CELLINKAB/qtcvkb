@@ -22,21 +22,33 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTINTEGRATION_H
-#define VKBINPUTINTEGRATION_H
+#ifndef VKBINPUTPOPUP_H
+#define VKBINPUTPOPUP_H
 
 #include <QtCVkb/vkbinputglobal.h>
 #include <QtCore/qobject.h>
 
-class Q_CVKB_EXPORT VkbInputIntegration : public QObject
-{
-    Q_OBJECT
+class VkbInputKey;
 
+QT_FORWARD_DECLARE_CLASS(QStringList)
+
+class Q_CVKB_EXPORT VkbInputPopup
+{
 public:
-    virtual QObject *createInputPanel(QObject *parent);
-    virtual QObject *createInputPopup(QObject *parent);
-    virtual QObject *createInputCursor(QObject *parent);
-    virtual QObject *createInputAnchor(QObject *parent);
+    virtual ~VkbInputPopup() = default;
+
+    virtual void show() = 0;
+    virtual void hide() = 0;
+
+    virtual void setAlt(const QStringList &alt) = 0;
+
+signals:
+    virtual void keyPressed(const VkbInputKey &key) = 0;
+    virtual void keyReleased(const VkbInputKey &key) = 0;
+    virtual void keyCanceled(const VkbInputKey &key) = 0;
 };
 
-#endif // VKBINPUTINTEGRATION_H
+#define VkbInputPopup_iid "VkbInputPopup/0.1"
+Q_DECLARE_INTERFACE(VkbInputPopup, VkbInputPopup_iid)
+
+#endif // VKBINPUTPOPUP_H

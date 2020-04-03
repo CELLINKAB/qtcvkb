@@ -64,11 +64,16 @@ QQmlListProperty<VkbQuickDelegate> VkbQuickPopup::delegates()
     return m_model->delegates();
 }
 
-void VkbQuickPopup::setVisible(bool visible)
+void VkbQuickPopup::show()
 {
-    QQuickPopup::setVisible(visible);
-    if (visible)
-        popupItem()->grabMouse();
+    QQuickPopup::open();
+    updateButtons();
+    popupItem()->grabMouse();
+}
+
+void VkbQuickPopup::hide()
+{
+    QQuickPopup::close();
 }
 
 void VkbQuickPopup::componentComplete()
@@ -158,7 +163,7 @@ void VkbQuickPopup::updateSpacing()
 
 void VkbQuickPopup::updateButtons()
 {
-    if (!isComponentComplete())
+    if (!isComponentComplete() || !isVisible())
         return;
 
     QHash<VkbInputKey, QQuickAbstractButton *> newButtons;

@@ -67,10 +67,10 @@ VkbInputPanel *VkbInputContextPrivate::createInputPanel()
     if (!inputPanelObject && inputIntegration) {
         inputPanelObject = inputIntegration->createInputPanel(QGuiApplication::focusWindow());
         if (inputPanelObject) {
-            QObject::connect(inputPanelObject, SIGNAL(keyPressed(VkbInputKey)), &inputEngine, SLOT(handleKeyPress(VkbInputKey)));
-            QObject::connect(inputPanelObject, SIGNAL(keyReleased(VkbInputKey)), &inputEngine, SLOT(handleKeyRelease(VkbInputKey)));
-            QObject::connect(inputPanelObject, SIGNAL(keyCanceled(VkbInputKey)), &inputEngine, SLOT(handleKeyCancel(VkbInputKey)));
-            QObject::connect(inputPanelObject, SIGNAL(keyPressAndHold(VkbInputKey)), &inputEngine, SLOT(handleKeyPressAndHold(VkbInputKey)));
+            QObject::connect(inputPanelObject, SIGNAL(keyPressed(VkbInputKey)), q, SLOT(_q_handleKeyPress(VkbInputKey)));
+            QObject::connect(inputPanelObject, SIGNAL(keyReleased(VkbInputKey)), q, SLOT(_q_handleKeyRelease(VkbInputKey)));
+            QObject::connect(inputPanelObject, SIGNAL(keyCanceled(VkbInputKey)), q, SLOT(_q_handleKeyCancel(VkbInputKey)));
+            QObject::connect(inputPanelObject, SIGNAL(keyPressAndHold(VkbInputKey)), q, SLOT(_q_handleKeyPressAndHold(VkbInputKey)));
             QObject::connect(inputPanelObject, SIGNAL(visibleChanged()), q, SLOT(_q_emitInputPanelVisibleChanged()));
             QObject::connect(inputPanelObject, SIGNAL(animatingChanged()), q, SLOT(_q_emitAnimatingChanged()));
             QObject::connect(inputPanelObject, SIGNAL(rectChanged()), q, SLOT(_q_emitKeyboardRectChanged()));
@@ -80,6 +80,25 @@ VkbInputPanel *VkbInputContextPrivate::createInputPanel()
         }
     }
     return inputPanel();
+}
+
+VkbInputPopup *VkbInputContextPrivate::createInputPopup(const VkbInputKey &key)
+{
+    Q_Q(VkbInputContext);
+    if (!inputIntegration)
+        return nullptr;
+
+    QObject *button = inputPanel()->button(key);
+    if (!button)
+        return nullptr;
+
+    QObject *inputPopup = inputIntegration->createInputPopup(button);
+    if (inputPopup) {
+        QObject::connect(inputPopup, SIGNAL(keyPressed(VkbInputKey)), q, SLOT(_q_handleKeyPress(VkbInputKey)));
+        QObject::connect(inputPopup, SIGNAL(keyReleased(VkbInputKey)), q, SLOT(_q_handleKeyRelease(VkbInputKey)));
+        QObject::connect(inputPopup, SIGNAL(keyCanceled(VkbInputKey)), q, SLOT(_q_handleKeyCancel(VkbInputKey)));
+    }
+    return qobject_cast<VkbInputPopup *>(inputPopup);
 }
 
 static QString resolveInputLayout(VkbInputEngine::InputMode inputMode)
@@ -100,6 +119,33 @@ bool VkbInputContextPrivate::loadInputLayout()
 
     createInputPanel()->setLayout(layout);
     return true;
+}
+
+void VkbInputContextPrivate::_q_handleKeyPress(const VkbInputKey &key)
+{
+    inputEngine.handleKeyPress(key);
+}
+
+void VkbInputContextPrivate::_q_handleKeyRelease(const VkbInputKey &key)
+{
+    inputEngine.handleKeyRelease(key);
+}
+
+void VkbInputContextPrivate::_q_handleKeyCancel(const VkbInputKey &key)
+{
+    inputEngine.handleKeyCancel(key);
+}
+
+void VkbInputContextPrivate::_q_handleKeyPressAndHold(const VkbInputKey &key)
+{
+    inputEngine.handleKeyPressAndHold(key);
+
+    VkbInputPopup *popup = createInputPopup(key);
+    if (!popup)
+        return;
+
+    popup->setAlt(key.alt);
+    popup->show();
 }
 
 void VkbInputContextPrivate::_q_emitInputPanelVisibleChanged()

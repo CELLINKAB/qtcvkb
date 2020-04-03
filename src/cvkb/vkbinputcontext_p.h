@@ -32,6 +32,7 @@
 #include <QtCore/qpointer.h>
 
 class VkbInputPanel;
+class VkbInputPopup;
 class VkbInputIntegration;
 
 class VkbInputContextPrivate
@@ -49,8 +50,14 @@ public:
 
     VkbInputPanel *inputPanel() const;
     VkbInputPanel *createInputPanel();
+    VkbInputPopup *createInputPopup(const VkbInputKey &key);
 
     bool loadInputLayout();
+
+    void _q_handleKeyPress(const VkbInputKey &key);
+    void _q_handleKeyRelease(const VkbInputKey &key);
+    void _q_handleKeyCancel(const VkbInputKey &key);
+    void _q_handleKeyPressAndHold(const VkbInputKey &key);
 
     // ### TODO: mark QPlatformInputContext::emitXxx() as slots
     void _q_emitInputPanelVisibleChanged();
