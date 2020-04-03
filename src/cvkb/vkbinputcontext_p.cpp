@@ -140,6 +140,9 @@ void VkbInputContextPrivate::_q_handleKeyPressAndHold(const VkbInputKey &key)
 {
     inputEngine.handleKeyPressAndHold(key);
 
+    if (key.alt.isEmpty())
+        return;
+
     VkbInputPopup *popup = createInputPopup(key);
     if (!popup)
         return;
