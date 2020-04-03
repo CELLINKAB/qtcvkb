@@ -43,6 +43,18 @@ ApplicationWindow {
 
             SplitView.fillWidth: true
 
+            Column {
+                Repeater {
+                    model: ["visible", "animating", "cursorRectangle", "anchorRectangle", "keyboardRectangle", "inputItemClipRectangle"]
+                    Label {
+                        color: palette.dark
+                        padding: textField.padding
+                        font.pixelSize: window.font.pixelSize * 0.8
+                        text: "%1: %2".arg(modelData).arg(Qt.inputMethod[modelData].toString())
+                    }
+                }
+            }
+
             TextField {
                 id: textField
                 width: parent.width / 2
