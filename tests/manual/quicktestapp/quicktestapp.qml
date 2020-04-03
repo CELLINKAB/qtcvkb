@@ -94,8 +94,8 @@ ApplicationWindow {
                         currentIndex: textField.echoMode
                         model: [
                             "Normal",
-                            "Password",
                             "NoEcho",
+                            "Password",
                             "PasswordEchoOnEdit"
                         ]
                         Layout.fillWidth: true
