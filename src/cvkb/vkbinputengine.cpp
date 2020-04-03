@@ -100,6 +100,14 @@ void VkbInputEngine::setKeyboardModifiers(Qt::KeyboardModifiers keyboardModifier
     emit keyboardModifiersChanged();
 }
 
+void VkbInputEngine::reset()
+{
+}
+
+void VkbInputEngine::commit()
+{
+}
+
 void VkbInputEngine::handleKeyPress(const VkbInputKey &key)
 {
     Q_D(VkbInputEngine);

@@ -63,12 +63,14 @@ bool VkbInputContext::hasCapability(Capability capability) const
 
 void VkbInputContext::reset()
 {
-    QPlatformInputContext::reset();
+    Q_D(VkbInputContext);
+    d->inputEngine.reset();
 }
 
 void VkbInputContext::commit()
 {
-    QPlatformInputContext::commit();
+    Q_D(VkbInputContext);
+    d->inputEngine.commit();
 }
 
 void VkbInputContext::update(Qt::InputMethodQueries queries)

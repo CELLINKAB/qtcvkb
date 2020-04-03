@@ -55,6 +55,9 @@ public:
     void setKeyboardModifiers(Qt::KeyboardModifiers keyboardModifiers);
 
 public slots:
+    void reset();
+    void commit();
+
     void handleKeyPress(const VkbInputKey &key);
     void handleKeyRelease(const VkbInputKey &key);
     void handleKeyCancel(const VkbInputKey &key);
