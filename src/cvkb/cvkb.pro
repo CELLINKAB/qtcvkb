@@ -12,6 +12,7 @@ HEADERS += \
     $$PWD/vkbinputcontext_p.h \
     $$PWD/vkbinputgrid.h \
     $$PWD/vkbinputengine.h \
+    $$PWD/vkbinputengine_p.h \
     $$PWD/vkbinputglobal.h \
     $$PWD/vkbinputhandle.h \
     $$PWD/vkbinputintegration.h \

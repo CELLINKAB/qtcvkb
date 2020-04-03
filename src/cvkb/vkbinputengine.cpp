@@ -23,27 +23,10 @@
  */
 
 #include "vkbinputengine.h"
+#include "vkbinputengine_p.h"
 #include "vkbinputkey.h"
 
-#include <QtCore/private/qobject_p.h>
 #include <QtGui/qpa/qwindowsysteminterface.h>
-
-class VkbInputEnginePrivate : public QObjectPrivate
-{
-    Q_DECLARE_PUBLIC(VkbInputEngine)
-
-public:
-    void resolveInputMode();
-    void sendKeyPress(const VkbInputKey &key);
-    void sendKeyRelease(const VkbInputKey &key);
-    void sendKeyText(const QString &text);
-    void sendKeyEvent(QEvent::Type type, int key);
-    void toggleKeyboardModifier(Qt::KeyboardModifier modifier);
-
-    VkbInputEngine::InputMode inputMode = VkbInputEngine::Letters;
-    Qt::InputMethodHints inputMethodHints = Qt::ImhNone;
-    Qt::KeyboardModifiers keyboardModifiers = Qt::NoModifier;
-};
 
 VkbInputEngine::VkbInputEngine(QObject *parent)
     : QObject(*(new VkbInputEnginePrivate), parent)
