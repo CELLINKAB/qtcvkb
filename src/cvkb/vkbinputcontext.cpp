@@ -137,12 +137,11 @@ Qt::LayoutDirection VkbInputContext::inputDirection() const
 void VkbInputContext::setFocusObject(QObject *focusObject)
 {
     Q_D(VkbInputContext);
-    bool enabled = false;
+    bool enabled = inputMethodAccepted();
     Qt::InputMethodHints inputMethodHints = Qt::ImhNone;
     if (focusObject) {
-        QInputMethodQueryEvent event(Qt::ImEnabled | Qt::ImHints);
+        QInputMethodQueryEvent event(Qt::ImHints);
         QCoreApplication::sendEvent(focusObject, &event);
-        enabled = event.value(Qt::ImEnabled).toBool();
         inputMethodHints = static_cast<Qt::InputMethodHints>(event.value(Qt::ImHints).toUInt());
     }
 
