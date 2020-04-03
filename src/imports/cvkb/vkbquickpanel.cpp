@@ -81,11 +81,6 @@ Qt::LayoutDirection VkbQuickPanel::inputDirection() const
     return Qt::LeftToRight;
 }
 
-VkbInputLayout VkbQuickPanel::layout() const
-{
-    return m_layout->inputLayout();
-}
-
 void VkbQuickPanel::setLayout(const VkbInputLayout &layout)
 {
     if (m_layout->inputLayout() == layout)
@@ -93,7 +88,6 @@ void VkbQuickPanel::setLayout(const VkbInputLayout &layout)
 
     m_layout->setInputLayout(layout);
     updateButtons();
-    emit layoutChanged();
 }
 
 QQmlListProperty<VkbQuickDelegate> VkbQuickPanel::delegates()

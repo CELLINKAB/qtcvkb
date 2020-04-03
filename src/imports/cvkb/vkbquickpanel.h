@@ -55,7 +55,6 @@ public:
     QLocale locale() const override;
     Qt::LayoutDirection inputDirection() const override;
 
-    VkbInputLayout layout() const override;
     void setLayout(const VkbInputLayout &layout) override;
 
     QQmlListProperty<VkbQuickDelegate> delegates();
@@ -66,7 +65,6 @@ signals:
     void rectChanged() override;
     void localeChanged() override;
     void inputDirectionChanged() override;
-    void layoutChanged() override;
 
     void keyPressed(const VkbInputKey &key) override;
     void keyReleased(const VkbInputKey &key) override;

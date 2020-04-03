@@ -47,7 +47,6 @@ public:
     virtual QLocale locale() const = 0;
     virtual Qt::LayoutDirection inputDirection() const = 0;
 
-    virtual VkbInputLayout layout() const = 0;
     virtual void setLayout(const VkbInputLayout &layout) = 0;
 
 signals:
@@ -56,7 +55,6 @@ signals:
     virtual void rectChanged() = 0;
     virtual void localeChanged() = 0;
     virtual void inputDirectionChanged() = 0;
-    virtual void layoutChanged() = 0;
 
     virtual void keyPressed(const VkbInputKey &key) = 0;
     virtual void keyReleased(const VkbInputKey &key) = 0;

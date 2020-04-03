@@ -27,7 +27,6 @@
 
 #include <QtCVkb/vkbinputglobal.h>
 #include <QtCVkb/vkbinputhandle.h>
-#include <QtCVkb/vkbinputlayout.h>
 #include <QtCVkb/vkbinputpanel.h>
 
 class VkbInputNullHandle : public VkbInputHandle
@@ -53,14 +52,12 @@ public:
     QRectF rect() const override { return QRectF(); }
     QLocale locale() const override { return QLocale(); }
     Qt::LayoutDirection inputDirection() const override { return Qt::LeftToRight; }
-    VkbInputLayout layout() const override { return VkbInputLayout(); }
     void setLayout(const VkbInputLayout &) override { }
     void visibleChanged() override { }
     void animatingChanged() override { }
     void rectChanged() override { }
     void localeChanged() override { }
     void inputDirectionChanged() override { }
-    void layoutChanged() override { }
     void keyPressed(const VkbInputKey &) override { }
     void keyReleased(const VkbInputKey &) override { }
     void keyCanceled(const VkbInputKey &) override { }
