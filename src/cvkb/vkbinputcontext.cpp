@@ -63,6 +63,7 @@ VkbInputContext::VkbInputContext(const QStringList &params)
     d->inputIntegration = loadIntegration(params);
 
     connect(&d->inputEngine, &VkbInputEngine::inputModeChanged, [=]() { d->loadInputLayout(); });
+    connect(&d->inputEngine, SIGNAL(keyPressAndHold(VkbInputKey)), this, SLOT(_q_showInputPopup(VkbInputKey)));
 }
 
 VkbInputContext::~VkbInputContext()

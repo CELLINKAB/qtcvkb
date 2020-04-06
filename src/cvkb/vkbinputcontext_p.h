@@ -52,10 +52,7 @@ public:
 
     bool loadInputLayout();
 
-    void _q_handleKeyPress(const VkbInputKey &key);
-    void _q_handleKeyRelease(const VkbInputKey &key);
-    void _q_handleKeyCancel(const VkbInputKey &key);
-    void _q_handleKeyPressAndHold(const VkbInputKey &key);
+    void _q_showInputPopup(const VkbInputKey &key);
 
     // ### TODO: mark QPlatformInputContext::emitXxx() as slots
     void _q_emitInputPanelVisibleChanged();

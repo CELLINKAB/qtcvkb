@@ -105,22 +105,24 @@ void VkbInputEngine::handleKeyPress(const VkbInputKey &key)
     KeyHandler handler = handlers.value(key.key, [=](VkbInputEnginePrivate *engine, const VkbInputKey &key) { engine->sendKeyPress(key); });
     if (handler)
         handler(d, key);
+    emit keyPressed(key);
 }
 
 void VkbInputEngine::handleKeyRelease(const VkbInputKey &key)
 {
     Q_D(VkbInputEngine);
     d->sendKeyRelease(key);
+    emit keyReleased(key);
 }
 
 void VkbInputEngine::handleKeyCancel(const VkbInputKey &key)
 {
-    Q_UNUSED(key);
+    emit keyCanceled(key);
 }
 
 void VkbInputEngine::handleKeyPressAndHold(const VkbInputKey &key)
 {
-    Q_UNUSED(key);
+    emit keyPressAndHold(key);
 }
 
 void VkbInputEnginePrivate::resolveInputMode()

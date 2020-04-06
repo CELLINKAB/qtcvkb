@@ -68,6 +68,11 @@ signals:
     void inputMethodHintsChanged();
     void keyboardModifiersChanged();
 
+    void keyPressed(const VkbInputKey &key);
+    void keyReleased(const VkbInputKey &key);
+    void keyCanceled(const VkbInputKey &key);
+    void keyPressAndHold(const VkbInputKey &key);
+
 private:
     Q_DISABLE_COPY(VkbInputEngine)
     Q_DECLARE_PRIVATE(VkbInputEngine)
