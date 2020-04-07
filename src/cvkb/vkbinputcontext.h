@@ -65,8 +65,6 @@ public:
 private:
     Q_DECLARE_PRIVATE(VkbInputContext)
     QScopedPointer<VkbInputContextPrivate> d_ptr;
-
-    Q_PRIVATE_SLOT(d_func(), void _q_showInputPopup(const VkbInputKey &key))
 };
 
 #endif // VKBINPUTCONTEXT_H

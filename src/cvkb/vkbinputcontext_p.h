@@ -27,10 +27,8 @@
 
 #include <QtCVkb/vkbinputcontext.h>
 #include <QtCVkb/vkbinputengine.h>
-#include <QtCVkb/vkbinputpanel.h>
 #include <QtCVkb/vkbinputselection.h>
 #include <QtCVkb/private/vkbinputpanel_p.h>
-#include <QtCore/qpointer.h>
 
 class VkbInputPopup;
 
@@ -39,10 +37,6 @@ class VkbInputContextPrivate
     Q_DECLARE_PUBLIC(VkbInputContext)
 
 public:
-    VkbInputPopup *createInputPopup(const VkbInputKey &key);
-
-    void _q_showInputPopup(const VkbInputKey &key);
-
     VkbInputContext *q_ptr = nullptr;
     VkbInputEngine inputEngine;
     VkbInputSelection inputSelection;

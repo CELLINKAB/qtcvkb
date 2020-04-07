@@ -41,7 +41,7 @@ VkbInputContext::VkbInputContext(const QStringList &params)
     VkbInputIntegrationPrivate::load(params);
 
     connect(&d->inputEngine, &VkbInputEngine::layoutChanged, &d->inputPanel, &VkbInputPanelProxy::setLayout);
-    connect(&d->inputEngine, SIGNAL(keyPressAndHold(VkbInputKey)), this, SLOT(_q_showInputPopup(VkbInputKey)));
+    connect(&d->inputEngine, &VkbInputEngine::keyPressAndHold, &d->inputPanel, &VkbInputPanelProxy::showPopup);
 
     connect(&d->inputPanel, &VkbInputPanelProxy::keyPressed, &d->inputEngine, &VkbInputEngine::handleKeyPress);
     connect(&d->inputPanel, &VkbInputPanelProxy::keyReleased, &d->inputEngine, &VkbInputEngine::handleKeyRelease);
@@ -167,5 +167,3 @@ void VkbInputContext::setFocusObject(QObject *focusObject)
     d->inputSelection.setEnabled(enabled && !inputMethodHints.testFlag(Qt::ImhNoTextHandles));
     d->inputSelection.setFocusObject(focusObject);
 }
-
-#include "moc_vkbinputcontext.cpp"

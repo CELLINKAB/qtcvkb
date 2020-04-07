@@ -24,6 +24,8 @@
 
 #include "vkbinputpanel_p.h"
 #include "vkbinputintegration.h"
+#include "vkbinputkey.h"
+#include "vkbinputpopup.h"
 
 #include <QtCore/qlocale.h>
 #include <QtCore/qrect.h>
@@ -94,6 +96,34 @@ QObject *VkbInputPanelProxy::button(const VkbInputKey &key) const
 void VkbInputPanelProxy::setLayout(const VkbInputLayout &layout)
 {
     create()->setLayout(layout);
+}
+
+static VkbInputPopup *createPopup(const VkbInputKey &key, VkbInputPanelProxy *inputPanel)
+{
+    QObject *button = inputPanel->button(key);
+    if (!button)
+        return nullptr;
+
+    QObject *inputPopup = VkbInputIntegration::instance()->createInputPopup(button);
+    if (inputPopup) {
+        QObject::connect(inputPopup, SIGNAL(keyPressed(VkbInputKey)), inputPanel, SIGNAL(keyPressed(VkbInputKey)));
+        QObject::connect(inputPopup, SIGNAL(keyReleased(VkbInputKey)), inputPanel, SIGNAL(keyReleased(VkbInputKey)));
+        QObject::connect(inputPopup, SIGNAL(keyCanceled(VkbInputKey)), inputPanel, SIGNAL(keyCanceled(VkbInputKey)));
+    }
+    return qobject_cast<VkbInputPopup *>(inputPopup);
+}
+
+void VkbInputPanelProxy::showPopup(const VkbInputKey &key)
+{
+    if (key.alt.isEmpty())
+        return;
+
+    VkbInputPopup *popup = createPopup(key, this);
+    if (!popup)
+        return;
+
+    popup->setAlt(key.alt);
+    popup->show();
 }
 
 VkbInputPanel *VkbInputPanelProxy::create()

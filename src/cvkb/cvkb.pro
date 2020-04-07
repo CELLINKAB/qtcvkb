@@ -29,7 +29,6 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/vkbinputcontext.cpp \
-    $$PWD/vkbinputcontext_p.cpp \
     $$PWD/vkbinputgrid.cpp \
     $$PWD/vkbinputengine.cpp \
     $$PWD/vkbinputintegration.cpp \
