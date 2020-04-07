@@ -44,6 +44,7 @@ public:
     bool operator==(const VkbInputLayout &other) const;
     bool operator!=(const VkbInputLayout &other) const;
 
+    bool isEmpty() const;
     int rowCount() const;
     int columnCount() const;
 

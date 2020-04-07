@@ -81,6 +81,12 @@ bool VkbInputLayout::operator!=(const VkbInputLayout &other) const
     return !(*this == other);
 }
 
+bool VkbInputLayout::isEmpty() const
+{
+    Q_D(const VkbInputLayout);
+    return d->layout.isEmpty();
+}
+
 int VkbInputLayout::rowCount() const
 {
     Q_D(const VkbInputLayout);
