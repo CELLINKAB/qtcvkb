@@ -88,7 +88,8 @@ void VkbInputContext::commit()
 
 void VkbInputContext::update(Qt::InputMethodQueries queries)
 {
-    QPlatformInputContext::update(queries);
+    Q_D(VkbInputContext);
+    d->inputEngine.update(queries);
 }
 
 void VkbInputContext::invokeAction(QInputMethod::Action action, int cursorPosition)

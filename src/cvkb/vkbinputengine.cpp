@@ -108,6 +108,11 @@ void VkbInputEngine::commit()
 {
 }
 
+void VkbInputEngine::update(Qt::InputMethodQueries queries)
+{
+    Q_UNUSED(queries);
+}
+
 void VkbInputEngine::setFocusObject(QObject *focusObject)
 {
     if (!focusObject) {

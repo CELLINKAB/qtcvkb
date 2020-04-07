@@ -61,6 +61,7 @@ public:
 public slots:
     void reset();
     void commit();
+    void update(Qt::InputMethodQueries queries);
     void setFocusObject(QObject *focusObject);
 
     void handleKeyPress(const VkbInputKey &key);
