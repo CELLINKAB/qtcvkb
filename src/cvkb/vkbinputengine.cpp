@@ -47,7 +47,7 @@ void VkbInputEngine::setInputMode(InputMode inputMode)
 
     d->inputMode = inputMode;
     d->resolveLayout();
-    emit inputModeChanged();
+    emit inputModeChanged(inputMode);
 }
 
 Qt::InputMethodHints VkbInputEngine::inputMethodHints() const
@@ -64,7 +64,7 @@ void VkbInputEngine::setInputMethodHints(Qt::InputMethodHints inputMethodHints)
 
     d->inputMethodHints = inputMethodHints;
     d->resolveInputMode();
-    emit inputMethodHintsChanged();
+    emit inputMethodHintsChanged(inputMethodHints);
 }
 
 Qt::KeyboardModifiers VkbInputEngine::keyboardModifiers() const
@@ -81,7 +81,7 @@ void VkbInputEngine::setKeyboardModifiers(Qt::KeyboardModifiers keyboardModifier
 
     d->keyboardModifiers = keyboardModifiers;
     d->resolveInputMode();
-    emit keyboardModifiersChanged();
+    emit keyboardModifiersChanged(keyboardModifiers);
 }
 
 VkbInputLayout VkbInputEngine::layout() const

@@ -69,9 +69,9 @@ public slots:
     void handleKeyPressAndHold(const VkbInputKey &key);
 
 signals:
-    void inputModeChanged();
-    void inputMethodHintsChanged();
-    void keyboardModifiersChanged();
+    void inputModeChanged(InputMode inputMode);
+    void inputMethodHintsChanged(Qt::InputMethodHints inputMethodHints);
+    void keyboardModifiersChanged(Qt::KeyboardModifiers keyboardModifiers);
     void layoutChanged(const VkbInputLayout &layout);
 
     void keyPressed(const VkbInputKey &key);
