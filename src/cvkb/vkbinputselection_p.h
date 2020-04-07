@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTSELECTION_H
-#define VKBINPUTSELECTION_H
+#ifndef VKBINPUTSELECTION_P_H
+#define VKBINPUTSELECTION_P_H
 
 #include <QtCVkb/vkbinputglobal.h>
 #include <QtCVkb/private/vkbinputhandle_p.h>
@@ -32,9 +32,7 @@
 #include <QtCore/qobject.h>
 #include <QtCore/qpointer.h>
 
-class VkbInputHandle;
-
-class Q_CVKB_EXPORT VkbInputSelection : public QObject
+class VkbInputSelection : public QObject
 {
     Q_OBJECT
 
@@ -96,4 +94,4 @@ private:
     QPointer<QObject> m_focusObject = nullptr;
 };
 
-#endif // VKBINPUTSELECTION_H
+#endif // VKBINPUTSELECTION_P_H

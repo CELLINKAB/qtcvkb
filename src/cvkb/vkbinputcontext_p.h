@@ -27,8 +27,8 @@
 
 #include <QtCVkb/vkbinputcontext.h>
 #include <QtCVkb/vkbinputengine.h>
-#include <QtCVkb/vkbinputselection.h>
 #include <QtCVkb/private/vkbinputpanel_p.h>
+#include <QtCVkb/private/vkbinputselection_p.h>
 
 class VkbInputPopup;
 

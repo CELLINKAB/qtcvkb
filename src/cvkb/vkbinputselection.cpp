@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include "vkbinputselection.h"
+#include "vkbinputselection_p.h"
 #include "vkbinputcontext_p.h"
 #include "vkbinputhandle.h"
 #include "vkbinputstyle.h"

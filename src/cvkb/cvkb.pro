@@ -24,7 +24,7 @@ HEADERS += \
     $$PWD/vkbinputpanel.h \
     $$PWD/vkbinputpanel_p.h \
     $$PWD/vkbinputpopup.h \
-    $$PWD/vkbinputselection.h \
+    $$PWD/vkbinputselection_p.h \
     $$PWD/vkbinputstyle.h
 
 SOURCES += \
