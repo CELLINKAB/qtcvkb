@@ -93,8 +93,17 @@ void VkbInputSelection::setFocusObject(QObject *focusObject)
     if (m_focusObject)
         m_focusObject->removeEventFilter(this);
 
-    if (focusObject)
+    if (focusObject) {
         focusObject->installEventFilter(this);
+
+        QInputMethodQueryEvent event(Qt::ImEnabled | Qt::ImHints);
+        QCoreApplication::sendEvent(focusObject, &event);
+        bool enabled = event.value(Qt::ImEnabled).toBool();
+        Qt::InputMethodHints inputMethodHints = event.value(Qt::ImHints).value<Qt::InputMethodHints>();
+        setEnabled(enabled && !inputMethodHints.testFlag(Qt::ImhNoTextHandles));
+    } else {
+        setEnabled(false);
+    }
 
     m_focusObject = focusObject;
 }
