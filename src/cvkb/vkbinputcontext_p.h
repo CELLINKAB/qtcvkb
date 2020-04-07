@@ -41,8 +41,6 @@ class VkbInputContextPrivate
 public:
     VkbInputPopup *createInputPopup(const VkbInputKey &key);
 
-    bool loadInputLayout();
-
     void _q_showInputPopup(const VkbInputKey &key);
 
     VkbInputContext *q_ptr = nullptr;

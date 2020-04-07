@@ -26,6 +26,7 @@
 #define VKBINPUTENGINE_P_H
 
 #include <QtCVkb/vkbinputengine.h>
+#include <QtCVkb/vkbinputlayout.h>
 #include <QtCore/private/qobject_p.h>
 
 class VkbInputEnginePrivate : public QObjectPrivate
@@ -33,6 +34,7 @@ class VkbInputEnginePrivate : public QObjectPrivate
     Q_DECLARE_PUBLIC(VkbInputEngine)
 
 public:
+    void resolveLayout();
     void resolveInputMode();
     void sendKeyPress(const VkbInputKey &key);
     void sendKeyRelease(const VkbInputKey &key);
@@ -40,6 +42,7 @@ public:
     void sendKeyEvent(QEvent::Type type, int key);
     void toggleKeyboardModifier(Qt::KeyboardModifier modifier);
 
+    VkbInputLayout layout;
     VkbInputEngine::InputMode inputMode = VkbInputEngine::Letters;
     Qt::InputMethodHints inputMethodHints = Qt::ImhNone;
     Qt::KeyboardModifiers keyboardModifiers = Qt::NoModifier;

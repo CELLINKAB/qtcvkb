@@ -24,8 +24,8 @@
 
 #include "vkbinputcontext_p.h"
 #include "vkbinputintegration.h"
-#include "vkbinputlayout.h"
 #include "vkbinputpopup.h"
+#include "vkbinputkey.h"
 
 VkbInputPopup *VkbInputContextPrivate::createInputPopup(const VkbInputKey &key)
 {
@@ -40,26 +40,6 @@ VkbInputPopup *VkbInputContextPrivate::createInputPopup(const VkbInputKey &key)
         QObject::connect(inputPopup, SIGNAL(keyCanceled(VkbInputKey)), &inputEngine, SLOT(handleKeyCancel(VkbInputKey)));
     }
     return qobject_cast<VkbInputPopup *>(inputPopup);
-}
-
-static QString resolveInputLayout(VkbInputEngine::InputMode inputMode)
-{
-    static const QString LayoutPath = qEnvironmentVariable("CVKB_LAYOUT_PATH", QStringLiteral(":/cvkb/layouts"));
-
-    const QMetaEnum metaEnum = QMetaEnum::fromType<VkbInputEngine::InputMode>();
-    const QString layoutName = QString::fromLatin1(metaEnum.key(inputMode)).toLower();
-
-    return QDir(LayoutPath).filePath(layoutName + QStringLiteral(".json"));
-}
-
-bool VkbInputContextPrivate::loadInputLayout()
-{
-    VkbInputLayout layout;
-    if (!layout.load(resolveInputLayout(inputEngine.inputMode())))
-        return false;
-
-    inputPanel.setLayout(layout);
-    return true;
 }
 
 void VkbInputContextPrivate::_q_showInputPopup(const VkbInputKey &key)

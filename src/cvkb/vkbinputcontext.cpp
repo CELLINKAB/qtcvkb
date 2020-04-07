@@ -40,7 +40,7 @@ VkbInputContext::VkbInputContext(const QStringList &params)
     d->q_ptr = this;
     VkbInputIntegrationPrivate::load(params);
 
-    connect(&d->inputEngine, &VkbInputEngine::inputModeChanged, [=]() { d->loadInputLayout(); });
+    connect(&d->inputEngine, &VkbInputEngine::layoutChanged, &d->inputPanel, &VkbInputPanelProxy::setLayout);
     connect(&d->inputEngine, SIGNAL(keyPressAndHold(VkbInputKey)), this, SLOT(_q_showInputPopup(VkbInputKey)));
 
     connect(&d->inputPanel, &VkbInputPanelProxy::keyPressed, &d->inputEngine, &VkbInputEngine::handleKeyPress);

@@ -30,6 +30,7 @@
 #include <QtCore/qscopedpointer.h>
 
 class VkbInputKey;
+class VkbInputLayout;
 class VkbInputEnginePrivate;
 
 class Q_CVKB_EXPORT VkbInputEngine : public QObject
@@ -54,6 +55,9 @@ public:
     Qt::KeyboardModifiers keyboardModifiers() const;
     void setKeyboardModifiers(Qt::KeyboardModifiers keyboardModifiers);
 
+    VkbInputLayout layout() const;
+    void setLayout(const VkbInputLayout &layout);
+
 public slots:
     void reset();
     void commit();
@@ -68,6 +72,7 @@ signals:
     void inputModeChanged();
     void inputMethodHintsChanged();
     void keyboardModifiersChanged();
+    void layoutChanged(const VkbInputLayout &layout);
 
     void keyPressed(const VkbInputKey &key);
     void keyReleased(const VkbInputKey &key);

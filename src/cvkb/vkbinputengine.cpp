@@ -46,6 +46,7 @@ void VkbInputEngine::setInputMode(InputMode inputMode)
         return;
 
     d->inputMode = inputMode;
+    d->resolveLayout();
     emit inputModeChanged();
 }
 
@@ -81,6 +82,22 @@ void VkbInputEngine::setKeyboardModifiers(Qt::KeyboardModifiers keyboardModifier
     d->keyboardModifiers = keyboardModifiers;
     d->resolveInputMode();
     emit keyboardModifiersChanged();
+}
+
+VkbInputLayout VkbInputEngine::layout() const
+{
+    Q_D(const VkbInputEngine);
+    return d->layout;
+}
+
+void VkbInputEngine::setLayout(const VkbInputLayout &layout)
+{
+    Q_D(VkbInputEngine);
+    if (d->layout == layout)
+        return;
+
+    d->layout = layout;
+    emit layoutChanged(layout);
 }
 
 void VkbInputEngine::reset()
@@ -135,6 +152,26 @@ void VkbInputEngine::handleKeyCancel(const VkbInputKey &key)
 void VkbInputEngine::handleKeyPressAndHold(const VkbInputKey &key)
 {
     emit keyPressAndHold(key);
+}
+
+static QString resolveLayoutPath(VkbInputEngine::InputMode inputMode)
+{
+    static const QString LayoutPath = qEnvironmentVariable("CVKB_LAYOUT_PATH", QStringLiteral(":/cvkb/layouts"));
+
+    const QMetaEnum metaEnum = QMetaEnum::fromType<VkbInputEngine::InputMode>();
+    const QString layoutName = QString::fromLatin1(metaEnum.key(inputMode)).toLower();
+
+    return QDir(LayoutPath).filePath(layoutName + QStringLiteral(".json"));
+}
+
+void VkbInputEnginePrivate::resolveLayout()
+{
+    Q_Q(VkbInputEngine);
+    VkbInputLayout layout;
+    if (!layout.load(resolveLayoutPath(inputMode)))
+        return;
+
+    q->setLayout(layout);
 }
 
 void VkbInputEnginePrivate::resolveInputMode()
