@@ -38,7 +38,7 @@ VkbInputContext::VkbInputContext(const QStringList &params)
     VkbInputIntegrationPrivate::load(params);
 
     connect(&d->inputEngine, &VkbInputEngine::layoutChanged, &d->inputPanel, &VkbInputPanelProxy::setLayout);
-    connect(&d->inputEngine, &VkbInputEngine::keyPressAndHold, &d->inputPanel, &VkbInputPanelProxy::showPopup);
+    connect(&d->inputEngine, &VkbInputEngine::keyPressAndHold, &d->inputPanel, &VkbInputPanelProxy::popup);
 
     connect(&d->inputPanel, &VkbInputPanelProxy::keyPressed, &d->inputEngine, &VkbInputEngine::handleKeyPress);
     connect(&d->inputPanel, &VkbInputPanelProxy::keyReleased, &d->inputEngine, &VkbInputEngine::handleKeyRelease);
@@ -105,13 +105,13 @@ bool VkbInputContext::isAnimating() const
 void VkbInputContext::showInputPanel()
 {
     Q_D(VkbInputContext);
-    d->inputPanel.setVisible(true);
+    d->inputPanel.show();
 }
 
 void VkbInputContext::hideInputPanel()
 {
     Q_D(VkbInputContext);
-    d->inputPanel.setVisible(false);
+    d->inputPanel.hide();
 }
 
 bool VkbInputContext::isInputPanelVisible() const
@@ -136,7 +136,7 @@ void VkbInputContext::setFocusObject(QObject *focusObject)
 {
     Q_D(VkbInputContext);
     if (!inputMethodAccepted())
-        hideInputPanel();
+        d->inputPanel.hide();
 
     d->inputEngine.setFocusObject(focusObject);
     d->inputSelection.setFocusObject(focusObject);

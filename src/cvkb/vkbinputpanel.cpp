@@ -36,7 +36,8 @@ class VkbInputNullPanel : public VkbInputPanel
 {
 public:
     bool isVisible() const override { return false; }
-    void setVisible(bool) override { }
+    void show() override { }
+    void hide() override { }
     bool isAnimating() const override { return false; }
     QRectF rect() const override { return QRectF(); }
     QLocale locale() const override { return QLocale(); }
@@ -61,11 +62,6 @@ VkbInputPanelProxy::VkbInputPanelProxy(QObject *parent) : QObject(parent)
 bool VkbInputPanelProxy::isVisible() const
 {
     return instance()->isVisible();
-}
-
-void VkbInputPanelProxy::setVisible(bool visible)
-{
-    create()->setVisible(visible);
 }
 
 bool VkbInputPanelProxy::isAnimating() const
@@ -98,6 +94,16 @@ void VkbInputPanelProxy::setLayout(const VkbInputLayout &layout)
     create()->setLayout(layout);
 }
 
+void VkbInputPanelProxy::show()
+{
+    create()->show();
+}
+
+void VkbInputPanelProxy::hide()
+{
+    instance()->hide();
+}
+
 static VkbInputPopup *createPopup(const VkbInputKey &key, VkbInputPanelProxy *inputPanel)
 {
     QObject *button = inputPanel->button(key);
@@ -113,7 +119,7 @@ static VkbInputPopup *createPopup(const VkbInputKey &key, VkbInputPanelProxy *in
     return qobject_cast<VkbInputPopup *>(inputPopup);
 }
 
-void VkbInputPanelProxy::showPopup(const VkbInputKey &key)
+void VkbInputPanelProxy::popup(const VkbInputKey &key)
 {
     if (key.alt.isEmpty())
         return;

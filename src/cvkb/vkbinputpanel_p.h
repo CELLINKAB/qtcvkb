@@ -38,18 +38,18 @@ public:
     explicit VkbInputPanelProxy(QObject *parent = nullptr);
 
     bool isVisible() const override;
-    void setVisible(bool visible) override;
-
     bool isAnimating() const override;
     QRectF rect() const override;
     QLocale locale() const override;
     Qt::LayoutDirection inputDirection() const override;
 
     QObject *button(const VkbInputKey &key) const override;
-    void setLayout(const VkbInputLayout &layout) override;
 
 public slots:
-    void showPopup(const VkbInputKey &key);
+    void show();
+    void hide();
+    void popup(const VkbInputKey &key);
+    void setLayout(const VkbInputLayout &layout) override;
 
 signals:
     void visibleChanged() override;

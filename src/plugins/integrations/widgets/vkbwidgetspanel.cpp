@@ -50,9 +50,14 @@ bool VkbWidgetsPanel::isVisible() const
     return QWidget::isVisible();
 }
 
-void VkbWidgetsPanel::setVisible(bool visible)
+void VkbWidgetsPanel::show()
 {
-    QWidget::setVisible(visible);
+    QWidget::show();
+}
+
+void VkbWidgetsPanel::hide()
+{
+    QWidget::hide();
 }
 
 bool VkbWidgetsPanel::isAnimating() const

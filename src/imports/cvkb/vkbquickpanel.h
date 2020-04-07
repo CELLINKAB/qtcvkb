@@ -48,7 +48,8 @@ public:
     explicit VkbQuickPanel(QObject *parent = nullptr);
 
     bool isVisible() const override;
-    void setVisible(bool visible) override;
+    void show() override;
+    void hide() override;
 
     bool isAnimating() const override;
     QRectF rect() const override;

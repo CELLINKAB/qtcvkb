@@ -40,7 +40,8 @@ public:
     virtual ~VkbInputPanel() = default;
 
     virtual bool isVisible() const = 0;
-    virtual void setVisible(bool visible) = 0;
+    virtual void show() = 0;
+    virtual void hide() = 0;
 
     virtual bool isAnimating() const = 0;
     virtual QRectF rect() const = 0;

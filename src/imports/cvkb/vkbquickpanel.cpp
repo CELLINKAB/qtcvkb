@@ -56,9 +56,14 @@ bool VkbQuickPanel::isVisible() const
     return QQuickPopup::isVisible();
 }
 
-void VkbQuickPanel::setVisible(bool visible)
+void VkbQuickPanel::show()
 {
-    QQuickPopup::setVisible(visible);
+    QQuickPopup::open();
+}
+
+void VkbQuickPanel::hide()
+{
+    QQuickPopup::close();
 }
 
 bool VkbQuickPanel::isAnimating() const
