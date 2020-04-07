@@ -28,6 +28,8 @@
 
 #include <QtGui/qpa/qwindowsysteminterface.h>
 
+static const Qt::InputMethodQueries EngineQueries = Qt::ImHints;
+
 VkbInputEngine::VkbInputEngine(QObject *parent)
     : QObject(*(new VkbInputEnginePrivate), parent)
 {
@@ -112,7 +114,13 @@ void VkbInputEngine::commit()
 
 void VkbInputEngine::update(Qt::InputMethodQueries queries)
 {
-    Q_UNUSED(queries);
+    Q_D(VkbInputEngine);
+    if (!(EngineQueries & queries) || !d->focusObject)
+        return;
+
+    QInputMethodQueryEvent event(EngineQueries);
+    QCoreApplication::sendEvent(d->focusObject, &event);
+    setInputMethodHints(event.value(Qt::ImHints).value<Qt::InputMethodHints>());
 }
 
 void VkbInputEngine::setFocusObject(QObject *focusObject)
@@ -124,16 +132,15 @@ void VkbInputEngine::setFocusObject(QObject *focusObject)
     if (d->focusObject)
         d->focusObject->removeEventFilter(this);
 
+    d->focusObject = focusObject;
+
     if (!focusObject) {
         setInputMethodHints(Qt::ImhNone);
         return;
     }
 
     focusObject->installEventFilter(this);
-
-    QInputMethodQueryEvent event(Qt::ImHints);
-    QCoreApplication::sendEvent(focusObject, &event);
-    setInputMethodHints(event.value(Qt::ImHints).value<Qt::InputMethodHints>());
+    update(EngineQueries);
 }
 
 void VkbInputEngine::sendKeyPress(const VkbInputKey &key)
