@@ -41,6 +41,7 @@ T.InputPanel {
         InputDelegate { key: Qt.Key_Meta; button: InputButton { text: "123#"; ToolTip.visible: false } },
         InputDelegate { key: Qt.Key_Enter; button: InputButton { text: "\u23ce"; ToolTip.visible: false } },
         InputDelegate { key: Qt.Key_Shift; button: InputButton { text: "\u21e7"; ToolTip.visible: false } },
+        InputDelegate { key: Qt.Key_Space; button: InputButton { text: "\u2423"; ToolTip.visible: false } },
         InputDelegate { key: Qt.Key_Escape; button: InputButton { text: "\u21e9"; ToolTip.visible: false } },
         InputDelegate { key: Qt.Key_Backspace; button: InputButton { text: "\u21e6"; ToolTip.visible: false } }
     ]
