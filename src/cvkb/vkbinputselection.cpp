@@ -25,8 +25,6 @@
 #include "vkbinputselection.h"
 #include "vkbinputcontext_p.h"
 #include "vkbinputhandle.h"
-#include "vkbinputintegration.h"
-#include "vkbinputnullobject_p.h"
 #include "vkbinputstyle.h"
 
 #include <QtCore/qtextboundaryfinder.h>
@@ -41,6 +39,14 @@ VkbInputSelection::VkbInputSelection(QObject *parent) : QObject(parent)
     QInputMethod *inputMethod = QGuiApplication::inputMethod();
     connect(inputMethod, &QInputMethod::cursorRectangleChanged, this, &VkbInputSelection::updateInputCursor);
     connect(inputMethod, &QInputMethod::anchorRectangleChanged, this, &VkbInputSelection::updateInputAnchor);
+
+    connect(&m_inputCursor, &VkbInputHandleProxy::pressed, this, &VkbInputSelection::stopIdleTimer);
+    connect(&m_inputCursor, &VkbInputHandleProxy::released, this, &VkbInputSelection::startIdleTimer);
+    connect(&m_inputCursor, &VkbInputHandleProxy::moved, this, &VkbInputSelection::moveInputCursor);
+
+    connect(&m_inputAnchor, &VkbInputHandleProxy::pressed, this, &VkbInputSelection::stopIdleTimer);
+    connect(&m_inputAnchor, &VkbInputHandleProxy::released, this, &VkbInputSelection::startIdleTimer);
+    connect(&m_inputAnchor, &VkbInputHandleProxy::moved, this, &VkbInputSelection::moveInputAnchor);
 }
 
 bool VkbInputSelection::isEnabled() const
@@ -173,19 +179,17 @@ void VkbInputSelection::handlePressAndHold(const QPointF &pos)
 
 void VkbInputSelection::moveInputCursor(const QPointF &pos)
 {
-    VkbInputHandle *inputCursor = createInputCursor();
-    const QPointF cursorPos(inputCursor->pos() + pos);
-    if (m_inputAnchorObject)
-        moveSelectionAt(cursorPos, QGuiApplication::inputMethod()->anchorRectangle().center());
-    else
+    const QPointF cursorPos(m_inputCursor.pos() + pos);
+    if (m_inputAnchor.isNull())
         moveCursorAt(cursorPos);
+    else
+        moveSelectionAt(cursorPos, anchorRectangle().center());
 }
 
 void VkbInputSelection::moveInputAnchor(const QPointF &pos)
 {
-    VkbInputHandle *inputAnchor = createInputAnchor();
-    const QPointF anchorPos(inputAnchor->pos() + pos - QPointF(0, inputAnchor->size().height()));
-    moveSelectionAt(QGuiApplication::inputMethod()->cursorRectangle().center(), anchorPos);
+    const QPointF anchorPos(m_inputAnchor.pos() + pos - QPointF(0, m_inputAnchor.size().height()));
+    moveSelectionAt(cursorRectangle().center(), anchorPos);
 }
 
 void VkbInputSelection::startIdleTimer()
@@ -196,52 +200,6 @@ void VkbInputSelection::startIdleTimer()
 void VkbInputSelection::stopIdleTimer()
 {
     m_idleTimer.stop();
-}
-
-VkbInputHandle *VkbInputSelection::inputCursor() const
-{
-    VkbInputHandle *inputCursor = qobject_cast<VkbInputHandle *>(m_inputCursorObject);
-    if (!inputCursor) {
-        static VkbInputNullHandle nullCursor;
-        return &nullCursor;
-    }
-    return inputCursor;
-}
-
-VkbInputHandle *VkbInputSelection::inputAnchor() const
-{
-    VkbInputHandle *inputAnchor = qobject_cast<VkbInputHandle *>(m_inputAnchorObject);
-    if (!inputAnchor) {
-        static VkbInputNullHandle nullAnchor;
-        return &nullAnchor;
-    }
-    return inputAnchor;
-}
-
-VkbInputHandle *VkbInputSelection::createInputCursor()
-{
-    if (!m_inputCursorObject) {
-        m_inputCursorObject = VkbInputIntegration::instance()->createInputCursor(QGuiApplication::focusWindow());
-        if (m_inputCursorObject) {
-            QObject::connect(m_inputCursorObject, SIGNAL(pressed(QPointF)), this, SLOT(stopIdleTimer()));
-            QObject::connect(m_inputCursorObject, SIGNAL(released(QPointF)), this, SLOT(startIdleTimer()));
-            QObject::connect(m_inputCursorObject, SIGNAL(moved(QPointF)), this, SLOT(moveInputCursor(QPointF)));
-        }
-    }
-    return inputCursor();
-}
-
-VkbInputHandle *VkbInputSelection::createInputAnchor()
-{
-    if (!m_inputAnchorObject) {
-        m_inputAnchorObject = VkbInputIntegration::instance()->createInputAnchor(QGuiApplication::focusWindow());
-        if (m_inputAnchorObject) {
-            QObject::connect(m_inputCursorObject, SIGNAL(pressed(QPointF)), this, SLOT(stopIdleTimer()));
-            QObject::connect(m_inputCursorObject, SIGNAL(released(QPointF)), this, SLOT(startIdleTimer()));
-            QObject::connect(m_inputAnchorObject, SIGNAL(moved(QPointF)), this, SLOT(moveInputAnchor(QPointF)));
-        }
-    }
-    return inputAnchor();
 }
 
 QRectF VkbInputSelection::cursorRectangle()
@@ -274,28 +232,26 @@ bool VkbInputSelection::isInputAnchorNeeded() const
 
 void VkbInputSelection::showInputCursor()
 {
-    VkbInputHandle *inputCursor = createInputCursor();
-    const QRectF cursorRectangle = QGuiApplication::inputMethod()->cursorRectangle();
-    inputCursor->move(QPointF(cursorRectangle.center().x() - inputCursor->size().width() / 2, cursorRectangle.bottom()));
-    inputCursor->show();
+    const QRectF cursor = cursorRectangle();
+    m_inputCursor.move(QPointF(cursor.center().x() - m_inputCursor.size().width() / 2, cursor.bottom()));
+    m_inputCursor.show();
 }
 
 void VkbInputSelection::showInputAnchor()
 {
-    VkbInputHandle *inputAnchor = createInputAnchor();
-    const QRectF anchorRectangle = QGuiApplication::inputMethod()->anchorRectangle();
-    inputAnchor->move(QPointF(anchorRectangle.center().x() - inputAnchor->size().width() / 2, anchorRectangle.y() - inputAnchor->size().height()));
-    inputAnchor->show();
+    const QRectF anchor = anchorRectangle();
+    m_inputAnchor.move(QPointF(anchor.center().x() - m_inputAnchor.size().width() / 2, anchor.y() - m_inputAnchor.size().height()));
+    m_inputAnchor.show();
 }
 
 void VkbInputSelection::hideInputCursor()
 {
-    inputCursor()->hide();
+    m_inputCursor.hide();
 }
 
 void VkbInputSelection::hideInputAnchor()
 {
-    inputAnchor()->hide();
+    m_inputAnchor.hide();
 }
 
 void VkbInputSelection::updateInputCursor()

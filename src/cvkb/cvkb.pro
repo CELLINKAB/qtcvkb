@@ -15,12 +15,12 @@ HEADERS += \
     $$PWD/vkbinputengine_p.h \
     $$PWD/vkbinputglobal.h \
     $$PWD/vkbinputhandle.h \
+    $$PWD/vkbinputhandle_p.h \
     $$PWD/vkbinputintegration.h \
     $$PWD/vkbinputintegration_p.h \
     $$PWD/vkbinputintegrationplugin.h \
     $$PWD/vkbinputkey.h \
     $$PWD/vkbinputlayout.h \
-    $$PWD/vkbinputnullobject_p.h \
     $$PWD/vkbinputpanel.h \
     $$PWD/vkbinputpanel_p.h \
     $$PWD/vkbinputpopup.h \
@@ -31,6 +31,7 @@ SOURCES += \
     $$PWD/vkbinputcontext.cpp \
     $$PWD/vkbinputgrid.cpp \
     $$PWD/vkbinputengine.cpp \
+    $$PWD/vkbinputhandle.cpp \
     $$PWD/vkbinputintegration.cpp \
     $$PWD/vkbinputlayout.cpp \
     $$PWD/vkbinputpanel.cpp \

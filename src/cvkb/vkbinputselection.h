@@ -26,6 +26,7 @@
 #define VKBINPUTSELECTION_H
 
 #include <QtCVkb/vkbinputglobal.h>
+#include <QtCVkb/private/vkbinputhandle_p.h>
 #include <QtCore/qbasictimer.h>
 #include <QtCore/qelapsedtimer.h>
 #include <QtCore/qobject.h>
@@ -67,10 +68,6 @@ private slots:
     void stopIdleTimer();
 
 private:
-    VkbInputHandle *inputCursor() const;
-    VkbInputHandle *inputAnchor() const;
-    VkbInputHandle *createInputCursor();
-    VkbInputHandle *createInputAnchor();
     static QRectF cursorRectangle();
     static QRectF anchorRectangle();
     bool isInputCursorNeeded() const;
@@ -94,8 +91,8 @@ private:
     QBasicTimer m_pressAndHoldTimer;
     QElapsedTimer m_pressTimer;
     QBasicTimer m_idleTimer;
-    QPointer<QObject> m_inputCursorObject;
-    QPointer<QObject> m_inputAnchorObject;
+    VkbInputCursorProxy m_inputCursor;
+    VkbInputAnchorProxy m_inputAnchor;
     QPointer<QObject> m_focusObject = nullptr;
 };
 
