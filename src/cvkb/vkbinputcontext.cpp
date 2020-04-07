@@ -79,6 +79,7 @@ void VkbInputContext::update(Qt::InputMethodQueries queries)
 {
     Q_D(VkbInputContext);
     d->inputEngine.update(queries);
+    d->inputSelection.update(queries);
 }
 
 bool VkbInputContext::filterEvent(const QEvent *event)

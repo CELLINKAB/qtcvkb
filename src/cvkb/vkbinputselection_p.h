@@ -48,6 +48,7 @@ public:
 public slots:
     void show();
     void hide();
+    void update(Qt::InputMethodQueries queries);
     void setFocusObject(QObject *focusObject);
 
 protected:

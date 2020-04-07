@@ -33,6 +33,7 @@
 #include <QtGui/qwindow.h>
 
 static const int Timeout = 5000;
+static const Qt::InputMethodQueries SelectionQueries = Qt::ImEnabled | Qt::ImHints | Qt::ImSurroundingText;
 
 VkbInputSelection::VkbInputSelection(QObject *parent) : QObject(parent)
 {
@@ -91,6 +92,19 @@ void VkbInputSelection::hide()
     stopIdleTimer();
 }
 
+void VkbInputSelection::update(Qt::InputMethodQueries queries)
+{
+    if (!(SelectionQueries & queries) || !m_focusObject)
+        return;
+
+    QInputMethodQueryEvent event(SelectionQueries);
+    QCoreApplication::sendEvent(m_focusObject, &event);
+    bool enabled = event.value(Qt::ImEnabled).toBool();
+    QString surroundingText = event.value(Qt::ImSurroundingText).toString();
+    Qt::InputMethodHints inputMethodHints = event.value(Qt::ImHints).value<Qt::InputMethodHints>();
+    setEnabled(enabled && !surroundingText.isEmpty() && !inputMethodHints.testFlag(Qt::ImhNoTextHandles));
+}
+
 void VkbInputSelection::setFocusObject(QObject *focusObject)
 {
     if (m_focusObject == focusObject)
@@ -99,19 +113,14 @@ void VkbInputSelection::setFocusObject(QObject *focusObject)
     if (m_focusObject)
         m_focusObject->removeEventFilter(this);
 
-    if (focusObject) {
-        focusObject->installEventFilter(this);
+    m_focusObject = focusObject;
 
-        QInputMethodQueryEvent event(Qt::ImEnabled | Qt::ImHints);
-        QCoreApplication::sendEvent(focusObject, &event);
-        bool enabled = event.value(Qt::ImEnabled).toBool();
-        Qt::InputMethodHints inputMethodHints = event.value(Qt::ImHints).value<Qt::InputMethodHints>();
-        setEnabled(enabled && !inputMethodHints.testFlag(Qt::ImhNoTextHandles));
+    if (focusObject) {
+        update(SelectionQueries);
+        focusObject->installEventFilter(this);
     } else {
         setEnabled(false);
     }
-
-    m_focusObject = focusObject;
 }
 
 bool VkbInputSelection::eventFilter(QObject *object, QEvent *event)
