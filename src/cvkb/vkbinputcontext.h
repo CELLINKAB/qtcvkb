@@ -39,15 +39,11 @@ public:
     explicit VkbInputContext(const QStringList &params);
     ~VkbInputContext();
 
-    static VkbInputContext *instance();
-
     bool isValid() const override;
-    bool hasCapability(Capability capability) const override;
 
     void reset() override;
     void commit() override;
     void update(Qt::InputMethodQueries queries) override;
-    void invokeAction(QInputMethod::Action action, int cursorPosition) override;
     bool filterEvent(const QEvent *event) override;
     QRectF keyboardRect() const override;
 

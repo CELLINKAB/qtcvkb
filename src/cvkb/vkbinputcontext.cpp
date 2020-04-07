@@ -28,10 +28,7 @@
 
 #include <QtCore/qrect.h>
 #include <QtCore/qlocale.h>
-#include <QtGui/qguiapplication.h>
 #include <QtGui/qevent.h>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/qpa/qplatformintegration.h>
 
 VkbInputContext::VkbInputContext(const QStringList &params)
     : d_ptr(new VkbInputContextPrivate)
@@ -59,19 +56,9 @@ VkbInputContext::~VkbInputContext()
 {
 }
 
-VkbInputContext *VkbInputContext::instance()
-{
-    return qobject_cast<VkbInputContext *>(QGuiApplicationPrivate::platformIntegration()->inputContext());
-}
-
 bool VkbInputContext::isValid() const
 {
     return VkbInputIntegration::isValid();
-}
-
-bool VkbInputContext::hasCapability(Capability capability) const
-{
-    return QPlatformInputContext::hasCapability(capability);
 }
 
 void VkbInputContext::reset()
@@ -90,11 +77,6 @@ void VkbInputContext::update(Qt::InputMethodQueries queries)
 {
     Q_D(VkbInputContext);
     d->inputEngine.update(queries);
-}
-
-void VkbInputContext::invokeAction(QInputMethod::Action action, int cursorPosition)
-{
-    QPlatformInputContext::invokeAction(action, cursorPosition);
 }
 
 bool VkbInputContext::filterEvent(const QEvent *event)
