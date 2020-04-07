@@ -27,8 +27,6 @@
 
 #include <QtCVkb/vkbinputglobal.h>
 #include <QtCVkb/vkbinputhandle.h>
-#include <QtCVkb/vkbinputpanel.h>
-#include <QtCVkb/vkbinputpopup.h>
 
 class VkbInputNullHandle : public VkbInputHandle
 {
@@ -42,28 +40,6 @@ public:
     void released(const QPointF &) override { }
     void moved(const QPointF &) override { }
     void canceled() override { }
-};
-
-class VkbInputNullPanel : public VkbInputPanel
-{
-public:
-    bool isVisible() const override { return false; }
-    void setVisible(bool) override { }
-    bool isAnimating() const override { return false; }
-    QRectF rect() const override { return QRectF(); }
-    QLocale locale() const override { return QLocale(); }
-    Qt::LayoutDirection inputDirection() const override { return Qt::LeftToRight; }
-    QObject *button(const VkbInputKey &) const override { return nullptr; }
-    void setLayout(const VkbInputLayout &) override { }
-    void visibleChanged() override { }
-    void animatingChanged() override { }
-    void rectChanged() override { }
-    void localeChanged() override { }
-    void inputDirectionChanged() override { }
-    void keyPressed(const VkbInputKey &) override { }
-    void keyReleased(const VkbInputKey &) override { }
-    void keyCanceled(const VkbInputKey &) override { }
-    void keyPressAndHold(const VkbInputKey &) override { }
 };
 
 #endif // VKBINPUTNULLOBJECT_P_H

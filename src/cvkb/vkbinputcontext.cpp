@@ -42,6 +42,17 @@ VkbInputContext::VkbInputContext(const QStringList &params)
 
     connect(&d->inputEngine, &VkbInputEngine::inputModeChanged, [=]() { d->loadInputLayout(); });
     connect(&d->inputEngine, SIGNAL(keyPressAndHold(VkbInputKey)), this, SLOT(_q_showInputPopup(VkbInputKey)));
+
+    connect(&d->inputPanel, &VkbInputPanelProxy::keyPressed, &d->inputEngine, &VkbInputEngine::handleKeyPress);
+    connect(&d->inputPanel, &VkbInputPanelProxy::keyReleased, &d->inputEngine, &VkbInputEngine::handleKeyRelease);
+    connect(&d->inputPanel, &VkbInputPanelProxy::keyCanceled, &d->inputEngine, &VkbInputEngine::handleKeyCancel);
+    connect(&d->inputPanel, &VkbInputPanelProxy::keyPressAndHold, &d->inputEngine, &VkbInputEngine::handleKeyPressAndHold);
+
+    connect(&d->inputPanel, &VkbInputPanelProxy::visibleChanged, this, &QPlatformInputContext::emitInputPanelVisibleChanged);
+    connect(&d->inputPanel, &VkbInputPanelProxy::animatingChanged, this, &QPlatformInputContext::emitAnimatingChanged);
+    connect(&d->inputPanel, &VkbInputPanelProxy::rectChanged, this, &QPlatformInputContext::emitKeyboardRectChanged);
+    connect(&d->inputPanel, &VkbInputPanelProxy::localeChanged, this, &QPlatformInputContext::emitLocaleChanged);
+    connect(&d->inputPanel, &VkbInputPanelProxy::inputDirectionChanged, this, &QPlatformInputContext::emitInputDirectionChanged);
 }
 
 VkbInputContext::~VkbInputContext()
@@ -99,43 +110,43 @@ bool VkbInputContext::filterEvent(const QEvent *event)
 QRectF VkbInputContext::keyboardRect() const
 {
     Q_D(const VkbInputContext);
-    return d->inputPanel()->rect();
+    return d->inputPanel.rect();
 }
 
 bool VkbInputContext::isAnimating() const
 {
     Q_D(const VkbInputContext);
-    return d->inputPanel()->isAnimating();
+    return d->inputPanel.isAnimating();
 }
 
 void VkbInputContext::showInputPanel()
 {
     Q_D(VkbInputContext);
-    d->createInputPanel()->setVisible(true);
+    d->inputPanel.setVisible(true);
 }
 
 void VkbInputContext::hideInputPanel()
 {
     Q_D(VkbInputContext);
-    d->inputPanel()->setVisible(false);
+    d->inputPanel.setVisible(false);
 }
 
 bool VkbInputContext::isInputPanelVisible() const
 {
     Q_D(const VkbInputContext);
-    return d->inputPanel()->isVisible();
+    return d->inputPanel.isVisible();
 }
 
 QLocale VkbInputContext::locale() const
 {
     Q_D(const VkbInputContext);
-    return d->inputPanel()->locale();
+    return d->inputPanel.locale();
 }
 
 Qt::LayoutDirection VkbInputContext::inputDirection() const
 {
     Q_D(const VkbInputContext);
-    return d->inputPanel()->inputDirection();
+    return d->inputPanel.inputDirection();
 }
 
 void VkbInputContext::setFocusObject(QObject *focusObject)

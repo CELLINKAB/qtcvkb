@@ -60,7 +60,7 @@ signals:
     void animatingChanged() override;
     void rectChanged() override;
     void localeChanged() override;
-    void inputDirectionChanged() override;
+    void inputDirectionChanged(Qt::LayoutDirection inputDirection) override;
 
     void keyPressed(const VkbInputKey &key) override;
     void keyReleased(const VkbInputKey &key) override;

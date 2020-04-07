@@ -29,9 +29,9 @@
 #include <QtCVkb/vkbinputengine.h>
 #include <QtCVkb/vkbinputpanel.h>
 #include <QtCVkb/vkbinputselection.h>
+#include <QtCVkb/private/vkbinputpanel_p.h>
 #include <QtCore/qpointer.h>
 
-class VkbInputPanel;
 class VkbInputPopup;
 
 class VkbInputContextPrivate
@@ -39,25 +39,16 @@ class VkbInputContextPrivate
     Q_DECLARE_PUBLIC(VkbInputContext)
 
 public:
-    VkbInputPanel *inputPanel() const;
-    VkbInputPanel *createInputPanel();
     VkbInputPopup *createInputPopup(const VkbInputKey &key);
 
     bool loadInputLayout();
 
     void _q_showInputPopup(const VkbInputKey &key);
 
-    // ### TODO: mark QPlatformInputContext::emitXxx() as slots
-    void _q_emitInputPanelVisibleChanged();
-    void _q_emitAnimatingChanged();
-    void _q_emitKeyboardRectChanged();
-    void _q_emitLocaleChanged();
-    void _q_emitInputDirectionChanged();
-
     VkbInputContext *q_ptr = nullptr;
-    QPointer<QObject> inputPanelObject;
     VkbInputEngine inputEngine;
     VkbInputSelection inputSelection;
+    VkbInputPanelProxy inputPanel;
 };
 
 #endif // VKBINPUTCONTEXT_P_H

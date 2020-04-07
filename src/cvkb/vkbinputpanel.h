@@ -55,7 +55,7 @@ signals:
     virtual void animatingChanged() = 0;
     virtual void rectChanged() = 0;
     virtual void localeChanged() = 0;
-    virtual void inputDirectionChanged() = 0;
+    virtual void inputDirectionChanged(Qt::LayoutDirection inputDirection) = 0;
 
     virtual void keyPressed(const VkbInputKey &key) = 0;
     virtual void keyReleased(const VkbInputKey &key) = 0;

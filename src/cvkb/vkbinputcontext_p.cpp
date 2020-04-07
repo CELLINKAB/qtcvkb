@@ -25,43 +25,11 @@
 #include "vkbinputcontext_p.h"
 #include "vkbinputintegration.h"
 #include "vkbinputlayout.h"
-#include "vkbinputnullobject_p.h"
-
-VkbInputPanel *VkbInputContextPrivate::inputPanel() const
-{
-    VkbInputPanel *inputPanel = qobject_cast<VkbInputPanel *>(inputPanelObject);
-    if (!inputPanel) {
-        static VkbInputNullPanel nullPanel;
-        return &nullPanel;
-    }
-    return inputPanel;
-}
-
-VkbInputPanel *VkbInputContextPrivate::createInputPanel()
-{
-    Q_Q(VkbInputContext);
-    if (!inputPanelObject) {
-        inputPanelObject = VkbInputIntegration::instance()->createInputPanel(QGuiApplication::focusWindow());
-        if (inputPanelObject) {
-            QObject::connect(inputPanelObject, SIGNAL(keyPressed(VkbInputKey)), &inputEngine, SLOT(handleKeyPress(VkbInputKey)));
-            QObject::connect(inputPanelObject, SIGNAL(keyReleased(VkbInputKey)), &inputEngine, SLOT(handleKeyRelease(VkbInputKey)));
-            QObject::connect(inputPanelObject, SIGNAL(keyCanceled(VkbInputKey)), &inputEngine, SLOT(handleKeyCancel(VkbInputKey)));
-            QObject::connect(inputPanelObject, SIGNAL(keyPressAndHold(VkbInputKey)), &inputEngine, SLOT(handleKeyPressAndHold(VkbInputKey)));
-            // ### TODO: mark QPlatformInputContext::emitXxx() as slots
-            QObject::connect(inputPanelObject, SIGNAL(visibleChanged()), q, SLOT(_q_emitInputPanelVisibleChanged()));
-            QObject::connect(inputPanelObject, SIGNAL(animatingChanged()), q, SLOT(_q_emitAnimatingChanged()));
-            QObject::connect(inputPanelObject, SIGNAL(rectChanged()), q, SLOT(_q_emitKeyboardRectChanged()));
-            QObject::connect(inputPanelObject, SIGNAL(localeChanged()), q, SLOT(_q_emitLocaleChanged()));
-            QObject::connect(inputPanelObject, SIGNAL(inputDirectionChanged()), q, SLOT(_q_emitInputDirectionChanged()));
-            loadInputLayout();
-        }
-    }
-    return inputPanel();
-}
+#include "vkbinputpopup.h"
 
 VkbInputPopup *VkbInputContextPrivate::createInputPopup(const VkbInputKey &key)
 {
-    QObject *button = inputPanel()->button(key);
+    QObject *button = inputPanel.button(key);
     if (!button)
         return nullptr;
 
@@ -90,7 +58,7 @@ bool VkbInputContextPrivate::loadInputLayout()
     if (!layout.load(resolveInputLayout(inputEngine.inputMode())))
         return false;
 
-    createInputPanel()->setLayout(layout);
+    inputPanel.setLayout(layout);
     return true;
 }
 
@@ -105,34 +73,4 @@ void VkbInputContextPrivate::_q_showInputPopup(const VkbInputKey &key)
 
     popup->setAlt(key.alt);
     popup->show();
-}
-
-void VkbInputContextPrivate::_q_emitInputPanelVisibleChanged()
-{
-    Q_Q(VkbInputContext);
-    q->emitInputPanelVisibleChanged();
-}
-
-void VkbInputContextPrivate::_q_emitAnimatingChanged()
-{
-    Q_Q(VkbInputContext);
-    q->emitAnimatingChanged();
-}
-
-void VkbInputContextPrivate::_q_emitKeyboardRectChanged()
-{
-    Q_Q(VkbInputContext);
-    q->emitKeyboardRectChanged();
-}
-
-void VkbInputContextPrivate::_q_emitLocaleChanged()
-{
-    Q_Q(VkbInputContext);
-    q->emitLocaleChanged();
-}
-
-void VkbInputContextPrivate::_q_emitInputDirectionChanged()
-{
-    Q_Q(VkbInputContext);
-    q->emitInputDirectionChanged(inputPanel()->inputDirection());
 }

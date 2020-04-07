@@ -22,51 +22,49 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTCONTEXT_H
-#define VKBINPUTCONTEXT_H
+#ifndef VKBINPUTPANEL_P_H
+#define VKBINPUTPANEL_P_H
 
-#include <QtCVkb/vkbinputglobal.h>
-#include <QtGui/qpa/qplatforminputcontext.h>
-#include <QtCore/qscopedpointer.h>
+#include <QtCVkb/vkbinputpanel.h>
+#include <QtCore/qobject.h>
+#include <QtCore/qpointer.h>
 
-class VkbInputContextPrivate;
-
-class Q_CVKB_EXPORT VkbInputContext : public QPlatformInputContext
+class VkbInputPanelProxy : public QObject, public VkbInputPanel
 {
     Q_OBJECT
+    Q_INTERFACES(VkbInputPanel)
 
 public:
-    explicit VkbInputContext(const QStringList &params);
-    ~VkbInputContext();
+    explicit VkbInputPanelProxy(QObject *parent = nullptr);
 
-    static VkbInputContext *instance();
-
-    bool isValid() const override;
-    bool hasCapability(Capability capability) const override;
-
-    void reset() override;
-    void commit() override;
-    void update(Qt::InputMethodQueries queries) override;
-    void invokeAction(QInputMethod::Action action, int cursorPosition) override;
-    bool filterEvent(const QEvent *event) override;
-    QRectF keyboardRect() const override;
+    bool isVisible() const override;
+    void setVisible(bool visible) override;
 
     bool isAnimating() const override;
-
-    void showInputPanel() override;
-    void hideInputPanel() override;
-    bool isInputPanelVisible() const override;
-
+    QRectF rect() const override;
     QLocale locale() const override;
     Qt::LayoutDirection inputDirection() const override;
 
-    void setFocusObject(QObject *focusObject) override;
+    QObject *button(const VkbInputKey &key) const override;
+    void setLayout(const VkbInputLayout &layout) override;
+
+signals:
+    void visibleChanged() override;
+    void animatingChanged() override;
+    void rectChanged() override;
+    void localeChanged() override;
+    void inputDirectionChanged(Qt::LayoutDirection inputDirection) override;
+
+    void keyPressed(const VkbInputKey &key) override;
+    void keyReleased(const VkbInputKey &key) override;
+    void keyCanceled(const VkbInputKey &key) override;
+    void keyPressAndHold(const VkbInputKey &key) override;
 
 private:
-    Q_DECLARE_PRIVATE(VkbInputContext)
-    QScopedPointer<VkbInputContextPrivate> d_ptr;
+    VkbInputPanel *create();
+    VkbInputPanel *instance() const;
 
-    Q_PRIVATE_SLOT(d_func(), void _q_showInputPopup(const VkbInputKey &key))
+    QPointer<QObject> m_instance;
 };
 
-#endif // VKBINPUTCONTEXT_H
+#endif // VKBINPUTPANEL_P_H
