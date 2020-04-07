@@ -23,27 +23,3 @@
  */
 
 #include "vkbinputintegration.h"
-
-QObject *VkbInputIntegration::createInputPanel(QObject *parent)
-{
-    Q_UNUSED(parent)
-    return nullptr;
-}
-
-QObject *VkbInputIntegration::createInputPopup(QObject *parent)
-{
-    Q_UNUSED(parent)
-    return nullptr;
-}
-
-QObject *VkbInputIntegration::createInputCursor(QObject *parent)
-{
-    Q_UNUSED(parent)
-    return nullptr;
-}
-
-QObject *VkbInputIntegration::createInputAnchor(QObject *parent)
-{
-    Q_UNUSED(parent)
-    return nullptr;
-}

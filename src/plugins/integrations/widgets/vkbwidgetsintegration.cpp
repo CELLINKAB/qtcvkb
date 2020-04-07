@@ -34,3 +34,21 @@ QObject *VkbWidgetsIntegration::createInputPanel(QObject *parent)
 {
     return new VkbWidgetsPanel(parent);
 }
+
+QObject *VkbWidgetsIntegration::createInputPopup(QObject *parent)
+{
+    Q_UNUSED(parent);
+    return nullptr;
+}
+
+QObject *VkbWidgetsIntegration::createInputAnchor(QObject *parent)
+{
+    Q_UNUSED(parent);
+    return nullptr;
+}
+
+QObject *VkbWidgetsIntegration::createInputCursor(QObject *parent)
+{
+    Q_UNUSED(parent);
+    return nullptr;
+}

@@ -33,10 +33,10 @@ class Q_CVKB_EXPORT VkbInputIntegration : public QObject
     Q_OBJECT
 
 public:
-    virtual QObject *createInputPanel(QObject *parent);
-    virtual QObject *createInputPopup(QObject *parent);
-    virtual QObject *createInputCursor(QObject *parent);
-    virtual QObject *createInputAnchor(QObject *parent);
+    virtual QObject *createInputPanel(QObject *parent) = 0;
+    virtual QObject *createInputPopup(QObject *parent) = 0;
+    virtual QObject *createInputCursor(QObject *parent) = 0;
+    virtual QObject *createInputAnchor(QObject *parent) = 0;
 };
 
 #endif // VKBINPUTINTEGRATION_H
