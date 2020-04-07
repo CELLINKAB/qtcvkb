@@ -57,6 +57,7 @@ public:
 public slots:
     void reset();
     void commit();
+    void setFocusObject(QObject *focusObject);
 
     void handleKeyPress(const VkbInputKey &key);
     void handleKeyRelease(const VkbInputKey &key);

@@ -91,6 +91,18 @@ void VkbInputEngine::commit()
 {
 }
 
+void VkbInputEngine::setFocusObject(QObject *focusObject)
+{
+    if (!focusObject) {
+        setInputMethodHints(Qt::ImhNone);
+        return;
+    }
+
+    QInputMethodQueryEvent event(Qt::ImHints);
+    QCoreApplication::sendEvent(focusObject, &event);
+    setInputMethodHints(event.value(Qt::ImHints).value<Qt::InputMethodHints>());
+}
+
 void VkbInputEngine::handleKeyPress(const VkbInputKey &key)
 {
     Q_D(VkbInputEngine);

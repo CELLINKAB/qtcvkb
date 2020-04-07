@@ -175,7 +175,7 @@ void VkbInputContext::setFocusObject(QObject *focusObject)
     if (!enabled)
         hideInputPanel();
 
-    d->inputEngine.setInputMethodHints(inputMethodHints);
+    d->inputEngine.setFocusObject(focusObject);
     d->inputSelection.setEnabled(enabled && !inputMethodHints.testFlag(Qt::ImhNoTextHandles));
     d->inputSelection.setFocusObject(focusObject);
 }
