@@ -212,14 +212,11 @@ VkbInputHandle *VkbInputSelection::inputAnchor() const
 VkbInputHandle *VkbInputSelection::createInputCursor()
 {
     if (!m_inputCursorObject) {
-        VkbInputIntegration *inputIntegration = VkbInputContextPrivate::getInputIntegration();
-        if (inputIntegration) {
-            m_inputCursorObject = inputIntegration->createInputCursor(QGuiApplication::focusWindow());
-            if (m_inputCursorObject) {
-                QObject::connect(m_inputCursorObject, SIGNAL(pressed(QPointF)), this, SLOT(stopIdleTimer()));
-                QObject::connect(m_inputCursorObject, SIGNAL(released(QPointF)), this, SLOT(startIdleTimer()));
-                QObject::connect(m_inputCursorObject, SIGNAL(moved(QPointF)), this, SLOT(moveInputCursor(QPointF)));
-            }
+        m_inputCursorObject = VkbInputIntegration::instance()->createInputCursor(QGuiApplication::focusWindow());
+        if (m_inputCursorObject) {
+            QObject::connect(m_inputCursorObject, SIGNAL(pressed(QPointF)), this, SLOT(stopIdleTimer()));
+            QObject::connect(m_inputCursorObject, SIGNAL(released(QPointF)), this, SLOT(startIdleTimer()));
+            QObject::connect(m_inputCursorObject, SIGNAL(moved(QPointF)), this, SLOT(moveInputCursor(QPointF)));
         }
     }
     return inputCursor();
@@ -228,14 +225,11 @@ VkbInputHandle *VkbInputSelection::createInputCursor()
 VkbInputHandle *VkbInputSelection::createInputAnchor()
 {
     if (!m_inputAnchorObject) {
-        VkbInputIntegration *inputIntegration = VkbInputContextPrivate::getInputIntegration();
-        if (inputIntegration) {
-            m_inputAnchorObject = inputIntegration->createInputAnchor(QGuiApplication::focusWindow());
-            if (m_inputAnchorObject) {
-                QObject::connect(m_inputCursorObject, SIGNAL(pressed(QPointF)), this, SLOT(stopIdleTimer()));
-                QObject::connect(m_inputCursorObject, SIGNAL(released(QPointF)), this, SLOT(startIdleTimer()));
-                QObject::connect(m_inputAnchorObject, SIGNAL(moved(QPointF)), this, SLOT(moveInputAnchor(QPointF)));
-            }
+        m_inputAnchorObject = VkbInputIntegration::instance()->createInputAnchor(QGuiApplication::focusWindow());
+        if (m_inputAnchorObject) {
+            QObject::connect(m_inputCursorObject, SIGNAL(pressed(QPointF)), this, SLOT(stopIdleTimer()));
+            QObject::connect(m_inputCursorObject, SIGNAL(released(QPointF)), this, SLOT(startIdleTimer()));
+            QObject::connect(m_inputAnchorObject, SIGNAL(moved(QPointF)), this, SLOT(moveInputAnchor(QPointF)));
         }
     }
     return inputAnchor();

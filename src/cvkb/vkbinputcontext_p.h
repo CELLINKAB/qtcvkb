@@ -33,19 +33,12 @@
 
 class VkbInputPanel;
 class VkbInputPopup;
-class VkbInputIntegration;
 
 class VkbInputContextPrivate
 {
     Q_DECLARE_PUBLIC(VkbInputContext)
 
 public:
-    static VkbInputIntegration *getInputIntegration()
-    {
-        VkbInputContext *inputContext = VkbInputContext::instance();
-        return inputContext->d_func()->inputIntegration;
-    }
-
     VkbInputPanel *inputPanel() const;
     VkbInputPanel *createInputPanel();
     VkbInputPopup *createInputPopup(const VkbInputKey &key);
@@ -65,7 +58,6 @@ public:
     QPointer<QObject> inputPanelObject;
     VkbInputEngine inputEngine;
     VkbInputSelection inputSelection;
-    VkbInputIntegration *inputIntegration = nullptr;
 };
 
 #endif // VKBINPUTCONTEXT_P_H

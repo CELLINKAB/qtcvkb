@@ -22,33 +22,18 @@
  * SOFTWARE.
  */
 
-#ifndef VKBINPUTINTEGRATION_H
-#define VKBINPUTINTEGRATION_H
+#ifndef VKBINPUTINTEGRATION_P_H
+#define VKBINPUTINTEGRATION_P_H
 
-#include <QtCVkb/vkbinputglobal.h>
-#include <QtCore/qobject.h>
+#include <QtCVkb/vkbinputintegration.h>
+#include <QtCore/private/qobject_p.h>
 
-class VkbInputIntegrationPrivate;
-
-class Q_CVKB_EXPORT VkbInputIntegration : public QObject
+class VkbInputIntegrationPrivate : public QObjectPrivate
 {
-    Q_OBJECT
-
 public:
-    explicit VkbInputIntegration(QObject *parent = nullptr);
-    ~VkbInputIntegration();
+    static bool load(const QStringList &params);
 
-    static bool isValid();
-    static VkbInputIntegration *instance();
-
-    virtual QObject *createInputPanel(QObject *parent) = 0;
-    virtual QObject *createInputPopup(QObject *parent) = 0;
-    virtual QObject *createInputCursor(QObject *parent) = 0;
-    virtual QObject *createInputAnchor(QObject *parent) = 0;
-
-private:
-    Q_DISABLE_COPY(VkbInputIntegration)
-    Q_DECLARE_PRIVATE(VkbInputIntegration)
+    static VkbInputIntegration *instance;
 };
 
-#endif // VKBINPUTINTEGRATION_H
+#endif // VKBINPUTINTEGRATION_P_H

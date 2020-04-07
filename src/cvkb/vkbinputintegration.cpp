@@ -23,3 +23,53 @@
  */
 
 #include "vkbinputintegration.h"
+#include "vkbinputintegration_p.h"
+#include "vkbinputintegrationplugin.h"
+
+#include <QtCore/private/qfactoryloader_p.h>
+#include <QtCore/private/qobject_p.h>
+
+VkbInputIntegration *VkbInputIntegrationPrivate::instance = nullptr;
+#define vkbIntegration VkbInputIntegrationPrivate::instance
+
+Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, integrationLoader, (VkbInputIntegrationPlugin_iid, QLatin1String("/cvkbintegrations"), Qt::CaseInsensitive))
+
+static QString resolveIntegration(const QString &name)
+{
+    if (!name.isEmpty())
+        return name;
+
+    const QCoreApplication *app = QCoreApplication::instance();
+    if (app && app->inherits("QApplication"))
+        return QStringLiteral("widgets");
+
+    return QStringLiteral("quick");
+}
+
+bool VkbInputIntegrationPrivate::load(const QStringList &params)
+{
+    const QString name = resolveIntegration(params.value(0));
+    return qLoadPlugin<VkbInputIntegration, VkbInputIntegrationPlugin>(integrationLoader(), name, params.mid(1));
+}
+
+VkbInputIntegration::VkbInputIntegration(QObject *parent)
+    : QObject(*(new VkbInputIntegrationPrivate), parent)
+{
+    Q_ASSERT(!vkbIntegration);
+    vkbIntegration = this;
+}
+
+VkbInputIntegration::~VkbInputIntegration()
+{
+    vkbIntegration = nullptr;
+}
+
+bool VkbInputIntegration::isValid()
+{
+    return vkbIntegration;
+}
+
+VkbInputIntegration *VkbInputIntegration::instance()
+{
+    return vkbIntegration;
+}

@@ -24,43 +24,21 @@
 
 #include "vkbinputcontext.h"
 #include "vkbinputcontext_p.h"
-#include "vkbinputintegration.h"
-#include "vkbinputintegrationplugin.h"
+#include "vkbinputintegration_p.h"
 
 #include <QtCore/qrect.h>
 #include <QtCore/qlocale.h>
-#include <QtCore/private/qfactoryloader_p.h>
 #include <QtGui/qguiapplication.h>
 #include <QtGui/qevent.h>
 #include <QtGui/private/qguiapplication_p.h>
 #include <QtGui/qpa/qplatformintegration.h>
-
-Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, integrationLoader, (VkbInputIntegrationPlugin_iid, QLatin1String("/cvkbintegrations"), Qt::CaseInsensitive))
-
-static QString resolveIntegration(const QString &name)
-{
-    if (!name.isEmpty())
-        return name;
-
-    const QCoreApplication *app = QCoreApplication::instance();
-    if (app && app->inherits("QApplication"))
-        return QStringLiteral("widgets");
-
-    return QStringLiteral("quick");
-}
-
-static VkbInputIntegration *loadIntegration(const QStringList &params)
-{
-    const QString name = resolveIntegration(params.value(0));
-    return qLoadPlugin<VkbInputIntegration, VkbInputIntegrationPlugin>(integrationLoader(), name, params.mid(1));
-}
 
 VkbInputContext::VkbInputContext(const QStringList &params)
     : d_ptr(new VkbInputContextPrivate)
 {
     Q_D(VkbInputContext);
     d->q_ptr = this;
-    d->inputIntegration = loadIntegration(params);
+    VkbInputIntegrationPrivate::load(params);
 
     connect(&d->inputEngine, &VkbInputEngine::inputModeChanged, [=]() { d->loadInputLayout(); });
     connect(&d->inputEngine, SIGNAL(keyPressAndHold(VkbInputKey)), this, SLOT(_q_showInputPopup(VkbInputKey)));
@@ -77,8 +55,7 @@ VkbInputContext *VkbInputContext::instance()
 
 bool VkbInputContext::isValid() const
 {
-    Q_D(const VkbInputContext);
-    return d->inputIntegration;
+    return VkbInputIntegration::isValid();
 }
 
 bool VkbInputContext::hasCapability(Capability capability) const
