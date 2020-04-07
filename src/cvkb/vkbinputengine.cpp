@@ -207,6 +207,15 @@ void VkbInputEnginePrivate::resolveLayout()
     q->setLayout(layout);
 }
 
+static bool useCapitals(Qt::KeyboardModifiers modifiers, Qt::InputMethodHints hints)
+{
+    if (hints & Qt::ImhLowercaseOnly)
+        return false;
+    if (hints & Qt::ImhUppercaseOnly)
+        return true;
+    return modifiers & Qt::ShiftModifier;
+}
+
 void VkbInputEnginePrivate::resolveInputMode()
 {
     Q_Q(VkbInputEngine);
@@ -214,7 +223,9 @@ void VkbInputEnginePrivate::resolveInputMode()
         q->setInputMode(VkbInputEngine::Digits);
     else if (keyboardModifiers & Qt::MetaModifier)
         q->setInputMode(VkbInputEngine::Symbols);
-    else if (keyboardModifiers & Qt::ShiftModifier)
+    else if (inputMethodHints & Qt::ImhLowercaseOnly)
+        q->setInputMode(VkbInputEngine::Letters);
+    else if (useCapitals(keyboardModifiers, inputMethodHints))
         q->setInputMode(VkbInputEngine::Capitals);
     else
         q->setInputMode(VkbInputEngine::Letters);
