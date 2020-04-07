@@ -86,7 +86,9 @@ void VkbInputEngine::setKeyboardModifiers(Qt::KeyboardModifiers keyboardModifier
 
 VkbInputLayout VkbInputEngine::layout() const
 {
-    Q_D(const VkbInputEngine);
+    VkbInputEnginePrivate *d = const_cast<VkbInputEnginePrivate *>(d_func());
+    if (d->layout.isEmpty())
+        d->resolveLayout();
     return d->layout;
 }
 

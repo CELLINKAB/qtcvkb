@@ -26,8 +26,11 @@
 #define VKBINPUTPANEL_P_H
 
 #include <QtCVkb/vkbinputpanel.h>
+#include <QtCVkb/vkbinputlayout.h>
 #include <QtCore/qobject.h>
 #include <QtCore/qpointer.h>
+
+class VkbInputKey;
 
 class VkbInputPanelProxy : public QObject, public VkbInputPanel
 {
@@ -67,6 +70,7 @@ private:
     VkbInputPanel *create();
     VkbInputPanel *instance() const;
 
+    VkbInputLayout m_layout;
     QPointer<QObject> m_instance;
 };
 

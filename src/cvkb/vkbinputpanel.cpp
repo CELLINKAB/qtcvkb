@@ -91,7 +91,8 @@ QObject *VkbInputPanelProxy::button(const VkbInputKey &key) const
 
 void VkbInputPanelProxy::setLayout(const VkbInputLayout &layout)
 {
-    create()->setLayout(layout);
+    m_layout = layout;
+    instance()->setLayout(layout);
 }
 
 void VkbInputPanelProxy::show()
@@ -137,6 +138,8 @@ VkbInputPanel *VkbInputPanelProxy::create()
     if (!m_instance) {
         m_instance = VkbInputIntegration::instance()->createInputPanel(QGuiApplication::focusWindow());
         if (m_instance) {
+            if (VkbInputPanel *inputPanel = qobject_cast<VkbInputPanel *>(m_instance))
+                inputPanel->setLayout(m_layout);
             QObject::connect(m_instance, SIGNAL(keyPressed(VkbInputKey)), this, SIGNAL(keyPressed(VkbInputKey)));
             QObject::connect(m_instance, SIGNAL(keyReleased(VkbInputKey)), this, SIGNAL(keyReleased(VkbInputKey)));
             QObject::connect(m_instance, SIGNAL(keyCanceled(VkbInputKey)), this, SIGNAL(keyCanceled(VkbInputKey)));

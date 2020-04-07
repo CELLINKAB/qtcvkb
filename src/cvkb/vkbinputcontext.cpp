@@ -25,6 +25,7 @@
 #include "vkbinputcontext.h"
 #include "vkbinputcontext_p.h"
 #include "vkbinputintegration_p.h"
+#include "vkbinputlayout.h"
 
 #include <QtCore/qrect.h>
 #include <QtCore/qlocale.h>
@@ -36,9 +37,10 @@ VkbInputContext::VkbInputContext(const QStringList &params)
     Q_D(VkbInputContext);
     d->q_ptr = this;
     VkbInputIntegrationPrivate::load(params);
+    d->inputPanel.setLayout(d->inputEngine.layout());
 
-    connect(&d->inputEngine, &VkbInputEngine::layoutChanged, &d->inputPanel, &VkbInputPanelProxy::setLayout);
     connect(&d->inputEngine, &VkbInputEngine::keyPressAndHold, &d->inputPanel, &VkbInputPanelProxy::popup);
+    connect(&d->inputEngine, &VkbInputEngine::layoutChanged, &d->inputPanel, &VkbInputPanelProxy::setLayout);
 
     connect(&d->inputPanel, &VkbInputPanelProxy::keyPressed, &d->inputEngine, &VkbInputEngine::handleKeyPress);
     connect(&d->inputPanel, &VkbInputPanelProxy::keyReleased, &d->inputEngine, &VkbInputEngine::handleKeyRelease);
