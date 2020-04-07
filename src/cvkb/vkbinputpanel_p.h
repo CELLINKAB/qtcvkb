@@ -52,6 +52,8 @@ public slots:
     void show() override;
     void hide() override;
     void popup(const VkbInputKey &key);
+    void pressKey(const VkbInputKey &key) override;
+    void releaseKey(const VkbInputKey &key) override;
     void setLayout(const VkbInputLayout &layout) override;
 
 signals:

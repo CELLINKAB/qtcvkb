@@ -64,10 +64,8 @@ public slots:
     void update(Qt::InputMethodQueries queries);
     void setFocusObject(QObject *focusObject);
 
-    void handleKeyPress(const VkbInputKey &key);
-    void handleKeyRelease(const VkbInputKey &key);
-    void handleKeyCancel(const VkbInputKey &key);
-    void handleKeyPressAndHold(const VkbInputKey &key);
+    void sendKeyPress(const VkbInputKey &key);
+    void sendKeyRelease(const VkbInputKey &key);
 
 signals:
     void inputModeChanged(InputMode inputMode);
@@ -77,8 +75,6 @@ signals:
 
     void keyPressed(const VkbInputKey &key);
     void keyReleased(const VkbInputKey &key);
-    void keyCanceled(const VkbInputKey &key);
-    void keyPressAndHold(const VkbInputKey &key);
 
 protected:
     bool eventFilter(QObject *object, QEvent *event) override;

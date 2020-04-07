@@ -51,6 +51,9 @@ public:
     virtual QObject *button(const VkbInputKey &key) const = 0;
     virtual void setLayout(const VkbInputLayout &layout) = 0;
 
+    virtual void pressKey(const VkbInputKey &key) = 0;
+    virtual void releaseKey(const VkbInputKey &key) = 0;
+
 signals:
     virtual void visibleChanged() = 0;
     virtual void animatingChanged() = 0;

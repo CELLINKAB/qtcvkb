@@ -56,6 +56,10 @@ public:
     QObject *button(const VkbInputKey &key) const override;
     void setLayout(const VkbInputLayout &layout) override;
 
+public slots:
+    void pressKey(const VkbInputKey &key) override;
+    void releaseKey(const VkbInputKey &key) override;
+
 signals:
     void visibleChanged() override;
     void animatingChanged() override;

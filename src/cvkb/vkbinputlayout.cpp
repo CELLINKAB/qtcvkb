@@ -130,6 +130,18 @@ void VkbInputLayout::setKey(int row, int column, const VkbInputKey &key)
     d->layout[row][column] = key;
 }
 
+VkbInputKey VkbInputLayout::findKey(Qt::Key key, const QString &text) const
+{
+    Q_D(const VkbInputLayout);
+    for (const QVector<VkbInputKey> &row : d->layout) {
+        for (const VkbInputKey &inputKey : row) {
+            if (inputKey.key == key || (!text.isEmpty() && inputKey.text == text))
+                return inputKey;
+        }
+    }
+    return VkbInputKey();
+}
+
 // ### TODO: add QJsonArray::toStringList()
 static QStringList toStringList(const QJsonArray &array)
 {

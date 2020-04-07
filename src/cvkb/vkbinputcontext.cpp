@@ -39,13 +39,14 @@ VkbInputContext::VkbInputContext(const QStringList &params)
     VkbInputIntegrationPrivate::load(params);
     d->inputPanel.setLayout(d->inputEngine.layout());
 
-    connect(&d->inputEngine, &VkbInputEngine::keyPressAndHold, &d->inputPanel, &VkbInputPanelProxy::popup);
+    connect(&d->inputEngine, &VkbInputEngine::keyPressed, &d->inputPanel, &VkbInputPanelProxy::pressKey);
+    connect(&d->inputEngine, &VkbInputEngine::keyReleased, &d->inputPanel, &VkbInputPanelProxy::releaseKey);
+
     connect(&d->inputEngine, &VkbInputEngine::layoutChanged, &d->inputPanel, &VkbInputPanelProxy::setLayout);
 
-    connect(&d->inputPanel, &VkbInputPanelProxy::keyPressed, &d->inputEngine, &VkbInputEngine::handleKeyPress);
-    connect(&d->inputPanel, &VkbInputPanelProxy::keyReleased, &d->inputEngine, &VkbInputEngine::handleKeyRelease);
-    connect(&d->inputPanel, &VkbInputPanelProxy::keyCanceled, &d->inputEngine, &VkbInputEngine::handleKeyCancel);
-    connect(&d->inputPanel, &VkbInputPanelProxy::keyPressAndHold, &d->inputEngine, &VkbInputEngine::handleKeyPressAndHold);
+    connect(&d->inputPanel, &VkbInputPanelProxy::keyPressed, &d->inputEngine, &VkbInputEngine::sendKeyPress);
+    connect(&d->inputPanel, &VkbInputPanelProxy::keyReleased, &d->inputEngine, &VkbInputEngine::sendKeyRelease);
+    connect(&d->inputPanel, &VkbInputPanelProxy::keyPressAndHold, &d->inputPanel, &VkbInputPanelProxy::popup);
 
     connect(&d->inputPanel, &VkbInputPanelProxy::visibleChanged, this, &QPlatformInputContext::emitInputPanelVisibleChanged);
     connect(&d->inputPanel, &VkbInputPanelProxy::animatingChanged, this, &QPlatformInputContext::emitAnimatingChanged);

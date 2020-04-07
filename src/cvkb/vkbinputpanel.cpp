@@ -44,6 +44,8 @@ public:
     Qt::LayoutDirection inputDirection() const override { return Qt::LeftToRight; }
     QObject *button(const VkbInputKey &) const override { return nullptr; }
     void setLayout(const VkbInputLayout &) override { }
+    void pressKey(const VkbInputKey &) override { }
+    void releaseKey(const VkbInputKey &) override { }
     void visibleChanged() override { }
     void animatingChanged() override { }
     void rectChanged() override { }
@@ -131,6 +133,16 @@ void VkbInputPanelProxy::popup(const VkbInputKey &key)
 
     popup->setAlt(key.alt);
     popup->show();
+}
+
+void VkbInputPanelProxy::pressKey(const VkbInputKey &key)
+{
+    instance()->pressKey(key);
+}
+
+void VkbInputPanelProxy::releaseKey(const VkbInputKey &key)
+{
+    instance()->releaseKey(key);
 }
 
 VkbInputPanel *VkbInputPanelProxy::create()

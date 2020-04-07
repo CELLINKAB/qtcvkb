@@ -61,6 +61,10 @@ public:
 
     QQmlListProperty<VkbQuickDelegate> delegates();
 
+public slots:
+    void pressKey(const VkbInputKey &key) override;
+    void releaseKey(const VkbInputKey &key) override;
+
 signals:
     void visibleChanged() override;
     void animatingChanged() override;

@@ -44,6 +44,7 @@ class Q_CVKB_EXPORT VkbInputKey
 public:
     VkbInputKey(Qt::Key key = Qt::Key_unknown) : key(key) { }
     VkbInputKey(const QString &text) : text(text) { }
+    VkbInputKey(Qt::Key key, const QString &text) : key(key), text(text) { }
 
     inline bool operator==(const VkbInputKey &other) const;
     inline bool operator!=(const VkbInputKey &other) const;

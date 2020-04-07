@@ -136,7 +136,7 @@ void VkbInputEngine::setFocusObject(QObject *focusObject)
     setInputMethodHints(event.value(Qt::ImHints).value<Qt::InputMethodHints>());
 }
 
-void VkbInputEngine::handleKeyPress(const VkbInputKey &key)
+void VkbInputEngine::sendKeyPress(const VkbInputKey &key)
 {
     Q_D(VkbInputEngine);
     typedef std::function<void(VkbInputEnginePrivate *engine, const VkbInputKey &key)> KeyHandler;
@@ -150,31 +150,33 @@ void VkbInputEngine::handleKeyPress(const VkbInputKey &key)
     KeyHandler handler = handlers.value(key.key, [=](VkbInputEnginePrivate *engine, const VkbInputKey &key) { engine->sendKeyPress(key); });
     if (handler)
         handler(d, key);
-    emit keyPressed(key);
 }
 
-void VkbInputEngine::handleKeyRelease(const VkbInputKey &key)
+void VkbInputEngine::sendKeyRelease(const VkbInputKey &key)
 {
     Q_D(VkbInputEngine);
     d->sendKeyRelease(key);
-    emit keyReleased(key);
-}
-
-void VkbInputEngine::handleKeyCancel(const VkbInputKey &key)
-{
-    emit keyCanceled(key);
-}
-
-void VkbInputEngine::handleKeyPressAndHold(const VkbInputKey &key)
-{
-    emit keyPressAndHold(key);
 }
 
 bool VkbInputEngine::eventFilter(QObject *object, QEvent *event)
 {
-    if (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease)
-        setKeyboardModifiers(static_cast<QKeyEvent *>(event)->modifiers());
-
+    Q_D(VkbInputEngine);
+    switch (event->type()) {
+    case QEvent::KeyPress: {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        setKeyboardModifiers(keyEvent->modifiers());
+        emit keyPressed(d->layout.findKey(static_cast<Qt::Key>(keyEvent->key()), keyEvent->text()));
+        break;
+    }
+    case QEvent::KeyRelease: {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        setKeyboardModifiers(keyEvent->modifiers());
+        emit keyReleased(d->layout.findKey(static_cast<Qt::Key>(keyEvent->key()), keyEvent->text()));
+        break;
+    }
+    default:
+        break;
+    }
     return QObject::eventFilter(object, event);
 }
 

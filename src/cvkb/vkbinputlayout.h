@@ -55,6 +55,8 @@ public:
     VkbInputKey keyAt(int row, int column) const;
     void setKey(int row, int column, const VkbInputKey &key);
 
+    VkbInputKey findKey(Qt::Key key, const QString &text) const;
+
     bool load(const QString &filePath);
 
 private:

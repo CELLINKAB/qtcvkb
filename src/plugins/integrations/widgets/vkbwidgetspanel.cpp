@@ -94,6 +94,24 @@ void VkbWidgetsPanel::setLayout(const VkbInputLayout &layout)
     updateButtons();
 }
 
+void VkbWidgetsPanel::pressKey(const VkbInputKey &key)
+{
+    QAbstractButton *button = m_buttons.value(key);
+    if (!button)
+        return;
+
+    button->setDown(true);
+}
+
+void VkbWidgetsPanel::releaseKey(const VkbInputKey &key)
+{
+    QAbstractButton *button = m_buttons.value(key);
+    if (!button)
+        return;
+
+    button->setDown(false);
+}
+
 void VkbWidgetsPanel::handleKeyPress()
 {
     QAbstractButton *button = qobject_cast<QAbstractButton *>(sender());

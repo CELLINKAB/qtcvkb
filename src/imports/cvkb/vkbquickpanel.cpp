@@ -105,6 +105,24 @@ QQmlListProperty<VkbQuickDelegate> VkbQuickPanel::delegates()
     return m_model->delegates();
 }
 
+void VkbQuickPanel::pressKey(const VkbInputKey &key)
+{
+    QQuickAbstractButton *button = m_layout->button(key);
+    if (!button)
+        return;
+
+    button->setDown(true);
+}
+
+void VkbQuickPanel::releaseKey(const VkbInputKey &key)
+{
+    QQuickAbstractButton *button = m_layout->button(key);
+    if (!button)
+        return;
+
+    button->resetDown();
+}
+
 void VkbQuickPanel::handleKeyPress()
 {
     VkbQuickLayoutAttached *attached = VkbQuickLayout::qmlAttachedPropertiesObject(sender());

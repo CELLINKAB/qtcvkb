@@ -32,7 +32,7 @@ Button {
     text: InputLayout.text
 
     ToolTip.text: control.text
-    ToolTip.visible: control.down
+    ToolTip.visible: control.pressed
     ToolTip.toolTip.y: -height - 6
 
     Label {
