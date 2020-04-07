@@ -80,6 +80,9 @@ signals:
     void keyCanceled(const VkbInputKey &key);
     void keyPressAndHold(const VkbInputKey &key);
 
+protected:
+    bool eventFilter(QObject *object, QEvent *event) override;
+
 private:
     Q_DISABLE_COPY(VkbInputEngine)
     Q_DECLARE_PRIVATE(VkbInputEngine)

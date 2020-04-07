@@ -28,6 +28,7 @@
 #include <QtCVkb/vkbinputengine.h>
 #include <QtCVkb/vkbinputlayout.h>
 #include <QtCore/private/qobject_p.h>
+#include <QtCore/qpointer.h>
 
 class VkbInputEnginePrivate : public QObjectPrivate
 {
@@ -43,6 +44,7 @@ public:
     void toggleKeyboardModifier(Qt::KeyboardModifier modifier);
 
     VkbInputLayout layout;
+    QPointer<QObject> focusObject;
     VkbInputEngine::InputMode inputMode = VkbInputEngine::Letters;
     Qt::InputMethodHints inputMethodHints = Qt::ImhNone;
     Qt::KeyboardModifiers keyboardModifiers = Qt::NoModifier;

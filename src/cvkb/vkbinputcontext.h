@@ -44,7 +44,6 @@ public:
     void reset() override;
     void commit() override;
     void update(Qt::InputMethodQueries queries) override;
-    bool filterEvent(const QEvent *event) override;
     QRectF keyboardRect() const override;
 
     bool isAnimating() const override;

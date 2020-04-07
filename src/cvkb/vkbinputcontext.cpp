@@ -82,15 +82,6 @@ void VkbInputContext::update(Qt::InputMethodQueries queries)
     d->inputSelection.update(queries);
 }
 
-bool VkbInputContext::filterEvent(const QEvent *event)
-{
-    Q_D(VkbInputContext);
-    if (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease)
-        d->inputEngine.setKeyboardModifiers(static_cast<const QKeyEvent *>(event)->modifiers());
-
-    return QPlatformInputContext::filterEvent(event);
-}
-
 QRectF VkbInputContext::keyboardRect() const
 {
     Q_D(const VkbInputContext);

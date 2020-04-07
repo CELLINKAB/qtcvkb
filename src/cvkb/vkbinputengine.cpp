@@ -117,10 +117,19 @@ void VkbInputEngine::update(Qt::InputMethodQueries queries)
 
 void VkbInputEngine::setFocusObject(QObject *focusObject)
 {
+    Q_D(VkbInputEngine);
+    if (d->focusObject == focusObject)
+        return;
+
+    if (d->focusObject)
+        d->focusObject->removeEventFilter(this);
+
     if (!focusObject) {
         setInputMethodHints(Qt::ImhNone);
         return;
     }
+
+    focusObject->installEventFilter(this);
 
     QInputMethodQueryEvent event(Qt::ImHints);
     QCoreApplication::sendEvent(focusObject, &event);
@@ -159,6 +168,14 @@ void VkbInputEngine::handleKeyCancel(const VkbInputKey &key)
 void VkbInputEngine::handleKeyPressAndHold(const VkbInputKey &key)
 {
     emit keyPressAndHold(key);
+}
+
+bool VkbInputEngine::eventFilter(QObject *object, QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease)
+        setKeyboardModifiers(static_cast<QKeyEvent *>(event)->modifiers());
+
+    return QObject::eventFilter(object, event);
 }
 
 static QString resolveLayoutPath(VkbInputEngine::InputMode inputMode)
