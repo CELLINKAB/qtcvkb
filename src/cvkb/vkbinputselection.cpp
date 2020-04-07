@@ -128,6 +128,10 @@ bool VkbInputSelection::eventFilter(QObject *object, QEvent *event)
     bool filter = QObject::eventFilter(object, event);
     if (!filter) {
         switch (event->type()) {
+        case QEvent::KeyPress:
+        case QEvent::KeyRelease:
+            hide();
+            break;
         case QEvent::MouseButtonPress:
             handlePress(static_cast<QMouseEvent *>(event)->pos());
             break;

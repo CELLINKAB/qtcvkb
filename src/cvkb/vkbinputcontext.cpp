@@ -85,10 +85,8 @@ void VkbInputContext::update(Qt::InputMethodQueries queries)
 bool VkbInputContext::filterEvent(const QEvent *event)
 {
     Q_D(VkbInputContext);
-    if (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease) {
+    if (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease)
         d->inputEngine.setKeyboardModifiers(static_cast<const QKeyEvent *>(event)->modifiers());
-        d->inputSelection.hide();
-    }
 
     return QPlatformInputContext::filterEvent(event);
 }
