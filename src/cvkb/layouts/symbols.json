@@ -40,7 +40,7 @@
     [
         { "key": "meta", "checkable": true },
         { "text": ";" },
-        { "key": "space", "span": 7, "autoRepeat": true },
+        { "key": "space", "text": " ", "span": 7, "autoRepeat": true },
         { "text": ":" },
         { "key": "escape" }
     ]

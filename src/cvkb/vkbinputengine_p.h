@@ -39,7 +39,7 @@ public:
     void sendKeyPress(const VkbInputKey &key);
     void sendKeyRelease(const VkbInputKey &key);
     void sendKeyText(const QString &text);
-    void sendKeyEvent(QEvent::Type type, int key);
+    void sendKeyEvent(QEvent::Type type, const VkbInputKey &key);
     void toggleKeyboardModifier(Qt::KeyboardModifier modifier);
 
     VkbInputLayout layout;

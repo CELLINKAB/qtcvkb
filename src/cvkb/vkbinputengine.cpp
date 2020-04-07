@@ -197,13 +197,13 @@ void VkbInputEnginePrivate::resolveInputMode()
 void VkbInputEnginePrivate::sendKeyPress(const VkbInputKey &key)
 {
     if (key.key != Qt::Key_unknown)
-        sendKeyEvent(QEvent::KeyPress, key.key);
+        sendKeyEvent(QEvent::KeyPress, key);
 }
 
 void VkbInputEnginePrivate::sendKeyRelease(const VkbInputKey &key)
 {
     if (key.key != Qt::Key_unknown)
-        sendKeyEvent(QEvent::KeyRelease, key.key);
+        sendKeyEvent(QEvent::KeyRelease, key);
     else
         sendKeyText(key.text);
 }
@@ -215,9 +215,9 @@ void VkbInputEnginePrivate::sendKeyText(const QString &text)
     QCoreApplication::sendEvent(QGuiApplication::focusObject(), &event);
 }
 
-void VkbInputEnginePrivate::sendKeyEvent(QEvent::Type type, int key)
+void VkbInputEnginePrivate::sendKeyEvent(QEvent::Type type, const VkbInputKey &key)
 {
-    QWindowSystemInterface::handleKeyEvent(QGuiApplication::focusWindow(), type, key, keyboardModifiers);
+    QWindowSystemInterface::handleKeyEvent(QGuiApplication::focusWindow(), type, key.key, keyboardModifiers, key.text);
 }
 
 void VkbInputEnginePrivate::toggleKeyboardModifier(Qt::KeyboardModifier modifier)
