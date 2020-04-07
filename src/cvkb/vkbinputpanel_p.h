@@ -46,8 +46,8 @@ public:
     QObject *button(const VkbInputKey &key) const override;
 
 public slots:
-    void show();
-    void hide();
+    void show() override;
+    void hide() override;
     void popup(const VkbInputKey &key);
     void setLayout(const VkbInputLayout &layout) override;
 
