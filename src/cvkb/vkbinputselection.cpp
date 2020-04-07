@@ -101,7 +101,7 @@ void VkbInputSelection::update(Qt::InputMethodQueries queries)
     QCoreApplication::sendEvent(m_focusObject, &event);
     bool enabled = event.value(Qt::ImEnabled).toBool();
     QString surroundingText = event.value(Qt::ImSurroundingText).toString();
-    Qt::InputMethodHints inputMethodHints = event.value(Qt::ImHints).value<Qt::InputMethodHints>();
+    Qt::InputMethodHints inputMethodHints = static_cast<Qt::InputMethodHints>(event.value(Qt::ImHints).toUInt());
     setEnabled(enabled && !surroundingText.isEmpty() && !inputMethodHints.testFlag(Qt::ImhNoTextHandles));
 }
 

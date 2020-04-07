@@ -120,7 +120,7 @@ void VkbInputEngine::update(Qt::InputMethodQueries queries)
 
     QInputMethodQueryEvent event(EngineQueries);
     QCoreApplication::sendEvent(d->focusObject, &event);
-    setInputMethodHints(event.value(Qt::ImHints).value<Qt::InputMethodHints>());
+    setInputMethodHints(static_cast<Qt::InputMethodHints>(event.value(Qt::ImHints).toUInt()));
 }
 
 void VkbInputEngine::setFocusObject(QObject *focusObject)
